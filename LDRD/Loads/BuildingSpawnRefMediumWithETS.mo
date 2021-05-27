@@ -1,8 +1,7 @@
 within LDRD.Loads;
 model BuildingSpawnRefMediumWithETS "Spawn model of building, connected to an ETS"
   extends Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses.PartialBuildingWithETS(
-    redeclare BaseClasses.BuildingSpawnRefMediumOffice
-                                        bui(
+    redeclare BaseClasses.BuildingSpawnRefMediumOffice bui(
       T_aHeaWat_nominal=ets.THeaWatSup_nominal,
       T_bHeaWat_nominal=ets.THeaWatRet_nominal,
       T_aChiWat_nominal=ets.TChiWatSup_nominal,

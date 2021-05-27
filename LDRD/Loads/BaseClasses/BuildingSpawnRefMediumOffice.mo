@@ -14,9 +14,11 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     "Number of conditioned zones";
   parameter Real facMulTerUni[nZon] = abs(QCooTot_flow_nominal) / 10000
     "Multiplier factor for terminal units";
-  parameter String idfName="modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_3C_USA_CA_SAN_FRANCISCO.idf"
+  parameter String idfName=
+    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_3C_USA_CA_SAN_FRANCISCO.idf"
     "Name of the IDF file";
-  parameter String weaName="modelica://LDRD/Resources/WeatherData/USA_CA_San.Francisco.Intl.AP.724940_TMY3.mos"
+  parameter String weaName=
+    "modelica://LDRD/Resources/WeatherData/USA_CA_San.Francisco.Intl.AP.724940_TMY3.mos"
     "Name of the weather file";
   parameter Modelica.SIunits.MassFlowRate mLoa_flow_nominal[nZon] = fill(
     1,
@@ -131,8 +133,7 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
 "Perimeter_top_ZN_2",
 "Perimeter_top_ZN_3",
 "Perimeter_top_ZN_4"},
-    each nPorts=2)
-    "Thermal zone"
+    each nPorts=2) "Thermal zone"
     annotation (Placement(transformation(extent={{20,-30},{60,10}})));
   inner Buildings.ThermalZones.EnergyPlus.Building building(
     idfName=Modelica.Utilities.Files.loadResource(
@@ -160,8 +161,7 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     each T_aHeaWat_nominal=T_aHeaWat_nominal,
     each T_aChiWat_nominal=T_aChiWat_nominal,
     final mLoaHea_flow_nominal=mLoa_flow_nominal,
-    final mLoaCoo_flow_nominal=mLoa_flow_nominal)
-    "Terminal unit"
+    final mLoaCoo_flow_nominal=mLoa_flow_nominal) "Terminal unit"
     annotation (Placement(transformation(extent={{-140,-2},{-116,22}})));
   Buildings.Experimental.DHC.Loads.FlowDistribution disFloHea(
     redeclare package Medium=Medium,

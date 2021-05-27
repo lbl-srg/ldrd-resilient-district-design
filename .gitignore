@@ -8,3 +8,5 @@ request
 stop
 *_log.txt
 *.bak-mo
+dymosim
+*_checkpoint.ipynb

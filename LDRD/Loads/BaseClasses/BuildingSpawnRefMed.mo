@@ -1,5 +1,5 @@
 within LDRD.Loads.BaseClasses;
-model BuildingSpawn "Spawn building model"
+model BuildingSpawnRefMed "Spawn building model"
   extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuilding(
     redeclare package Medium=Buildings.Media.Water,
     final have_heaWat=true,
@@ -12,10 +12,10 @@ model BuildingSpawn "Spawn building model"
     "Medium model";
   parameter Integer nZon=5
     "Number of conditioned thermal zones";
-  parameter Real facMulTerUni[nZon]={5 for i in 1:nZon}
+  parameter Real facMulTerUni[nZon]=abs({-28300, -29176, -27150, -14744,  -9303}) * 1E-4
     "Multiplier factor for terminal units";
   parameter String idfName=
-    "modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus/Examples/RefBldgSmallOffice/RefBldgSmallOfficeNew2004_Chicago.idf"
+    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"
     "Name of the IDF file";
   parameter String weaName=
     "modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
@@ -25,14 +25,12 @@ model BuildingSpawn "Spawn building model"
     nZon)
     "Load side mass flow rate at nominal conditions (single terminal unit)"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal[nZon]=fill(
-    2000,
-    nZon) ./ facMulTerUni
+  parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal[nZon]=
+    {4032,  5140, 13361,  5682,  3765} ./ facMulTerUni
     "Design heating heat flow rate (single terminal unit)"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal[nZon]=fill(
-    -2000,
-    nZon) ./ facMulTerUni
+  parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal[nZon]=
+    {-28300, -29176, -27150, -14744,  -9303} ./ facMulTerUni
     "Design cooling heat flow rate (single terminal unit)"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.Temperature T_aHeaWat_nominal=313.15
@@ -87,27 +85,29 @@ model BuildingSpawn "Spawn building model"
     k=0)
     "Latent heat gain"
     annotation (Placement(transformation(extent={{-60,64},{-40,84}})));
-  Buildings.ThermalZones.EnergyPlus.ThermalZone zon1(redeclare package Medium = Medium2, zoneName="Attic")
+  Buildings.ThermalZones.EnergyPlus.ThermalZone zon1(
+    redeclare package Medium = Medium2,
+    zoneName="MidFloor_Plenum")
     "Thermal zone" annotation (Placement(transformation(extent={{24,84},{64,124}})));
   Buildings.ThermalZones.EnergyPlus.ThermalZone zon2(
     redeclare package Medium = Medium2,
-    zoneName="Core_ZN",
+    zoneName="Core_bottom",
     nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,42},{64,82}})));
   Buildings.ThermalZones.EnergyPlus.ThermalZone zon3(
     redeclare package Medium = Medium2,
-    zoneName="Perimeter_ZN_1",
+    zoneName="Core_mid",
     nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,0},{64,40}})));
   Buildings.ThermalZones.EnergyPlus.ThermalZone zon4(
     redeclare package Medium = Medium2,
-    zoneName="Perimeter_ZN_2",
+    zoneName="Core_top",
     nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,-40},{64,0}})));
   Buildings.ThermalZones.EnergyPlus.ThermalZone zon5(
     redeclare package Medium = Medium2,
-    zoneName="Perimeter_ZN_3",
+    zoneName="Perimeter_bot_ZN_1",
     nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,-80},{64,-40}})));
   Buildings.ThermalZones.EnergyPlus.ThermalZone zon6(
     redeclare package Medium = Medium2,
-    zoneName="Perimeter_ZN_4",
+    zoneName="Perimeter_bot_ZN_2",
     nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,-120},{64,-80}})));
   inner Buildings.ThermalZones.EnergyPlus.Building building(
     idfName=Modelica.Utilities.Files.loadResource(
@@ -274,4 +274,4 @@ First implementation.
         Bitmap(
           extent={{-108,-100},{92,100}},
           fileName="modelica://Buildings/Resources/Images/ThermalZones/EnergyPlus/EnergyPlusLogo.png")}));
-end BuildingSpawn;
+end BuildingSpawnRefMed;
