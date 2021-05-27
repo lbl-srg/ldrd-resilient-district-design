@@ -174,11 +174,13 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   Modelica.Blocks.Continuous.Integrator EPumSto(initType=Modelica.Blocks.Types.Init.InitialState)
     "Storage pump electric energy"
     annotation (Placement(transformation(extent={{200,-150},{220,-130}})));
-  Loads.BuildingSpawnWithETS buiSpa(
-    redeclare final package MediumBui = Medium,
-    redeclare final package MediumSer = Medium,
-    final allowFlowReversalBui=allowFlowReversalBui,
-    final allowFlowReversalSer=allowFlowReversalSer) "Spawn building model and ETS"
+  replaceable Loads.BuildingSpawnWithETS buiSpa constrainedby
+    Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses.PartialBuildingWithETS(
+      redeclare final package MediumBui = Medium,
+      redeclare final package MediumSer = Medium,
+      final allowFlowReversalBui=allowFlowReversalBui,
+      final allowFlowReversalSer=allowFlowReversalSer)
+    "Spawn building model and ETS"
     annotation (Placement(transformation(extent={{40,150},{60,170}})));
 initial equation
   for i in 1:nBui loop

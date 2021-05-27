@@ -1,0 +1,10 @@
+jmodelica.py
+tmp*
+ds*
+*.mat
+eplus_out
+*.fmu
+request
+stop
+*_log.txt
+*.bak-mo
