@@ -15,10 +15,10 @@ model BuildingSpawn "Spawn building model"
   parameter Real facMulTerUni[nZon]={5 for i in 1:nZon}
     "Multiplier factor for terminal units";
   parameter String idfName=
-    "modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus/Examples/RefBldgSmallOffice/RefBldgSmallOfficeNew2004_Chicago.idf"
+    "modelica://LDRD/Resources/EnergyPlus/RefBldgSmallOfficeNew2004_Chicago.idf"
     "Name of the IDF file";
   parameter String weaName=
-    "modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
+    "modelica://LDRD/Resources//WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
     "Name of the weather file";
   parameter Modelica.SIunits.MassFlowRate mLoa_flow_nominal[nZon]=fill(
     1,

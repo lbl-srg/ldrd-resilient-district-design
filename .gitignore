@@ -10,3 +10,5 @@ stop
 *.bak-mo
 dymosim
 *_checkpoint.ipynb
+*.xml
+*.so

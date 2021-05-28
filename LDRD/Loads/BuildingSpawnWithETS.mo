@@ -1,24 +1,16 @@
 within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
-  extends Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses.PartialBuildingWithETS(
+  extends BaseClasses.PartialBuildingWithETS(
     redeclare BaseClasses.BuildingSpawn bui(
-      final idfName=idfName,
-      final weaName=weaName,
-      T_aHeaWat_nominal=ets.THeaWatSup_nominal,
-      T_bHeaWat_nominal=ets.THeaWatRet_nominal,
-      T_aChiWat_nominal=ets.TChiWatSup_nominal,
-      T_bChiWat_nominal=ets.TChiWatRet_nominal),
+      T_aHeaWat_nominal=ets.datChi.TConEnt_nominal+5,
+      T_bHeaWat_nominal=ets.datChi.TConEnt_nominal,
+      T_aChiWat_nominal=ets.datChi.TEvaLvg_nominal,
+      T_bChiWat_nominal=ets.datChi.TEvaLvg_nominal+5),
     ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
-      QHeaWat_flow_nominal=QHea_flow_nominal,
-      have_varFloCon=false,
-      have_varFloEva=false));
+      QHeaWat_flow_nominal=QHea_flow_nominal));
 
-  parameter String idfName="modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus/Examples/RefBldgSmallOffice/RefBldgSmallOfficeNew2004_Chicago.idf"
-    "Name of the IDF file";
-  parameter String weaName="modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
-    "Name of the weather file";
   final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal(
     max=-Modelica.Constants.eps)=bui.facMul * bui.facMulTerUni * bui.QCoo_flow_nominal
     "Space cooling design load (<=0)"
@@ -34,9 +26,9 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     annotation (Placement(transformation(extent={{-260,-80},{-240,-60}})));
 equation
   connect(FIXME1[1].y, ets.uHea)
-    annotation (Line(points={{-238,-110},{-40,-110},{-40,-46},{-34,-46}}, color={255,0,255}));
+    annotation (Line(points={{-238,-110},{-40,-110},{-40,-48},{-34,-48}}, color={255,0,255}));
   connect(FIXME1[2].y, ets.uCoo)
-    annotation (Line(points={{-238,-110},{-40,-110},{-40,-50},{-34,-50}}, color={255,0,255}));
+    annotation (Line(points={{-238,-110},{-40,-110},{-40,-54},{-34,-54}}, color={255,0,255}));
   connect(FIXME.y, resTHeaWatSup.u)
     annotation (Line(points={{-238,-70},{-220,-70},{-220,-40},{-112,-40}}, color={0,0,127}));
   annotation (Line(

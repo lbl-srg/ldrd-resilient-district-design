@@ -18,6 +18,12 @@ model BuildingSpawnRefMed1 "Spawn building model"
   parameter String weaName=
     "modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
     "Name of the weather file";
+
+  Buildings.ThermalZones.EnergyPlus.ThermalZone zon(
+    redeclare package Medium = Medium2,
+    zoneName="Core_bottom",
+    nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,42},{64,82}})));
+
   parameter Real facMulTerUni[nZon]={5}
     "Multiplier factor for terminal units";
   parameter Modelica.SIunits.MassFlowRate mLoa_flow_nominal[nZon]=fill(
@@ -85,15 +91,13 @@ model BuildingSpawnRefMed1 "Spawn building model"
     k=0)
     "Latent heat gain"
     annotation (Placement(transformation(extent={{-60,64},{-40,84}})));
-  Buildings.ThermalZones.EnergyPlus.ThermalZone zon(
-    redeclare package Medium = Medium2,
-    zoneName="Core_bottom",
-    nPorts=2) "Thermal zone" annotation (Placement(transformation(extent={{24,42},{64,82}})));
+
   inner Buildings.ThermalZones.EnergyPlus.Building building(
     idfName=Modelica.Utilities.Files.loadResource(
       idfName),
     weaName=Modelica.Utilities.Files.loadResource(
-      weaName))
+      weaName),
+    logLevel=Buildings.ThermalZones.EnergyPlus.Types.LogLevels.Debug)
     "Building outer component"
     annotation (Placement(transformation(extent={{30,138},{52,158}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum mulSum(
