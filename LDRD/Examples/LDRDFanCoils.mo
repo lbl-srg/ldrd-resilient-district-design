@@ -2,8 +2,7 @@ within LDRD.Examples;
 model LDRDFanCoils "Example of parallel connection with constant district water mass flow rate"
   extends BaseClasses.PartialParallelSpawn(
     redeclare
-      Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BuildingTimeSeriesWithETS
-      bui[nBui-1](final filNam=filNam),
+      Loads.BuildingTimeSeriesWithETS bui[nBui-1](final filNam=filNam),
     datDes(
       idxBuiSpa=3,
       mPumDis_flow_nominal=150,

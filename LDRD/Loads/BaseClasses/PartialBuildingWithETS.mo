@@ -20,7 +20,11 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
   final parameter Modelica.SIunits.MassFlowRate mCon_flow_nominal(min=0)=
     abs(QChiWat_flow_nominal)*(1+1/datChi.COP_nominal)/5/4186
     "Condenser water mass flow rate"
-    annotation (Dialog(group="Nominal condition"));
+    annotation (Dialog(group="ETS model parameters"));
+  final parameter Modelica.SIunits.MassFlowRate mSerWat_flow_nominal(min=0)=
+    ets.hex.m1_flow_nominal
+    "Service water mass flow rate"
+    annotation (Dialog(group="ETS model parameters"));
   parameter Buildings.Fluid.Chillers.Data.ElectricEIR.Generic datChi(
     QEva_flow_nominal=QChiWat_flow_nominal,
     COP_nominal=3,

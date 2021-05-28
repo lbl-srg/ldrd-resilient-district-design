@@ -19,9 +19,10 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   parameter Integer idxBuiTim[nBui-1] = datDes.idxBuiTim
     "Indices of building models based on time series"
     annotation (Evaluate=true);
-  inner parameter Data.DesignDataSpawn datDes(final
-      mCon_flow_nominal={if i == idxBuiSpa then buiSpa.ets.mDisWat_flow_nominal else bui[i].ets.mDisWat_flow_nominal
-        for i in 1:nBui}) "Design data" annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
+  inner parameter Data.DesignDataSpawn datDes(
+    final mCon_flow_nominal={if i == idxBuiSpa then buiSpa.mSerWat_flow_nominal else bui[i].mSerWat_flow_nominal
+      for i in 1:nBui})
+    "Design data" annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
   Buildings.Experimental.DHC.Examples.Combined.Generation5.ThermalStorages.BoreField
     borFie(redeclare final package Medium = Medium)
@@ -31,8 +32,10 @@ partial model PartialParallelSpawn "Partial model for parallel network"
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-130,-80})));
-  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pumDis(redeclare final package Medium =
-        Medium, final m_flow_nominal=datDes.mPumDis_flow_nominal) "Distribution pump"
+  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pumDis(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datDes.mPumDis_flow_nominal)
+    "Distribution pump"
     annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=90,
@@ -105,43 +108,49 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     final dpDis_nominal=datDes.dpPla_nominal,
     final epsHex=datDes.epsPla) "Sewage heat recovery plant"
     annotation (Placement(transformation(extent={{-160,-10},{-140,10}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatSup(redeclare final package Medium = Medium, final m_flow_nominal=
-        datDes.mPumDis_flow_nominal) "District water supply temperature"
+  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatSup(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water supply temperature"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-80,20})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatRet(redeclare final package Medium = Medium, final m_flow_nominal=
-        datDes.mPumDis_flow_nominal) "District water return temperature"
+  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatRet(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water return temperature"
     annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=90,
         origin={80,0})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatBorLvg(redeclare final package Medium = Medium, final
-      m_flow_nominal=datDes.mPumDis_flow_nominal) "District water borefield leaving temperature" annotation (Placement(
+  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatBorLvg(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water borefield leaving temperature" annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-80,-40})));
-  replaceable Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses.PartialBuildingWithETS bui[nBui - 1]
-    constrainedby Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses.PartialBuildingWithETS(
-    bui(each final facMul=facMul),
-    redeclare each final package MediumBui = Medium,
-    redeclare each final package MediumSer = Medium,
-    each final allowFlowReversalBui=allowFlowReversalBui,
-    each final allowFlowReversalSer=allowFlowReversalSer) "Building and ETS"
+  replaceable Loads.BaseClasses.PartialBuildingWithETS bui[nBui - 1]
+    constrainedby Loads.BaseClasses.PartialBuildingWithETS(
+      bui(each final facMul=facMul),
+      redeclare each final package MediumBui = Medium,
+      redeclare each final package MediumSer = Medium,
+      each final allowFlowReversalBui=allowFlowReversalBui,
+      each final allowFlowReversalSer=allowFlowReversalSer) "Building and ETS"
     annotation (Placement(transformation(extent={{-10,170},{10,190}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMaxSet[nBui](k={if i == idxBuiSpa then buiSpa.THeaWatSup_nominal
-         else bui[i].THeaWatSup_nominal for i in 1:nBui}) "Heating water supply temperature set point - Maximum value"
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMaxSet[nBui](
+    k={if i == idxBuiSpa then buiSpa.THeaWatSup_nominal else bui[i].THeaWatSup_nominal for i in 1:nBui})
+    "Heating water supply temperature set point - Maximum value"
     annotation (Placement(transformation(extent={{-250,210},{-230,230}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSet[nBui](k={if i == idxBuiSpa then buiSpa.TChiWatSup_nominal
-         else bui[i].TChiWatSup_nominal for i in 1:nBui}) "Chilled water supply temperature set point"
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSet[nBui](
+    k={if i == idxBuiSpa then buiSpa.TChiWatSup_nominal else bui[i].TChiWatSup_nominal for i in 1:nBui})
+    "Chilled water supply temperature set point"
     annotation (Placement(transformation(extent={{-220,190},{-200,210}})));
   Modelica.Blocks.Sources.Constant TSewWat(
     k=273.15 + 17)
     "Sewage water temperature"
     annotation (Placement(transformation(extent={{-280,30},{-260,50}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMinSet[nBui](each k=28 + 273.15)
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMinSet[nBui](
+    each k=28 + 273.15)
     "Heating water supply temperature set point - Minimum value"
     annotation (Placement(transformation(extent={{-280,230},{-260,250}})));
   Buildings.Experimental.DHC.Loads.BaseClasses.ConstraintViolation conVio(
@@ -161,11 +170,10 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     annotation (Placement(transformation(extent={{200,50},{220,70}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum EPum(nin=4) "Total pump electric energy"
     annotation (Placement(transformation(extent={{260,110},{280,130}})));
-  Buildings.Controls.OBC.CDL.Continuous.MultiSum PHeaPum(final nin=nBui) "Heat pump power"
+  Buildings.Controls.OBC.CDL.Continuous.MultiSum PChi(final nin=nBui) "Chiller power"
     annotation (Placement(transformation(extent={{120,150},{140,170}})));
-  Modelica.Blocks.Continuous.Integrator EHeaPum(initType=Modelica.Blocks.Types.Init.InitialState)
-    "Heat pump electric energy"
-    annotation (Placement(transformation(extent={{200,150},{220,170}})));
+  Modelica.Blocks.Continuous.Integrator EChi(initType=Modelica.Blocks.Types.Init.InitialState)
+    "Chiller electric energy" annotation (Placement(transformation(extent={{200,150},{220,170}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum ETot(nin=2) "Total electric energy"
     annotation (Placement(transformation(extent={{300,150},{320,170}})));
   Modelica.Blocks.Continuous.Integrator EPumDis(initType=Modelica.Blocks.Types.Init.InitialState)
@@ -175,7 +183,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     "Storage pump electric energy"
     annotation (Placement(transformation(extent={{200,-150},{220,-130}})));
   replaceable Loads.BuildingSpawnWithETS buiSpa constrainedby
-    Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses.PartialBuildingWithETS(
+    Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuildingWithPartialETS(
       redeclare final package MediumBui = Medium,
       redeclare final package MediumSer = Medium,
       final allowFlowReversalBui=allowFlowReversalBui,
@@ -194,11 +202,12 @@ initial equation
 equation
   /* Manual connections
   */
-  connect(bui.PHea, PHeaPum.u[idxBuiTim]);
-  connect(buiSpa.PHea, PHeaPum.u[idxBuiSpa]);
+  connect(bui.PCoo, PChi.u[idxBuiTim]);
+  connect(buiSpa.PCoo, PChi.u[idxBuiSpa]);
   connect(bui.PPumETS, PPumETS.u[idxBuiTim]);
   connect(buiSpa.PPumETS, PPumETS.u[idxBuiSpa]);
-
+  /* Manual connections
+  */
   connect(bou.ports[1], pumDis.port_a)
     annotation (Line(points={{102,-20},{80,-20},{80,-50}}, color={0,127,255}));
   connect(borFie.port_b, conSto.port_aCon) annotation (Line(points={{-120,-80},
@@ -260,9 +269,8 @@ equation
                                color={0,0,127}));
   connect(EPumSto.y,EPum. u[4]) annotation (Line(points={{221,-140},{244,-140},
           {244,118.5},{258,118.5}},color={0,0,127}));
-  connect(PHeaPum.y, EHeaPum.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
-  connect(EHeaPum.y,ETot. u[1]) annotation (Line(points={{221,160},{280,160},{
-          280,161},{298,161}}, color={0,0,127}));
+  connect(PChi.y, EChi.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
+  connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,161},{298,161}}, color={0,0,127}));
   connect(EPum.y,ETot. u[2]) annotation (Line(points={{282,120},{290,120},{290,
           159},{298,159}}, color={0,0,127}));
   connect(pumDis.P, EPumDis.u)

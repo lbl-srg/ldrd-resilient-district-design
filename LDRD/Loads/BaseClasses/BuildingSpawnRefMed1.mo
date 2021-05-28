@@ -13,7 +13,7 @@ model BuildingSpawnRefMed1 "Spawn building model"
   parameter Integer nZon=1
     "Number of conditioned thermal zones";
   parameter String idfName=
-    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"
+    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE_fromFMU.idf"
     "Name of the IDF file";
   parameter String weaName=
     "modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"

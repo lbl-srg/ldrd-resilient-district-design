@@ -2,10 +2,10 @@ within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
   extends BaseClasses.PartialBuildingWithETS(
     redeclare BaseClasses.BuildingSpawn bui(
-      T_aHeaWat_nominal=ets.datChi.TConEnt_nominal+5,
-      T_bHeaWat_nominal=ets.datChi.TConEnt_nominal,
-      T_aChiWat_nominal=ets.datChi.TEvaLvg_nominal,
-      T_bChiWat_nominal=ets.datChi.TEvaLvg_nominal+5),
+      T_aHeaWat_nominal=THeaWatSup_nominal,
+      T_bHeaWat_nominal=THeaWatSup_nominal-5,
+      T_aChiWat_nominal=TChiWatSup_nominal,
+      T_bChiWat_nominal=TChiWatSup_nominal+5),
     ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
