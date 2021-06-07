@@ -9,7 +9,8 @@ model DebugRefMed
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={72,-20})));
-  Loads.BaseClasses.BuildingSpawnRefMed1 bui(
+  Loads.BaseClasses.BuildingSpawnRefMediumOffice
+                                         bui(
     nPorts_bChiWat=1,
     nPorts_aHeaWat=1,
     nPorts_aChiWat=1,
@@ -50,5 +51,6 @@ equation
     annotation (Line(points={{30,4},{52,4},{52,20},{60,20}}, color={0,127,255}));
   annotation (
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
-            -100},{80,100}})));
+            -100},{80,100}})),
+  experiment(StopTime=360000, __Dymola_Algorithm="Cvode"));
 end DebugRefMed;

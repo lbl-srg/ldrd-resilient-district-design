@@ -14,6 +14,13 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
       T_b1Hex_nominal=279.15,
       T_a2Hex_nominal=277.15,
       T_b2Hex_nominal=282.15,
+      dp1WSE_nominal=40E3,
+      dp2WSE_nominal=40E3,
+      QWSE_flow_nominal=QChiWat_flow_nominal,
+      T_a1WSE_nominal=284.15,
+      T_b1WSE_nominal=279.15,
+      T_a2WSE_nominal=293.15,
+      T_b2WSE_nominal=286.15,
       dpCon_nominal=15E3,
       dpEva_nominal=15E3,
       final datChi=datChi));

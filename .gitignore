@@ -9,6 +9,9 @@ stop
 *_log.txt
 *.bak-mo
 dymosim
-*_checkpoint.ipynb
+*_checkpoint*
 *.xml
 *.so
+status
+request
+*.bui.building

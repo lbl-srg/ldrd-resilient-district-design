@@ -1,7 +1,7 @@
 within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
   extends BaseClasses.PartialBuildingWithETS(
-    redeclare BaseClasses.BuildingSpawn bui(
+    redeclare BaseClasses.BuildingSpawnRefMediumOffice bui(
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal-5,
       T_aChiWat_nominal=TChiWatSup_nominal,

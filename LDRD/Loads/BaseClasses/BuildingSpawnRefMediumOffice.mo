@@ -12,13 +12,15 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     "Medium model";
   parameter Integer nZon = 15
     "Number of conditioned zones";
+  parameter Integer nZonFre = 3
+    "Number of free floating zones";
   parameter Real facMulTerUni[nZon] = abs(QCooTot_flow_nominal) / 10000
     "Multiplier factor for terminal units";
   parameter String idfName=
-    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_3C_USA_CA_SAN_FRANCISCO.idf"
+    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"
     "Name of the IDF file";
   parameter String weaName=
-    "modelica://LDRD/Resources/WeatherData/USA_CA_San.Francisco.Intl.AP.724940_TMY3.mos"
+    "modelica://LDRD/Resources/WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
     "Name of the weather file";
   parameter Modelica.SIunits.MassFlowRate mLoa_flow_nominal[nZon] = fill(
     1,
@@ -61,10 +63,12 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
   -12119}
     "Design cooling heat flow rate (all terminal units)"
     annotation (Dialog(group="Nominal condition"));
-  final parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal[nZon]=QHeaTot_flow_nominal ./ facMulTerUni
+  final parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal[nZon]=
+    QHeaTot_flow_nominal ./ facMulTerUni
     "Design heating heat flow rate (single terminal unit)"
     annotation (Dialog(group="Nominal condition"));
-  final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal[nZon]=QCooTot_flow_nominal ./ facMulTerUni
+  final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal[nZon]=
+    QCooTot_flow_nominal ./ facMulTerUni
     "Design cooling heat flow rate (single terminal unit)"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.Temperature T_aHeaWat_nominal=313.15
@@ -72,15 +76,16 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.Temperature T_bHeaWat_nominal(
     min=273.15,
-    displayUnit="degC")=T_aHeaWat_nominal-5
+    displayUnit="degC")=
+    T_aHeaWat_nominal-5
     "Heating water outlet temperature at nominal conditions"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.Temperature T_aChiWat_nominal=291.15
+  parameter Modelica.SIunits.Temperature T_aChiWat_nominal=280.15
     "Chilled water inlet temperature at nominal conditions "
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.Temperature T_bChiWat_nominal(
     min=273.15,
-    displayUnit="degC")=T_aChiWat_nominal+5
+    displayUnit="degC")=T_aChiWat_nominal+7
     "Chilled water outlet temperature at nominal conditions"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.Temperature T_aLoaHea_nominal=273.15 + 20
@@ -107,15 +112,15 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     annotation (Placement(transformation(extent={{-280,210},{-260,230}})));
   Modelica.Blocks.Sources.Constant qConGai_flow[nZon](
     each k=0) "Convective heat gain"
-    annotation (Placement(transformation(extent={{-60,90},{-40,110}})));
+    annotation (Placement(transformation(extent={{-70,70},{-50,90}})));
   Modelica.Blocks.Sources.Constant qRadGai_flow[nZon](
     each k=0) "Radiative heat gain"
-    annotation (Placement(transformation(extent={{-60,120},{-40,140}})));
+    annotation (Placement(transformation(extent={{-70,100},{-50,120}})));
   Modelica.Blocks.Routing.Multiplex3 multiplex3_1[nZon]
-    annotation (Placement(transformation(extent={{-20,90},{0,110}})));
+    annotation (Placement(transformation(extent={{-30,70},{-10,90}})));
   Modelica.Blocks.Sources.Constant qLatGai_flow[nZon](
     each k=0) "Latent heat gain"
-    annotation (Placement(transformation(extent={{-60,60},{-40,80}})));
+    annotation (Placement(transformation(extent={{-70,40},{-50,60}})));
   Buildings.ThermalZones.EnergyPlus.ThermalZone zon[nZon](
     redeclare each final package Medium = Medium2,
     zoneName={"Core_bottom",
@@ -133,7 +138,7 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
 "Perimeter_top_ZN_2",
 "Perimeter_top_ZN_3",
 "Perimeter_top_ZN_4"},
-    each nPorts=2) "Thermal zone"
+    each nPorts=2) "Thermal zone - Conditioned"
     annotation (Placement(transformation(extent={{20,-30},{60,10}})));
   inner Buildings.ThermalZones.EnergyPlus.Building building(
     idfName=Modelica.Utilities.Files.loadResource(
@@ -161,7 +166,8 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     each T_aHeaWat_nominal=T_aHeaWat_nominal,
     each T_aChiWat_nominal=T_aChiWat_nominal,
     final mLoaHea_flow_nominal=mLoa_flow_nominal,
-    final mLoaCoo_flow_nominal=mLoa_flow_nominal) "Terminal unit"
+    final mLoaCoo_flow_nominal=mLoa_flow_nominal)
+    "Terminal unit"
     annotation (Placement(transformation(extent={{-140,-2},{-116,22}})));
   Buildings.Experimental.DHC.Loads.FlowDistribution disFloHea(
     redeclare package Medium=Medium,
@@ -184,14 +190,28 @@ model BuildingSpawnRefMediumOffice "Spawn building model"
     nPorts_b1=nZon)
     "Chilled water distribution system"
     annotation (Placement(transformation(extent={{-160,-230},{-140,-210}})));
+  Buildings.ThermalZones.EnergyPlus.ThermalZone zonFre[nZonFre](
+    redeclare each final package Medium = Medium2,
+    zoneName={
+"FirstFloor_Plenum",
+"MidFloor_Plenum",
+"TopFloor_Plenum"}) "Thermal zone - Free floating" annotation (Placement(transformation(extent={{140,-30},{180,10}})));
+  Modelica.Blocks.Sources.Constant qConGai_flow1[nZonFre](each k=0) "Convective heat gain"
+    annotation (Placement(transformation(extent={{50,70},{70,90}})));
+  Modelica.Blocks.Sources.Constant qRadGai_flow1[nZonFre](each k=0) "Radiative heat gain"
+    annotation (Placement(transformation(extent={{50,100},{70,120}})));
+  Modelica.Blocks.Routing.Multiplex3 multiplex3_2[nZonFre]
+    annotation (Placement(transformation(extent={{90,70},{110,90}})));
+  Modelica.Blocks.Sources.Constant qLatGai_flow1[nZonFre](each k=0) "Latent heat gain"
+    annotation (Placement(transformation(extent={{50,40},{70,60}})));
 equation
   connect(qRadGai_flow.y,multiplex3_1.u1[1])
-    annotation (Line(points={{-39,130},{-30,130},{-30,108},{-22,108},{-22,107}},
+    annotation (Line(points={{-49,110},{-40,110},{-40,88},{-32,88},{-32,87}},
                                                                       color={0,0,127},smooth=Smooth.None));
   connect(qConGai_flow.y,multiplex3_1.u2[1])
-    annotation (Line(points={{-39,100},{-22,100}},color={0,0,127},smooth=Smooth.None));
+    annotation (Line(points={{-49,80},{-32,80}},  color={0,0,127},smooth=Smooth.None));
   connect(multiplex3_1.u3[1],qLatGai_flow.y)
-    annotation (Line(points={{-22,93},{-22,92},{-30,92},{-30,70},{-39,70}},
+    annotation (Line(points={{-32,73},{-32,72},{-40,72},{-40,50},{-49,50}},
                                                                       color={0,0,127}));
   connect(terUni.port_bHeaWat,disFloHea.ports_a1)
     annotation (Line(points={{-116,0},{-80,0},{-80,-174},{-200,-174}},color={0,127,255}));
@@ -237,9 +257,22 @@ equation
     annotation (Line(points={{-140,20},{-160,20},{-160,40},{0,40},{0,-40},{38,-40},{38,-29.1}}, color={0,127,255}));
   connect(zon.ports[2], terUni.port_aLoa)
     annotation (Line(points={{42,-29.1},{42,-40},{80,-40},{80,20},{-116,20}},     color={0,127,255}));
-  connect(multiplex3_1.y, zon.qGai_flow) annotation (Line(points={{1,100},{10,100},{10,0},{18,0}}, color={0,0,127}));
+  connect(multiplex3_1.y, zon.qGai_flow) annotation (Line(points={{-9,80},{8,80},{8,0},{18,0}},    color={0,0,127}));
   connect(zon.TAir, terUni.TSen)
     annotation (Line(points={{61,8},{70,8},{70,30},{-152,30},{-152,12},{-141,12}}, color={0,0,127}));
+  connect(qRadGai_flow1.y, multiplex3_2.u1[1]) annotation (Line(
+      points={{71,110},{80,110},{80,88},{88,88},{88,87}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  connect(qConGai_flow1.y, multiplex3_2.u2[1])
+    annotation (Line(
+      points={{71,80},{88,80}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  connect(multiplex3_2.u3[1], qLatGai_flow1.y)
+    annotation (Line(points={{88,73},{88,72},{80,72},{80,50},{71,50}}, color={0,0,127}));
+  connect(multiplex3_2.y, zonFre.qGai_flow)
+    annotation (Line(points={{111,80},{120,80},{120,0},{138,0}}, color={0,0,127}));
   annotation (
     Documentation(
       info="
