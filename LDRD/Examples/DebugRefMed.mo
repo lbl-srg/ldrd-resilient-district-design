@@ -9,8 +9,7 @@ model DebugRefMed
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={72,-20})));
-  Loads.BaseClasses.BuildingSpawnRefMediumOffice
-                                         bui(
+  Loads.BaseClasses.BuildingSpawnMediumOfficeFCU bui(
     nPorts_bChiWat=1,
     nPorts_aHeaWat=1,
     nPorts_aChiWat=1,

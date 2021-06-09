@@ -1,12 +1,10 @@
 within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
-  extends BaseClasses.PartialBuildingWithETS(
-    redeclare BaseClasses.BuildingSpawnRefMediumOffice bui(
+  extends BaseClasses.PartialBuildingWithETS(redeclare BaseClasses.BuildingSpawnMediumOfficeVAV bui(
       T_aHeaWat_nominal=THeaWatSup_nominal,
-      T_bHeaWat_nominal=THeaWatSup_nominal-5,
+      T_bHeaWat_nominal=THeaWatSup_nominal - 5,
       T_aChiWat_nominal=TChiWatSup_nominal,
-      T_bChiWat_nominal=TChiWatSup_nominal+5),
-    ets(
+      T_bChiWat_nominal=TChiWatSup_nominal + 5), ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
       QHeaWat_flow_nominal=QHea_flow_nominal));

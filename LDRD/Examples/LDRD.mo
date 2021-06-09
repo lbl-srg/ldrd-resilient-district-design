@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model LDRDFanCoils "Example of parallel connection with constant district water mass flow rate"
+model LDRD "Example of parallel connection with constant district water mass flow rate"
   extends BaseClasses.PartialParallelSpawn(
     redeclare
       Loads.BuildingTimeSeriesWithETS bui[nBui-1](final filNam=filNam),
@@ -64,4 +64,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end LDRDFanCoils;
+end LDRD;

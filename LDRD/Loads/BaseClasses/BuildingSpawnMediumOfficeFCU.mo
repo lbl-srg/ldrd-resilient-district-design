@@ -1,5 +1,5 @@
 within LDRD.Loads.BaseClasses;
-model BuildingSpawnRefMediumOffice "Spawn building model"
+model BuildingSpawnMediumOfficeFCU "Spawn building model"
   extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuilding(
     redeclare package Medium=Buildings.Media.Water,
     final have_heaWat=true,
@@ -302,4 +302,4 @@ First implementation.
         Bitmap(
           extent={{-108,-100},{92,100}},
           fileName="modelica://Buildings/Resources/Images/ThermalZones/EnergyPlus/EnergyPlusLogo.png")}));
-end BuildingSpawnRefMediumOffice;
+end BuildingSpawnMediumOfficeFCU;
