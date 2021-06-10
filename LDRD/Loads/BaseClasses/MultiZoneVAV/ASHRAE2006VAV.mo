@@ -1,14 +1,16 @@
 within LDRD.Loads.BaseClasses.MultiZoneVAV;
 model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
-  extends PartialOpenLoop(amb(nPorts=3));
+  extends PartialOpenLoop(
+    amb(nPorts=3));
 
   parameter Real ratVFloMin[numVAV](final unit="1")=
-    {max(1.5*VOA_flow_nominalVAV[i], 0.15*m_flow_nominalVAV[i]/1.2) /
-    (m_flow_nominalVAV[i]/1.2) for i in 1:numVAV}
+    {max(1.5 * VOA_flow_nominalVAV[i], 0.15 * m_flow_nominalVAV[i] / 1.2) /
+    (m_flow_nominalVAV[i] / 1.2) for i in 1:numVAV}
     "Minimum discharge air flow rate ratio";
 
   Buildings.Examples.VAVReheat.Controls.FanVFD conFanSup(
-    xSet_nominal(displayUnit="Pa") = 410, r_N_min=yFanMin)
+    xSet_nominal(displayUnit="Pa") = 410,
+    r_N_min=yFanMin)
     "Controller for fan"
     annotation (Placement(transformation(extent={{240,-10},{260,10}})));
   Buildings.Examples.VAVReheat.Controls.ModeSelector modeSelector
@@ -21,7 +23,7 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
     have_reset=true,
     have_frePro=true,
     VOut_flow_min=VOut_flow_nominal)
-           "Controller for economizer"
+    "Controller for economizer"
     annotation (Placement(transformation(extent={{-80,140},{-60,160}})));
   Buildings.Examples.VAVReheat.Controls.RoomTemperatureSetpoint
     TSetRoo(
@@ -32,9 +34,10 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
     annotation (Placement(transformation(extent={{-300,-358},{-280,-338}})));
   Buildings.Examples.VAVReheat.Controls.DuctStaticPressureSetpoint
     pSetDuc(nin=numVAV, pMin=50) "Duct static pressure setpoint"
-    annotation (Placement(transformation(extent={{160,-16},{180,4}})));
+    annotation (Placement(transformation(extent={{160,-10},{180,10}})));
   Buildings.Examples.VAVReheat.Controls.RoomVAV conVAV[numVAV](
-     ratVFloMin=ratVFloMin, each ratVFloHea=ratVFloHea)
+    final ratVFloMin=ratVFloMin,
+    final ratVFloHea=ratVFloHea)
     "Controller for terminal unit of each zone"
     annotation (Placement(transformation(extent={{460,60},{480,80}})));
 
@@ -61,6 +64,12 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
     dpDamper_nominal=5)  "Exhaust air damper"
     annotation (Placement(transformation(extent={{-30,-20},{-50,0}})));
 
+  Buildings.Controls.OBC.CDL.Continuous.MultiSum mulSum(nin=16)
+    annotation (Placement(transformation(extent={{770,270},{790,290}})));
+  Modelica.Blocks.Sources.RealExpression heaCoiHeaFlo(y=heaCoi.Q2_flow) "Access coil heat flow rate"
+    annotation (Placement(transformation(extent={{718,276},{738,296}})));
+  Modelica.Blocks.Sources.RealExpression cooCoiHeaFlo(y=cooCoi.Q2_flow) "Access coil heat flow rate"
+    annotation (Placement(transformation(extent={{720,230},{740,250}})));
 equation
   connect(controlBus, modeSelector.cb) annotation (Line(
       points={{-70,30},{-152,30},{-152,-303.182},{-196.818,-303.182}},
@@ -103,7 +112,7 @@ equation
       pattern=LinePattern.Dash));
 
   connect(pSetDuc.y, conFanSup.u) annotation (Line(
-      points={{181,-6},{210,-6},{210,0},{238,0}},
+      points={{181,0},{238,0}},
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash));
@@ -139,8 +148,8 @@ equation
       textString="%second",
       index=1,
       extent={{6,3},{6,3}}));
-  connect(pSetDuc.TOut, TOut.y) annotation (Line(points={{158,2},{32,2},{32,130},
-          {-160,130},{-160,180},{-279,180}}, color={0,0,127}));
+  connect(pSetDuc.TOut, TOut.y) annotation (Line(points={{158,8},{32,8},{32,130},{-160,130},{-160,180},{-279,180}},
+                                             color={0,0,127}));
   connect(TOut.y, controlBus.TOut) annotation (Line(points={{-279,180},{-70,180},{-70,
           30}},                                    color={0,0,127}), Text(
       textString="%second",
@@ -157,19 +166,11 @@ equation
           -20},{310,-20},{310,-28}}, color={0,0,127}));
   connect(or2.u2, modeSelector.yFan) annotation (Line(points={{-62,-248},{-30,-248},{-30,-305.455},{-179.091,-305.455}},
                                      color={255,0,255}));
-  connect(VAVBox[:].y_actual, pSetDuc.u[:]) annotation (Line(points={{622,40},{622,40},{622,100},{140,100},{140,-6},{
-          158,-6}},                                 color={0,0,127}));
+  connect(VAVBox[:].y_actual, pSetDuc.u[:]) annotation (Line(points={{624,42},{640,42},{640,160},{140,160},{140,0},{158,
+          0}},                                      color={0,0,127}));
   connect(TSup.T, conTSup.TSup) annotation (Line(
       points={{340,-29},{340,-20},{360,-20},{360,-280},{16,-280},{16,-214},{28,
           -214}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
-  connect(conTSup.yHea, gaiHeaCoi.u) annotation (Line(
-      points={{52,-214},{68,-214},{68,-182},{120,-182}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
-  connect(conTSup.yCoo, gaiCooCoi.u) annotation (Line(
-      points={{52,-226},{60,-226},{60,-182},{220,-182}},
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(conTSup.yOA, conEco.uOATSup) annotation (Line(
@@ -193,8 +194,6 @@ equation
       horizontalAlignment=TextAlignment.Right));
   connect(TSupSet.TSet, conTSup.TSupSet)
     annotation (Line(points={{-178,-220},{28,-220}}, color={0,0,127}));
-  connect(conVAV.yVal,gaiHeaCoiVAV.u)  annotation (Line(points={{481,65},{481,40},
-          {492,40}},                      color={0,0,127}));
 
   connect(TRooAir, conVAV.TRoo) annotation (Line(
       points={{-350,250},{448,250},{448,63},{459,63}},
@@ -217,13 +216,22 @@ equation
                                           color={0,0,127}));
   connect(damExh.port_a, TRet.port_b) annotation (Line(points={{-30,-10},{-26,-10},
           {-26,140},{90,140}}, color={0,127,255}));
-  connect(damExh.port_b, amb.ports[3]) annotation (Line(points={{-50,-10},{-100,
-          -10},{-100,-45},{-114,-45}}, color={0,127,255}));
+  connect(damExh.port_b, amb.ports[3]) annotation (Line(points={{-50,-10},{-100,-10},{-100,-41},{-120,-41}},
+                                       color={0,127,255}));
   connect(freSta.y, or2.u1) annotation (Line(points={{-38,-90},{-30,-90},{-30,
           -240},{-62,-240}}, color={255,0,255}));
+  connect(fanSup.P, PFan) annotation (Line(points={{321,-31},{332,-31},{332,200},{820,200}}, color={0,0,127}));
+  connect(mulSum.y, QHea_flow) annotation (Line(points={{792,280},{820,280}}, color={0,0,127}));
+  connect(heaCoiHeaFlo.y, mulSum.u[1])
+    annotation (Line(points={{739,286},{760,286},{760,281.875},{768,281.875}}, color={0,0,127}));
+  connect(VAVBox.QHea_flow, mulSum.u[2:16])
+    annotation (Line(points={{624,34},{644,34},{644,278.125},{768,278.125}}, color={0,0,127}));
+  connect(cooCoiHeaFlo.y, QCoo_flow) annotation (Line(points={{741,240},{820,240}}, color={0,0,127}));
+  connect(conTSup.yHea, valHea.y) annotation (Line(points={{52,-214},{56,-214},{56,-100},{68,-100}}, color={0,0,127}));
+  connect(conTSup.yCoo, valCoo.y)
+    annotation (Line(points={{52,-226},{160,-226},{160,-100},{168,-100}}, color={0,0,127}));
+  connect(conVAV.yVal, valReah.y) annotation (Line(points={{481,65},{540,65},{540,40}}, color={0,0,127}));
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-400,-400},{750,
-            300}})),
     Documentation(info="<html>
 <p>
 This model consist of an HVAC system, a building envelope model and a model
@@ -355,7 +363,5 @@ This is for
 <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/426\">issue 426</a>.
 </li>
 </ul>
-</html>"),
-    Icon(coordinateSystem(                                preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}})));
+</html>"));
 end ASHRAE2006VAV;

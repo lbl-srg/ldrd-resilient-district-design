@@ -5,58 +5,35 @@ partial model PartialOpenLoop
   package MediumA = Buildings.Media.Air "Medium model for air";
   package MediumW = Buildings.Media.Water "Medium model for water";
 
-  parameter Integer numVAV(min=2, start=5)
+  outer replaceable Data.VAVData datVAV;
+
+  final parameter Integer numVAV(min=2, start=5) = datVAV.numVAV
     "Number of served VAV boxes"
     annotation(Evaluate=true);
-  parameter Integer numRet(min=1, start=numVAV)
+  final parameter Integer numRet(min=1, start=numVAV) = datVAV.numRet
     "Number of return air inlets"
     annotation(Evaluate=true);
 
-  parameter Modelica.SIunits.Volume VRoo[numVAV](each start=1500)
-    "Room volumes of each zone";
-  parameter Modelica.SIunits.Area AFlo[numVAV](each start=500)
-    "Floor area of each zone";
-  parameter Real ACH[numVAV](each final unit="1/h", each start=1)
-    "Design air change per hour of each zone";
-  parameter Modelica.SIunits.MassFlowRate m_flow_nominalVAV[numVAV]=
-    ACH .* VRoo * conv
+  final parameter Modelica.SIunits.MassFlowRate m_flow_nominalVAV[numVAV] = datVAV.m_flow_nominalVAV
     "Design mass flow rate of each VAV box";
+  final parameter Modelica.SIunits.MassFlowRate m_flow_nominalRet[numRet] = datVAV.m_flow_nominalRet
+    "Design mass flow rate of each return air inlet";
 
-  final parameter Modelica.SIunits.Area ATot=sum(AFlo) "Total floor area";
+  final parameter Modelica.SIunits.Area ATot=sum(datVAV.AFlo) "Total floor area";
 
-  constant Real conv=1.2/3600 "Conversion factor for nominal mass flow rate";
-
-  parameter Modelica.SIunits.MassFlowRate m_flow_nominal=
-    0.7*sum(m_flow_nominalVAV)
+  final parameter Modelica.SIunits.MassFlowRate m_flow_nominal = datVAV.m_flow_nominal
     "Nominal mass flow rate";
 
-  parameter Real ratVFloHea(final unit="1") = 0.3
-    "VAV box maximum air flow rate ratio in heating mode";
-
-  parameter Modelica.SIunits.Angle lat=41.98*3.14159/180 "Latitude";
-
-  parameter Real ratOAFlo_A(final unit="m3/(s.m2)") = 0.3e-3
-    "Outdoor airflow rate required per unit area";
-  parameter Real ratOAFlo_P = 2.5e-3
-    "Outdoor airflow rate required per person";
-  parameter Real ratP_A = 5e-2
-    "Occupant density";
-  parameter Real effZ(final unit="1") = 0.8
-    "Zone air distribution effectiveness (limiting value)";
-  parameter Real divP(final unit="1") = 0.7
-    "Occupant diversity ratio";
-
-  parameter Modelica.SIunits.VolumeFlowRate VOA_flow_nominalVAV[numVAV]=
-    (ratOAFlo_P * ratP_A + ratOAFlo_A) * AFlo / effZ
+  final parameter Modelica.SIunits.VolumeFlowRate VOA_flow_nominalVAV[numVAV]=
+    (datVAV.ratOAFlo_P .* datVAV.ratP_A .+ datVAV.ratOAFlo_A) .* datVAV.AFlo / datVAV.effZ
     "Zone outdoor air flow rate of each VAV box";
-
-  parameter Modelica.SIunits.VolumeFlowRate VOA_flow_nominal=
-    (divP * ratOAFlo_P * ratP_A + ratOAFlo_A) * sum(AFlo)
-    "System uncorrected outdoor air flow rate";
-  parameter Real effVen(final unit="1") = if divP < 0.6 then
-    0.88 * divP + 0.22 else 0.75
+  final parameter Modelica.SIunits.VolumeFlowRate VOA_flow_nominal=
+    sum((datVAV.divP * datVAV.ratOAFlo_P .* datVAV.ratP_A .+ datVAV.ratOAFlo_A) .* datVAV.AFlo)
+    "System uncorrected outdoor air flow rate (Vou)";
+  final parameter Real effVen(final unit="1") = if datVAV.divP < 0.6 then
+    0.88 * datVAV.divP + 0.22 else 0.75
     "System ventilation efficiency";
-  parameter Modelica.SIunits.VolumeFlowRate VOut_flow_nominal=
+  final parameter Modelica.SIunits.VolumeFlowRate VOut_flow_nominal=
     VOA_flow_nominal / effVen
     "System design outdoor air flow rate";
 
@@ -71,10 +48,6 @@ partial model PartialOpenLoop
   parameter Modelica.SIunits.PressureDifference dpBuiStaSet(min=0) = 12
     "Building static pressure";
   parameter Real yFanMin = 0.1 "Minimum fan speed";
-
-  parameter Modelica.SIunits.Temperature THotWatInl_nominal(
-    displayUnit="degC")=55 + 273.15
-    "Reheat coil nominal inlet water temperature";
 
   parameter Boolean allowFlowReversal=true
     "= false to simplify equations, assuming, but not enforcing, no flow reversal"
@@ -103,49 +76,97 @@ partial model PartialOpenLoop
   Modelica.Fluid.Interfaces.FluidPorts_a ports_a[numRet](
     redeclare final package Medium = MediumA)
     "Return air"
-    annotation (Placement(transformation(extent={{630,60},{650,
-            140}}), iconTransformation(extent={{-110,-40},{-90,40}})));
+    annotation (Placement(transformation(extent={{670,60},{690,140}}),
+                    iconTransformation(extent={{-110,-40},{-90,40}})));
 
-  Buildings.Fluid.Sources.Outside amb(redeclare package Medium = MediumA,
-      nPorts=2) "Ambient conditions"
-    annotation (Placement(transformation(extent={{-136,-56},{-114,-34}})));
+  Modelica.Fluid.Interfaces.FluidPort_b port_coiCooRet(
+    redeclare final package Medium = MediumW)
+    "Cooling coil return port"
+    annotation (Placement(
+      transformation(extent={{170,-410},{190,-390}}),
+      iconTransformation(extent={{50,-208},{70,-188}})));
+  Modelica.Fluid.Interfaces.FluidPort_a port_coiCooSup(
+    redeclare final package Medium = MediumW)
+    "Cooling coil supply port"
+    annotation (Placement(
+        transformation(extent={{210,-410},{230,-390}}), iconTransformation(
+          extent={{10,-208},{30,-188}})));
+  Modelica.Fluid.Interfaces.FluidPort_b port_coiHeaRet(
+    redeclare final package Medium =MediumW)
+    "Heating coil return port"
+    annotation (Placement(transformation(extent={{70,-410},{90,-390}}),
+                         iconTransformation(extent={{-40,-208},{-20,-188}})));
+  Modelica.Fluid.Interfaces.FluidPort_a port_coiHeaSup(
+    redeclare final package Medium =MediumW)
+    "Heating coil supply port"
+    annotation (Placement(transformation(extent={{110,-410},{130,-390}}),
+                         iconTransformation(extent={{-80,-208},{-60,-188}})));
+  Modelica.Fluid.Interfaces.FluidPort_b port_coiRehRet[numVAV](
+    redeclare each final package Medium = MediumW)
+    "Reheat coil return port"
+    annotation (Placement(transformation(extent={{510,-410},{530,-390}}), iconTransformation(
+          extent={{140,-208},{160,-188}})));
+  Modelica.Fluid.Interfaces.FluidPort_a port_coiRehSup[numVAV](
+    redeclare each final package Medium = MediumW)
+    "Reheat coil supply port"
+    annotation (Placement(transformation(extent={{550,-410},{570,-390}}), iconTransformation(
+          extent={{100,-208},{120,-188}})));
+
+  Modelica.Blocks.Interfaces.RealOutput PFan(
+    final quantity="Power",
+    final unit="W")
+    "Power drawn by fan motors"
+    annotation (Placement(transformation(extent={{800,180},{840,220}}),
+      iconTransformation(extent={{100,40},{120,60}})));
+  Modelica.Blocks.Interfaces.RealOutput QHea_flow(final unit="W")
+    "Total heating heat flow rate transferred to the loads (>=0)"
+    annotation (Placement(transformation(extent={{800,260},{840,300}}),
+      iconTransformation(extent={{100,80},{120,100}})));
+  Modelica.Blocks.Interfaces.RealOutput QCoo_flow(final unit="W")
+    "Total cooling heat flow rate transferred to the loads (<=0)"
+    annotation (Placement(transformation(extent={{800,220},{840,260}}),
+      iconTransformation(extent={{100,60},{120,80}})));
+
+  Buildings.Fluid.Sources.Outside amb(
+    redeclare package Medium = MediumA,
+    nPorts=2)
+    "Ambient conditions"
+    annotation (Placement(transformation(extent={{-142,-52},{-120,-30}})));
 
   Buildings.Fluid.HeatExchangers.DryCoilEffectivenessNTU heaCoi(
     redeclare package Medium1 = MediumW,
     redeclare package Medium2 = MediumA,
-    m1_flow_nominal=m_flow_nominal*1000*(10 - (-20))/4200/10,
-    m2_flow_nominal=m_flow_nominal,
     show_T=true,
     configuration=Buildings.Fluid.Types.HeatExchangerConfiguration.CounterFlow,
-    Q_flow_nominal=m_flow_nominal*1006*(16.7 - 4),
-    dp1_nominal=0,
-    dp2_nominal=200 + 200 + 100 + 40,
+    final Q_flow_nominal=QHeaCoi_flow_nominal,
+    final m1_flow_nominal=mLiqHeaCoi_flow,
+    final m2_flow_nominal=mAirHeaCoi_flow,
+    final dp1_nominal=0,
+    final dp2_nominal=200 + 200 + 100 + 40,
     allowFlowReversal1=false,
     allowFlowReversal2=allowFlowReversal,
-    T_a1_nominal=THotWatInl_nominal,
-    T_a2_nominal=4 + 273.15)
+    final T_a1_nominal=TLiqEntHeaCoi,
+    final T_a2_nominal=TAirEntHeaCoi)
     "Heating coil"
-    annotation (Placement(transformation(extent={{118,-36},{98,-56}})));
+    annotation (Placement(transformation(extent={{110,-36},{90,-56}})));
 
-  Buildings.Fluid.HeatExchangers.WetCoilCounterFlow cooCoi(
+  Buildings.Fluid.HeatExchangers.WetCoilEffectivenessNTU cooCoi(
     show_T=true,
-    UA_nominal=3*m_flow_nominal*1000*15/
-      Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
-      T_a1=26.2,
-      T_b1=12.8,
-      T_a2=6,
-      T_b2=16),
     redeclare package Medium1 = MediumW,
     redeclare package Medium2 = MediumA,
-    m1_flow_nominal=m_flow_nominal*1000*15/4200/10,
-    m2_flow_nominal=m_flow_nominal,
-    dp2_nominal=0,
-    dp1_nominal=0,
+    final use_Q_flow_nominal = true,
+    final m1_flow_nominal=mLiqCooCoi_flow,
+    final m2_flow_nominal=mAirCooCoi_flow,
+    final dp1_nominal=0,
+    final dp2_nominal=0,
+    final T_a1_nominal=TLiqEntCooCoi,
+    final T_a2_nominal=TAirEntCooCoi,
+    final w_a2_nominal=wAirEntCooCoi,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     allowFlowReversal1=false,
-    allowFlowReversal2=allowFlowReversal)
-    "Cooling coil"
+    allowFlowReversal2=allowFlowReversal) "Cooling coil"
     annotation (Placement(transformation(extent={{210,-36},{190,-56}})));
+
   Buildings.Fluid.FixedResistances.PressureDrop dpRetDuc(
     m_flow_nominal=m_flow_nominal,
     redeclare package Medium = MediumA,
@@ -156,36 +177,22 @@ partial model PartialOpenLoop
     redeclare package Medium = MediumA,
     per(pressure(V_flow={0,m_flow_nominal/1.2*2}, dp=2*{780 + 10 + dpBuiStaSet,
             0})),
-    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial) "Supply air fan"
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial)
+    "Supply air fan"
     annotation (Placement(transformation(extent={{300,-50},{320,-30}})));
 
-  Buildings.Fluid.Sensors.VolumeFlowRate senSupFlo(redeclare package Medium =
-        MediumA, m_flow_nominal=m_flow_nominal)
+  Buildings.Fluid.Sensors.VolumeFlowRate senSupFlo(
+    redeclare final package Medium =MediumA,
+    final m_flow_nominal=m_flow_nominal)
     "Sensor for supply fan flow rate"
     annotation (Placement(transformation(extent={{400,-50},{420,-30}})));
 
-  Buildings.Fluid.Sensors.VolumeFlowRate senRetFlo(redeclare package Medium =
-        MediumA, m_flow_nominal=m_flow_nominal)
+  Buildings.Fluid.Sensors.VolumeFlowRate senRetFlo(
+    redeclare final package Medium = MediumA,
+    final m_flow_nominal=m_flow_nominal)
     "Sensor for return fan flow rate"
     annotation (Placement(transformation(extent={{360,130},{340,150}})));
 
-  Buildings.Fluid.Sources.Boundary_pT sinHea[numVAV+1](
-    redeclare each package Medium = MediumW,
-    each p=300000,
-    each T=318.15,
-    each nPorts=1) "Sink for all heating coils"
-    annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={80,-238})));
-  Buildings.Fluid.Sources.Boundary_pT sinCoo(
-    redeclare package Medium = MediumW,
-    p=300000,
-    T=285.15,
-    nPorts=1) "Sink for cooling coil" annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=90,
-        origin={180,-120})));
   Modelica.Blocks.Routing.RealPassThrough TOut(y(
       final quantity="ThermodynamicTemperature",
       final unit="K",
@@ -206,15 +213,6 @@ partial model PartialOpenLoop
   Buildings.Controls.SetPoints.OccupancySchedule occSch(occupancy=3600*{6,19})
     "Occupancy schedule"
     annotation (Placement(transformation(extent={{-318,-220},{-298,-200}})));
-  Buildings.Fluid.Sources.MassFlowSource_T souCoo(
-    redeclare package Medium = MediumW,
-    T=279.15,
-    nPorts=1,
-    use_m_flow_in=true) "Source for cooling coil" annotation (Placement(
-        transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=90,
-        origin={228,-120})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TRet(
     redeclare package Medium = MediumA,
     m_flow_nominal=m_flow_nominal,
@@ -225,37 +223,31 @@ partial model PartialOpenLoop
     m_flow_nominal=m_flow_nominal,
     allowFlowReversal=allowFlowReversal) "Mixed air temperature sensor"
     annotation (Placement(transformation(extent={{30,-50},{50,-30}})));
-  Buildings.Fluid.Sources.MassFlowSource_T souHea(
-    redeclare package Medium = MediumW,
-    T=THotWatInl_nominal,
-    use_m_flow_in=true,
-    nPorts=1)           "Source for AHU heating coil" annotation (Placement(
-        transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=90,
-        origin={128,-120})));
   Buildings.Fluid.Sensors.VolumeFlowRate VOut1(redeclare package Medium =
         MediumA, m_flow_nominal=m_flow_nominal) "Outside air volume flow rate"
     annotation (Placement(transformation(extent={{-90,-50},{-70,-30}})));
 
-  Buildings.Examples.VAVReheat.BaseClasses.VAVReheatBox VAVBox[numVAV](
-    redeclare each package MediumA = MediumA,
-    redeclare each package MediumW = MediumW,
-    m_flow_nominal=m_flow_nominalVAV,
-    QHea_flow_nominal=m_flow_nominalVAV*ratVFloHea*cpAir*(32 - 12),
-    VRoo=VRoo,
-    each allowFlowReversal=allowFlowReversal,
-    each ratVFloHea=ratVFloHea,
-    each THotWatInl_nominal=THotWatInl_nominal,
-    each THotWatOut_nominal=THotWatInl_nominal - 10,
-    each TAirInl_nominal=285.15) "VAV boxes"
+  VAVReheatBox VAVBox[numVAV](
+    redeclare each final package MediumA = MediumA,
+    redeclare each final package MediumW = MediumW,
+    final m_flow_nominal=m_flow_nominalVAV,
+    final mHotWat_flow_nominal=mLiqRehCoi_flow,
+    final QHea_flow_nominal=QRehCoi_flow,
+    final VRoo=VRoo,
+    each final allowFlowReversal=allowFlowReversal,
+    final ratVFloHea=ratVFloHea,
+    final THotWatInl_nominal=datVAV.TLiqEntRehCoi,
+    final TAirInl_nominal=datVAV.TAirEntRehCoi)
+    "VAV boxes"
     annotation (Placement(transformation(extent={{580,20},{620,60}})));
   Buildings.Fluid.FixedResistances.Junction splRetRoo[numRet](
     redeclare each package Medium = MediumA,
     each from_dp=false,
     each linearized=true,
-    m_flow_nominal={{sum(m_flow_nominalVAV[i:numVAV]),sum(m_flow_nominalVAV[(i + 1):numVAV]),m_flow_nominalVAV[i]} for
-        i in 1:(numVAV - 1)},
+    m_flow_nominal={
+      {max(1e-6, sum(m_flow_nominalRet[(i + 1):numRet])),
+      -sum(m_flow_nominalRet[i:numRet]),
+      m_flow_nominalRet[i]} for i in 1:numRet},
     each energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     each dp_nominal(each displayUnit="Pa") = {0,0,0},
     each portFlowDirection_1=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
@@ -263,14 +255,16 @@ partial model PartialOpenLoop
     each portFlowDirection_2=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
         Modelica.Fluid.Types.PortFlowDirection.Entering,
     each portFlowDirection_3=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
-        Modelica.Fluid.Types.PortFlowDirection.Entering) "Mixer for return air"
-    annotation (Placement(transformation(extent={{650,10},{630,-10}})));
+        Modelica.Fluid.Types.PortFlowDirection.Entering) "Mixer for return air (index 1 closest to AHU)"
+    annotation (Placement(transformation(extent={{670,10},{690,-10}})));
   Buildings.Fluid.FixedResistances.Junction splSupRoo[numVAV](
     redeclare each package Medium = MediumA,
     each from_dp=true,
     each linearized=true,
-    m_flow_nominal={{sum(m_flow_nominalVAV[i:numVAV]),sum(m_flow_nominalVAV[(i + 1):numVAV]),m_flow_nominalVAV[i]} for
-        i in 1:(numVAV - 1)},
+    m_flow_nominal={
+      {sum(m_flow_nominalVAV[i:numVAV]),
+      -max(1e-6, sum(m_flow_nominalVAV[(i + 1):numVAV])),
+      -m_flow_nominalVAV[i]} for i in 1:numVAV},
     each energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     each dp_nominal(each displayUnit="Pa") = {0,0,0},
     each portFlowDirection_1=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
@@ -278,7 +272,7 @@ partial model PartialOpenLoop
     each portFlowDirection_2=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
         Modelica.Fluid.Types.PortFlowDirection.Leaving,
     each portFlowDirection_3=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
-        Modelica.Fluid.Types.PortFlowDirection.Leaving) "Splitter for supply air"
+        Modelica.Fluid.Types.PortFlowDirection.Leaving) "Splitter for supply air (index 1 closest to AHU)"
     annotation (Placement(transformation(extent={{590,-30},{610,-50}})));
   Buildings.BoundaryConditions.WeatherData.Bus weaBus "Weather Data Bus" annotation (Placement(transformation(extent={{-330,
             170},{-310,190}}), iconTransformation(extent={{-10,70},{10,90}})));
@@ -291,37 +285,11 @@ partial model PartialOpenLoop
     PCooLat=cooCoi.QLat2_flow) "Results of the simulation";
   /*fanRet*/
 
-public
-  Buildings.Controls.OBC.CDL.Continuous.Gain gaiHeaCoi(k=m_flow_nominal*1000*40
-        /4200/10) "Gain for heating coil mass flow rate"
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
-        rotation=90,
-        origin={120,-170})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain gaiCooCoi(k=m_flow_nominal*1000*15
-        /4200/10) "Gain for cooling coil mass flow rate"
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
-        rotation=90,
-        origin={220,-170})));
   Buildings.Examples.VAVReheat.BaseClasses.FreezeStat freSta "Freeze stat for heating coil"
     annotation (Placement(transformation(extent={{-60,-100},{-40,-80}})));
-  Buildings.Fluid.Sources.MassFlowSource_T souHeaVAV[numVAV](
-    redeclare each package Medium = MediumW,
-    each T=THotWatInl_nominal,
-    each use_m_flow_in=true,
-    each nPorts=1) "Source for VAV box reheat coil"
-    annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={542,32})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain gaiHeaCoiVAV[numVAV](
-    k=VAVBox.mHotWat_flow_nominal) "Gain for VAV box reheat coil mass flow rate"
-    annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={504,40})));
 
   Buildings.Fluid.Actuators.Dampers.Exponential damRet(
-    redeclare package Medium = MediumA,
+    redeclare final package Medium = MediumA,
     m_flow_nominal=m_flow_nominal,
     riseTime=15,
     dpDamper_nominal=5,
@@ -331,13 +299,35 @@ public
         extent={{10,-10},{-10,10}},
         rotation=90)));
   Buildings.Fluid.Actuators.Dampers.Exponential damOut(
-    redeclare package Medium = MediumA,
+    redeclare final package Medium = MediumA,
     m_flow_nominal=m_flow_nominal,
     from_dp=true,
     riseTime=15,
     dpDamper_nominal=5,
     dpFixed_nominal=5) "Outdoor air damper" annotation (Placement(transformation(extent={{-50,-50},{-30,-30}})));
 
+  Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valHea(
+    redeclare final package Medium = MediumW)
+    "Heating coil valve"
+    annotation (Placement(
+        transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=90,
+        origin={80,-100})));
+  Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valCoo(
+    redeclare final package Medium = MediumW)
+    "Cooling coil valve" annotation (Placement(
+        transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=90,
+        origin={180,-100})));
+  Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valReah[numVAV](
+    redeclare each final package Medium = MediumW)
+    "Reheat coil valve"
+    annotation (Placement(transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=0,
+        origin={540,28})));
 protected
   constant Modelica.SIunits.SpecificHeatCapacity cpAir=
     Buildings.Utilities.Psychrometrics.Constants.cpAir
@@ -395,22 +385,18 @@ equation
       smooth=Smooth.None,
       thickness=0.5));
   connect(amb.ports[1], VOut1.port_a) annotation (Line(
-      points={{-114,-42.8},{-94,-42.8},{-94,-40},{-90,-40}},
+      points={{-120,-38.8},{-94,-38.8},{-94,-40},{-90,-40}},
       color={0,127,255},
       smooth=Smooth.None,
       thickness=0.5));
 
-  connect(cooCoi.port_b1, sinCoo.ports[1]) annotation (Line(
-      points={{190,-52},{180,-52},{180,-110}},
-      color={28,108,200},
-      thickness=0.5));
   connect(weaBus.TDryBul, TOut.u) annotation (Line(
       points={{-320,180},{-302,180}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
   connect(amb.weaBus, weaBus) annotation (Line(
-      points={{-136,-44.78},{-320,-44.78},{-320,180}},
+      points={{-142,-40.78},{-320,-40.78},{-320,180}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None));
@@ -434,17 +420,8 @@ equation
       smooth=Smooth.None,
       thickness=0.5));
 
-  connect(cooCoi.port_a1, souCoo.ports[1]) annotation (Line(
-      points={{210,-52},{228,-52},{228,-110}},
-      color={28,108,200},
-      thickness=0.5));
-  connect(gaiHeaCoi.y, souHea.m_flow_in) annotation (Line(points={{120,-158},{120,
-          -132}},                color={0,0,127}));
-  connect(gaiCooCoi.y, souCoo.m_flow_in) annotation (Line(points={{220,-158},{220,
-          -132}},                color={0,0,127}));
   connect(dpDisSupFan.port_b, amb.ports[2]) annotation (Line(
-      points={{320,10},{320,14},{-106,14},{-106,-48},{-110,-48},{-110,-47.2},{-114,
-          -47.2}},
+      points={{320,10},{320,14},{-106,14},{-106,-48},{-110,-48},{-110,-43.2},{-120,-43.2}},
       color={0,0,0},
       pattern=LinePattern.Dot));
   connect(senRetFlo.port_b, TRet.port_a) annotation (Line(
@@ -456,37 +433,18 @@ equation
           -68},{20,-68},{20,-20},{40,-20},{40,-29}},
                                                 color={0,0,127}));
   connect(TMix.port_b, heaCoi.port_a2) annotation (Line(
-      points={{50,-40},{98,-40}},
+      points={{50,-40},{90,-40}},
       color={0,127,255},
       thickness=0.5));
-  connect(heaCoi.port_b2, cooCoi.port_a2) annotation (Line(
-      points={{118,-40},{190,-40}},
+  connect(heaCoi.port_b2, cooCoi.port_a2)
+    annotation (Line(
+      points={{110,-40},{190,-40}},
       color={0,127,255},
-      thickness=0.5));
-  connect(souHea.ports[1], heaCoi.port_a1) annotation (Line(
-      points={{128,-110},{128,-52},{118,-52}},
-      color={28,108,200},
-      thickness=0.5));
-  connect(heaCoi.port_b1, sinHea[1].ports[1]) annotation (Line(
-      points={{98,-52},{90,-52},{90,-238}},
-      color={28,108,200},
       thickness=0.5));
 
   for i in 1:numVAV loop
-    connect(VAVBox[i].port_bHotWat, sinHea[i+1].ports[1]) annotation (Line(
-      points={{580,28},{560,28},{560,-238},{90,-238}},
-      color={0,127,255},
-      smooth=Smooth.None,
-      thickness=0.5));
   end for;
 
-  connect(souHeaVAV[:].m_flow_in,gaiHeaCoiVAV[:].y)
-    annotation (Line(points={{530,40},{516,40}}, color={0,0,127}));
-  connect(souHeaVAV[:].ports[1],VAVBox[:].port_aHotWat) annotation (Line(
-      points={{552,32},{580,32},{580,40}},
-      color={0,127,255},
-      smooth=Smooth.None,
-      thickness=0.5));
   connect(splSupRoo[1].port_1, senSupFlo.port_b) annotation (Line(
       points={{590,-40},{420,-40}},
       color={0,127,255},
@@ -495,6 +453,8 @@ equation
 
   for i in 1:(numVAV-1) loop
     connect(splSupRoo[i].port_2, splSupRoo[i+1].port_1);
+  end for;
+  for i in 1:(numRet-1) loop
     connect(splRetRoo[i].port_1, splRetRoo[i+1].port_2);
   end for;
 
@@ -507,13 +467,23 @@ equation
   connect(damRet.port_b, TMix.port_a)
     annotation (Line(points={{0,-20},{0,-40},{30,-40}}, color={0,127,255}));
 
-  connect(splRetRoo.port_3, ports_a) annotation (Line(points={{640,10},{640,100}}, color={0,127,255}));
+  connect(splRetRoo.port_3, ports_a) annotation (Line(points={{680,10},{680,100}}, color={0,127,255}));
   connect(VAVBox.port_bAir, ports_b) annotation (Line(points={{600,60},{600,100}}, color={0,127,255}));
   connect(splSupRoo.port_3, VAVBox.port_aAir) annotation (Line(points={{600,-30},{600,20}}, color={0,127,255}));
   connect(dpRetDuc.port_a, splRetRoo[1].port_2)
-    annotation (Line(points={{400,140},{420,140},{420,0},{630,0}}, color={0,127,255}));
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-400,
-            -400},{750,300}})),  Documentation(info="<html>
+    annotation (Line(points={{400,140},{700,140},{700,0},{690,0}}, color={0,127,255}));
+  connect(heaCoi.port_a1, port_coiHeaSup) annotation (Line(points={{110,-52},{120,-52},{120,-400}}, color={0,127,255}));
+  connect(cooCoi.port_a1, port_coiCooSup) annotation (Line(points={{210,-52},{220,-52},{220,-400}}, color={0,127,255}));
+  connect(VAVBox.port_aHotWat, port_coiRehSup)
+    annotation (Line(points={{580,40},{560,40},{560,-400}}, color={0,127,255}));
+  connect(heaCoi.port_b1, valHea.port_a) annotation (Line(points={{90,-52},{80,-52},{80,-90}}, color={0,127,255}));
+  connect(valHea.port_b, port_coiHeaRet) annotation (Line(points={{80,-110},{80,-400}}, color={0,127,255}));
+  connect(cooCoi.port_b1, valCoo.port_a) annotation (Line(points={{190,-52},{180,-52},{180,-90}}, color={0,127,255}));
+  connect(valCoo.port_b, port_coiCooRet) annotation (Line(points={{180,-110},{180,-400}}, color={0,127,255}));
+  connect(VAVBox.port_bHotWat, valReah.port_a) annotation (Line(points={{580,28},{550,28}}, color={0,127,255}));
+  connect(valReah.port_b, port_coiRehRet) annotation (Line(points={{530,28},{520,28},{520,-400}}, color={0,127,255}));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-400,-400},{800,300}})),
+                                 Documentation(info="<html>
 <p>
 This model consist of an HVAC system, a building envelope model and a model
 for air flow through building leakage and through open doors.

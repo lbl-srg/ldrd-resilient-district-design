@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model DebugRefMed
+model Debug
   extends Modelica.Icons.Example;
   package Medium = Buildings.Media.Water "Medium model";
 
@@ -9,7 +9,7 @@ model DebugRefMed
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={72,-20})));
-  Loads.BaseClasses.BuildingSpawnMediumOfficeFCU bui(
+  Loads.BaseClasses.BuildingSpawnMediumOfficeVAV bui(
     nPorts_bChiWat=1,
     nPorts_aHeaWat=1,
     nPorts_aChiWat=1,
@@ -38,6 +38,7 @@ model DebugRefMed
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={70,20})));
+  Data.VAVDataMediumOffice datVAV annotation (Placement(transformation(extent={{-10,64},{10,84}})));
 equation
   connect(bui.ports_bChiWat[1], bou1.ports[1])
     annotation (Line(points={{30,-8},{56,-8},{56,-20},{62,-20}},
@@ -52,4 +53,4 @@ equation
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
             -100},{80,100}})),
   experiment(StopTime=360000, __Dymola_Algorithm="Cvode"));
-end DebugRefMed;
+end Debug;

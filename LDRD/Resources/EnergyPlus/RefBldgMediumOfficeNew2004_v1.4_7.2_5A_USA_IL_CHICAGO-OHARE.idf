@@ -1,3 +1,17 @@
+! Modifications Antoine Gautier
+!
+!  - Reset sizing parameters from 1.33 to 1.0
+!
+!    Sizing:Parameters,
+!      1.0,                     !- Heating Sizing Factor
+!      1.0,                     !- Cooling Sizing Factor
+!
+!  - Remove unused meters
+!
+!  - Add dummy output variable for Spawn
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
 ! DOE Commercial Reference Building
 ! Medium office, new construction 90.1-2004
 ! Version 1.3_5.0
@@ -227,8 +241,8 @@
     AnalyticalSolution;      !- Algorithm
 
   Sizing:Parameters,
-    1.33,                    !- Heating Sizing Factor
-    1.33,                    !- Cooling Sizing Factor
+    1.0,                     !- Heating Sizing Factor
+    1.0,                     !- Cooling Sizing Factor
     6;                       !- Timesteps in Averaging Window
 
   ConvergenceLimits,
@@ -7800,36 +7814,12 @@
 
   Output:Meter,Electricity:Facility,hourly;
 
-  Output:Meter,Heating:Electricity,hourly;
-
-  Output:Meter,Cooling:Electricity,hourly;
-
   Output:Meter,InteriorLights:Electricity,hourly;
 
   Output:Meter,ExteriorLights:Electricity,hourly;
 
   Output:Meter,InteriorEquipment:Electricity,hourly;
 
-  Output:Meter,ExteriorEquipment:Electricity,hourly;
-
-  Output:Meter,Fans:Electricity,hourly;
-
-  Output:Meter,Pumps:Electricity,hourly;
-
-  Output:Meter,HeatRejection:Electricity,hourly;
-
-  Output:Meter,Humidifier:Electricity,hourly;
-
-  Output:Meter,Refrigeration:Electricity,hourly;
-
-  Output:Meter,WaterSystems:Electricity,hourly;
-
-  Output:Meter,NaturalGas:Facility,hourly;
-
   Output:Meter,Heating:NaturalGas,hourly;
-
-  Output:Meter,InteriorEquipment:NaturalGas,hourly;
-
-  Output:Meter,WaterSystems:NaturalGas,hourly;
 
   Output:Variable,*,NONE,;
