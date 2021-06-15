@@ -38,7 +38,7 @@ model Debug
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={70,20})));
-  Data.VAVDataMediumOffice datVAV annotation (Placement(transformation(extent={{-10,64},{10,84}})));
+  inner Data.VAVDataMediumOffice datVAV annotation (Placement(transformation(extent={{-10,64},{10,84}})));
 equation
   connect(bui.ports_bChiWat[1], bou1.ports[1])
     annotation (Line(points={{30,-8},{56,-8},{56,-20},{62,-20}},

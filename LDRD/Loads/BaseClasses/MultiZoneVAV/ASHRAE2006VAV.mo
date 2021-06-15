@@ -4,8 +4,8 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
     amb(nPorts=3));
 
   parameter Real ratVFloMin[numVAV](final unit="1")=
-    {max(1.5 * VOA_flow_nominalVAV[i], 0.15 * m_flow_nominalVAV[i] / 1.2) /
-    (m_flow_nominalVAV[i] / 1.2) for i in 1:numVAV}
+    {max(1.5 * VOABox_flow_nominal[i], 0.15 * mAirBox_flow_nominal[i] / 1.2) /
+    (mAirBox_flow_nominal[i] / 1.2) for i in 1:numVAV}
     "Minimum discharge air flow rate ratio";
 
   Buildings.Examples.VAVReheat.Controls.FanVFD conFanSup(
@@ -32,7 +32,7 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
     final TCooOn=TCooOn,
     final TCooOff=TCooOff)
     annotation (Placement(transformation(extent={{-300,-358},{-280,-338}})));
-  Buildings.Examples.VAVReheat.Controls.DuctStaticPressureSetpoint
+  DuctStaticPressureSetpoint
     pSetDuc(nin=numVAV, pMin=50) "Duct static pressure setpoint"
     annotation (Placement(transformation(extent={{160,-10},{180,10}})));
   Buildings.Examples.VAVReheat.Controls.RoomVAV conVAV[numVAV](
@@ -47,7 +47,8 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
     conTSup "Supply air temperature controller"
     annotation (Placement(transformation(extent={{30,-230},{50,-210}})));
   Buildings.Examples.VAVReheat.Controls.SupplyAirTemperatureSetpoint
-    TSupSet "Supply air temperature set point"
+    TSupSet(TSetVal(final k=datVAV.TSupSet))
+    "Supply air temperature set point"
     annotation (Placement(transformation(extent={{-200,-230},{-180,-210}})));
 
   Buildings.Utilities.Math.Min min(nin=numVAV) "Computes lowest room temperature"
@@ -148,8 +149,6 @@ equation
       textString="%second",
       index=1,
       extent={{6,3},{6,3}}));
-  connect(pSetDuc.TOut, TOut.y) annotation (Line(points={{158,8},{32,8},{32,130},{-160,130},{-160,180},{-279,180}},
-                                             color={0,0,127}));
   connect(TOut.y, controlBus.TOut) annotation (Line(points={{-279,180},{-70,180},{-70,
           30}},                                    color={0,0,127}), Text(
       textString="%second",
@@ -230,7 +229,7 @@ equation
   connect(conTSup.yHea, valHea.y) annotation (Line(points={{52,-214},{56,-214},{56,-100},{68,-100}}, color={0,0,127}));
   connect(conTSup.yCoo, valCoo.y)
     annotation (Line(points={{52,-226},{160,-226},{160,-100},{168,-100}}, color={0,0,127}));
-  connect(conVAV.yVal, valReah.y) annotation (Line(points={{481,65},{540,65},{540,40}}, color={0,0,127}));
+  connect(conVAV.yVal, valReh.y) annotation (Line(points={{481,65},{540,65},{540,40}}, color={0,0,127}));
   annotation (
     Documentation(info="<html>
 <p>
@@ -363,5 +362,5 @@ This is for
 <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/426\">issue 426</a>.
 </li>
 </ul>
-</html>"));
+</html>"), Icon(coordinateSystem(preserveAspectRatio=false)));
 end ASHRAE2006VAV;

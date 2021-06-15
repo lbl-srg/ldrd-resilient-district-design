@@ -3,6 +3,28 @@ record VAVDataMediumOffice "Sizing parameters for VAV system"
   extends VAVData(
     numVAV=15,
     numRet=3,
+    namZonCon={
+    "Core_bottom",
+"Core_mid",
+"Core_top",
+"Perimeter_bot_ZN_1",
+"Perimeter_bot_ZN_2",
+"Perimeter_bot_ZN_3",
+"Perimeter_bot_ZN_4",
+"Perimeter_mid_ZN_1",
+"Perimeter_mid_ZN_2",
+"Perimeter_mid_ZN_3",
+"Perimeter_mid_ZN_4",
+"Perimeter_top_ZN_1",
+"Perimeter_top_ZN_2",
+"Perimeter_top_ZN_3",
+"Perimeter_top_ZN_4"},
+    namZonFre={"FirstFloor_Plenum",
+"MidFloor_Plenum",
+"TopFloor_Plenum"},
+    rouZon={{ 1, -1, -1,  4,  5,  6,  7, -1, -1, -1, -1, -1, -1, -1, -1},
+       {-1,  2, -1, -1, -1, -1, -1,  8,  9, 10, 11, -1, -1, -1, -1},
+       {-1, -1,  3, -1, -1, -1, -1, -1, -1, -1, -1, 12, 13, 14, 15}},
     VRoo={
     2698.04, 2698.04, 2698.04,  568.77,  360.08,  568.77,  360.05,
     568.77,  360.08,  568.77,  360.05,  568.77,  360.08,  568.77,
@@ -13,13 +35,13 @@ record VAVDataMediumOffice "Sizing parameters for VAV system"
     ratP_A=fill(0.05382, numVAV),
     ratOAFlo_P=fill(2.5e-3, numVAV),
     ratOAFlo_A=fill(0.3e-3, numVAV),
-    m_flow_nominalVAV={
-    2.9268, 2.8536, 2.8032, 0.882,  0.8436, 0.5556, 0.9276, 1.0548,
-    0.9708, 0.7128, 1.0428, 1.0848, 0.9564, 0.8196, 1.1004},
-    m_flow_nominalRet={6.1356, 6.6348, 6.7644},
+    mAirBox_flow_nominal={
+      2.96, 2.94, 2.89, 0.89, 0.85, 0.88, 0.94, 1.07, 0.98, 0.95, 1.05,
+        1.35, 0.97, 1.35, 1.11},
+    mAirRet_flow_nominal={
+      6.52, 6.99, 7.67},
     ratVFloHea={
-    0.87804, 0.85608, 0.9408,  0.3396,  0.25308, 0.3348,  0.27828,
-    0.3684,  0.29124, 0.3636,  0.31284, 0.5172,  0.336,   0.5136,
-    0.3384});
+      0.3,  0.3,  0.85, 1.,   0.7,  1.,   0.63, 0.9,  0.65, 1.,   0.61,
+        1.,   0.91, 1.,   0.8});
 annotation(defaultComponentName="datVAV");
 end VAVDataMediumOffice;

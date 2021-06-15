@@ -26,6 +26,10 @@ model VAVReheatBox "Supply box of a VAV system with a hot water reheat coil"
     "Nominal heating heat flow rate";
   parameter Modelica.SIunits.MassFlowRate mHotWat_flow_nominal
     "Nominal mass flow rate of hot water to reheat coil";
+  parameter Modelica.SIunits.PressureDifference dpDamper_nominal(displayUnit="Pa") = 20
+    "Pressure drop of fully open damper at nominal mass flow rate";
+  parameter Modelica.SIunits.PressureDifference dpFixed_nominal(displayUnit="Pa") = 100
+    "Pressure drop of duct and resistances other than the damper in series, at nominal mass flow rate";
   Modelica.Fluid.Interfaces.FluidPort_a port_aAir(
     redeclare package Medium=MediumA)
     "Fluid connector a1 (positive design flow direction is from port_a1 to port_b1)"
@@ -65,10 +69,11 @@ model VAVReheatBox "Supply box of a VAV system with a hot water reheat coil"
         iconTransformation(extent={{100,-50},{140,-10}})));
   Buildings.Fluid.Actuators.Dampers.PressureIndependent vav(
     redeclare package Medium = MediumA,
-    m_flow_nominal=m_flow_nominal,
-    dpDamper_nominal=20,
-    allowFlowReversal=allowFlowReversal,
-    dpFixed_nominal=130)                 "VAV box for room" annotation (
+    final m_flow_nominal=m_flow_nominal,
+    final dpDamper_nominal=dpDamper_nominal,
+    final allowFlowReversal=allowFlowReversal,
+    final dpFixed_nominal=dpFixed_nominal)
+    "VAV box for room" annotation (
       Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
