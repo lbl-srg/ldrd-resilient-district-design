@@ -17,7 +17,7 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
   parameter String namZonFre[nZonFre] = datVAV.namZonFre
     "Name of unconditioned zones"
     annotation(Dialog(group="Configuration"));
-  parameter Integer rouZon[nZonFre, nZonCon] = datVAV.rouZon
+  parameter Boolean rouZon[nZonFre, nZonCon] = datVAV.rouZon
     "Air routing between zones"
     annotation(Dialog(group="Configuration"));
 
@@ -148,8 +148,8 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
 equation
   for iFre in 1:nZonFre loop
     for iCon in 1:nZonCon loop
-      if rouZon[iFre, iCon] > 0 then
-        connect(zonFre[iFre].ports[2], zon[rouZon[iFre, iCon]].ports[2])
+      if rouZon[iFre, iCon] then
+        connect(zonFre[iFre].ports[2], zon[iCon].ports[2])
           annotation (Line(points={{22,30.9},{22,20},{162,20},{162,30.9}}, color={0,127,255}));
       end if;
     end for;

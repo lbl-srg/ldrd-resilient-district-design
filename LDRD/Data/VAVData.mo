@@ -15,7 +15,7 @@ record VAVData "Sizing parameters for VAV system"
   parameter String namZonFre[numRet]
     "Name of unconditioned zones"
     annotation(Dialog(group="Configuration"));
-  parameter Integer rouZon[numRet, numVAV]
+  parameter Boolean rouZon[numRet, numVAV]
     "Air routing between zones"
     annotation(Dialog(group="Configuration"));
 
