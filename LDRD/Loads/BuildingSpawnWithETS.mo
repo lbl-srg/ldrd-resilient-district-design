@@ -1,20 +1,24 @@
 within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
-  extends BaseClasses.PartialBuildingWithETS(redeclare BaseClasses.BuildingSpawnMediumOfficeVAV bui(
+  extends BaseClasses.PartialBuildingWithETS(
+    redeclare BaseClasses.BuildingSpawnMediumOfficeVAV bui(
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal - 5,
       T_aChiWat_nominal=TChiWatSup_nominal,
-      T_bChiWat_nominal=TChiWatSup_nominal + 5), ets(
+      T_bChiWat_nominal=TChiWatSup_nominal + 5),
+    ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
       QHeaWat_flow_nominal=QHea_flow_nominal));
 
+  outer replaceable Data.VAVData datVAV;
+
   final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal(
-    max=-Modelica.Constants.eps)=bui.facMul * bui.facMulTerUni * bui.QCoo_flow_nominal
+    max=-Modelica.Constants.eps)=datVAV.QCooCoi_flow
     "Space cooling design load (<=0)"
     annotation (Dialog(group="Design parameter"));
   final parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal(
-    min=Modelica.Constants.eps)=bui.facMul * bui.facMulTerUni * bui.QHea_flow_nominal
+    min=Modelica.Constants.eps)=datVAV.QHeaCoi_flow + sum(datVAV.QRehCoi_flow)
     "Space heating design load (>=0)"
     annotation (Dialog(group="Design parameter"));
   Buildings.Controls.OBC.CDL.Logical.Sources.Constant FIXME1[2](k=fill(true, 2))

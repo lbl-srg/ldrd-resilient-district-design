@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model Debug
+model DebugBuilding
   extends Modelica.Icons.Example;
   package Medium = Buildings.Media.Water "Medium model";
 
@@ -53,4 +53,4 @@ equation
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
             -100},{80,100}})),
   experiment(StopTime=360000, __Dymola_Algorithm="Cvode"));
-end Debug;
+end DebugBuilding;

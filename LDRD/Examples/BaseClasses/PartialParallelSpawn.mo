@@ -19,6 +19,9 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   parameter Integer idxBuiTim[nBui-1] = datDes.idxBuiTim
     "Indices of building models based on time series"
     annotation (Evaluate=true);
+  inner Data.VAVDataMediumOffice datVAV
+    "Spawn building data"
+    annotation (Placement(transformation(extent={{-340,180},{-320,200}})));
   inner parameter Data.DesignDataSpawn datDes(
     final mCon_flow_nominal={if i == idxBuiSpa then buiSpa.mSerWat_flow_nominal else bui[i].mSerWat_flow_nominal
       for i in 1:nBui})

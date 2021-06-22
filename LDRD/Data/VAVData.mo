@@ -127,7 +127,7 @@ record VAVData "Sizing parameters for VAV system"
     "Capacity (total)"
     annotation(Dialog(group="Cooling coil design parameters"));
   parameter Modelica.SIunits.HeatFlowRate QSenCooCoi_flow=
-    mAirCooCoi_flow * 1020 * (TAirEntCooCoi - TSupSet[1])
+    mAirCooCoi_flow * 1020 * (TSupSet[1] - TAirEntCooCoi)
     "Sensible heat flow rate (used for verification)"
     annotation(Dialog(group="Cooling coil design parameters"));
   parameter Modelica.SIunits.Temperature TLiqEntCooCoi=
@@ -135,7 +135,7 @@ record VAVData "Sizing parameters for VAV system"
     "Liquid entering temperature"
     annotation(Dialog(group="Cooling coil design parameters"));
   parameter Modelica.SIunits.MassFlowRate mLiqCooCoi_flow=
-    QCooCoi_flow / 1020 / 5
+    abs(QCooCoi_flow) / 1020 / 5
     "Liquid mass flow rate"
     annotation(Dialog(group="Cooling coil design parameters"));
   parameter Modelica.SIunits.PressureDifference dpLiqCooCoi=
