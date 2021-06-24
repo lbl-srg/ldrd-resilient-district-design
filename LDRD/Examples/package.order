@@ -1,5 +1,8 @@
 BugAutosize
 DebugBuilding
 DebugBuildingWithETS
+DebugBuildingWithETS_coilDiscretized
+DebugNoSpawn
 LDRD
+LDRD_coilDiscretized
 BaseClasses

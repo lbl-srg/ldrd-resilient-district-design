@@ -29,12 +29,12 @@ record VAVDataMediumOffice "Sizing parameters for VAV system"
        {false, false,  true, false, false, false, false, false, false,
         false, false,  true,  true,  true,  true}},
     VRoo={
-    2698.04, 2698.04, 2698.04,  568.77,  360.08,  568.77,  360.05,
-    568.77,  360.08,  568.77,  360.05,  568.77,  360.08,  568.77,
-    360.05},
+      2698.04, 2698.04, 2698.04,  568.77,  360.08,  568.77,  360.05,
+      568.77,  360.08,  568.77,  360.05,  568.77,  360.08,  568.77,
+      360.05},
     AFlo={
-    983.54, 983.54, 983.54, 207.34, 131.26, 207.34, 131.25, 207.34,
-    131.26, 207.34, 131.25, 207.34, 131.26, 207.34, 131.25},
+      983.54, 983.54, 983.54, 207.34, 131.26, 207.34, 131.25, 207.34,
+      131.26, 207.34, 131.25, 207.34, 131.26, 207.34, 131.25},
     ratP_A=fill(0.05382, numVAV),
     ratOAFlo_P=fill(2.5e-3, numVAV),
     ratOAFlo_A=fill(0.3e-3, numVAV),
@@ -44,7 +44,7 @@ record VAVDataMediumOffice "Sizing parameters for VAV system"
     mAirRet_flow_nominal={
       6.52, 6.99, 7.67},
     ratVFloHea={
-      0.3,  0.3,  0.85, 1.,   0.7,  1.,   0.63, 0.9,  0.65, 1.,   0.61,
-        1.,   0.91, 1.,   0.8});
+      0.3,  0.3,  0.85, 1., 0.7,  1.,   0.63, 0.9,  0.65, 1.,   0.61,
+        1.,   0.91, 1., 0.8});
 annotation(defaultComponentName="datVAV");
 end VAVDataMediumOffice;

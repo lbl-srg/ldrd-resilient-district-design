@@ -1,16 +1,17 @@
 within LDRD.Examples;
-model LDRD "Example of parallel connection with constant district water mass flow rate"
-  extends BaseClasses.PartialParallelSpawn(
+model DebugNoSpawn "Example of parallel connection with constant district water mass flow rate"
+  extends BaseClasses.PartialParallelNoSpawn(
     redeclare
-      Loads.BuildingTimeSeriesWithETS bui[nBui-1](final filNam=filNam),
+      Loads.BuildingTimeSeriesWithETS bui(final filNam=filNam),
     datDes(
+      nBui=2,
       idxBuiSpa=3,
       mPumDis_flow_nominal=150,
       mPipDis_flow_nominal=150,
       dp_length_nominal=250,
       epsPla=0.91),
     dis(show_entFlo=true));
-  parameter String filNam[nBui-1]={
+  parameter String filNam[nBui]={
     "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissHospital_20190916.mos",
     "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissResidential_20190916.mos"}
     "Library paths of the files with thermal loads as time series";
@@ -46,7 +47,8 @@ equation
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
-      StopTime=31536000,
+      StartTime=8200000,
+      StopTime=8754000,
       __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
@@ -66,4 +68,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end LDRD;
+end DebugNoSpawn;

@@ -1,6 +1,6 @@
 within LDRD.Loads;
-model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
-  extends BaseClasses.PartialBuildingWithETS(redeclare BaseClasses.BuildingSpawnMediumOfficeVAV bui(
+model BuildingSpawnWithETS_coilDiscretized "Spawn model of building, connected to an ETS"
+  extends BaseClasses.PartialBuildingWithETS(redeclare BaseClasses.BuildingSpawnMediumOfficeVAV_coilDiscretized bui(
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal - 5,
       T_aChiWat_nominal=TChiWatSup_nominal,
@@ -60,4 +60,4 @@ First implementation.
           extent={{-286,-78},{-180,-104}},
           lineColor={28,108,200},
           textString="FIXME: enable heating and cooling signal and TSup reset based on terminal valve demand")}));
-end BuildingSpawnWithETS;
+end BuildingSpawnWithETS_coilDiscretized;

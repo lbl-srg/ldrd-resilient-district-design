@@ -38,25 +38,34 @@ record VAVData "Sizing parameters for VAV system"
     "Maximum air discharge temperature"
     annotation(Dialog(group="Set points"));
 
-  parameter Modelica.SIunits.PressureDifference dpDucSup(min=0) = 250
+  /*
+  Duct pressure drop are unrealistic for a multizone system.
+  They are kept at low values to avoid integrating a return fan 
+  and added complexity.
+  No control of space static pressure is provided.
+  */
+  parameter Modelica.SIunits.PressureDifference dpDucSup(
+    min=0, displayUnit="Pa") = 40
     "Supply duct design pressure drop"
     annotation(Dialog(group="Pressure drops"));
-  parameter Modelica.SIunits.PressureDifference dpDucRet(min=0) = 250
+  parameter Modelica.SIunits.PressureDifference dpDucRet(
+    min=0, displayUnit="Pa") = 20
     "Return duct design pressure drop"
     annotation(Dialog(group="Pressure drops"));
-  parameter Modelica.SIunits.PressureDifference dpFil(min=0) = 80
+  parameter Modelica.SIunits.PressureDifference dpFil(
+    min=0, displayUnit="Pa") = 80
     "Filter pressure drop"
     annotation(Dialog(group="Pressure drops"));
-  parameter Modelica.SIunits.PressureDifference dpEcoDam(min=0) = 10
+  parameter Modelica.SIunits.PressureDifference dpEcoDam(
+    min=0, displayUnit="Pa") = 10
     "Economizer dampers design pressure drop"
     annotation(Dialog(group="Pressure drops"));
-  parameter Modelica.SIunits.PressureDifference dpEcoFix(min=0) = dpEcoDam
+  parameter Modelica.SIunits.PressureDifference dpEcoFix(
+    min=0, displayUnit="Pa") = dpEcoDam
     "Economizer fixed design pressure drop"
     annotation(Dialog(group="Pressure drops"));
-  parameter Modelica.SIunits.PressureDifference dpBuiStaSet(min=0) = 12
-    "Building static pressure"
-    annotation(Dialog(group="Pressure drops"));
-  final parameter Modelica.SIunits.PressureDifference dpTot(min=0)=
+  final parameter Modelica.SIunits.PressureDifference dpTot(
+    min=0, displayUnit="Pa")=
     dpEcoDam + dpEcoFix + dpFil + dpAirCooCoi + dpAirHeaCoi + dpDucSup + max(dpAirBox) + dpDucRet
     "Total design pressure drop"
     annotation(Dialog(group="Pressure drops"));
@@ -71,10 +80,11 @@ record VAVData "Sizing parameters for VAV system"
   parameter Modelica.SIunits.MassFlowRate mAirRet_flow_nominal[numRet]
     "Design mass flow rate of each return air inlet"
     annotation(Dialog(group="System level air flow parameters"));
-  parameter Real divLoa(min=0, max=1) = 0.7
-    "Cooling load diversity"
+  parameter Real divAirFlo(min=0, max=1) = 0.7
+    "Air flow rate diversity factor"
     annotation(Dialog(group="System level air flow parameters"));
-  final parameter Modelica.SIunits.MassFlowRate m_flow_nominal = divLoa * sum(mAirBox_flow_nominal)
+  final parameter Modelica.SIunits.MassFlowRate m_flow_nominal=
+    divAirFlo * sum(mAirBox_flow_nominal)
     "Nominal air mass flow rate"
     annotation(Dialog(group="System level air flow parameters"));
 
@@ -86,41 +96,45 @@ record VAVData "Sizing parameters for VAV system"
     mLiqCooCoi_flow
     "Chilled water mass flow rate"
     annotation(Dialog(group="System level hydronic parameters"));
-  parameter Modelica.SIunits.PressureDifference dpDisHeaWat_nominal[numVAV+1]=
+  parameter Modelica.SIunits.PressureDifference dpDisHeaWat_nominal[numVAV+1](
+    each displayUnit="Pa")=
     fill(1500, numVAV+1)
     "Nominal pressure drop in heating hot water distribution system"
     annotation(Dialog(group="System level hydronic parameters"));
-  final parameter Modelica.SIunits.PressureDifference dpDisChiWat_nominal[1]=
+  final parameter Modelica.SIunits.PressureDifference dpDisChiWat_nominal[1](
+    each displayUnit="Pa")=
     fill(1500, 1)
     "Nominal pressure drop in chilled water distribution system"
     annotation(Dialog(group="System level hydronic parameters"));
-  parameter Modelica.SIunits.PressureDifference dpPumHeaWat_nominal=
+  parameter Modelica.SIunits.PressureDifference dpPumHeaWat_nominal(
+    displayUnit="Pa")=
     (sum(dpDisHeaWat_nominal) + dpLiqHeaCoi + dpValHeaCoi) * 1.2
     "Nominal head of hot water distribution pump"
     annotation(Dialog(group="System level hydronic parameters"));
-  parameter Modelica.SIunits.PressureDifference dpPumChiWat_nominal=
+  parameter Modelica.SIunits.PressureDifference dpPumChiWat_nominal(
+    displayUnit="Pa")=
     (sum(dpDisChiWat_nominal) + dpLiqCooCoi + dpValCooCoi) * 1.2
     "Nominal head of chilled water distribution pump"
     annotation(Dialog(group="System level hydronic parameters"));
 
   parameter Real ratVFloHea[numVAV](each final unit="1", each start=0.3)
     "VAV box maximum air flow rate ratio in heating mode"
-    annotation(Dialog(group="Air flow rates"));
+    annotation(Dialog(group="Ventilation"));
   parameter Real ratOAFlo_A[numVAV](each final unit="m3/(s.m2)", each start=0.3e-3)
     "Outdoor airflow rate required per unit area"
-    annotation(Dialog(group="Air flow rates"));
+    annotation(Dialog(group="Ventilation"));
   parameter Real ratOAFlo_P[numVAV](each start=2.5e-3)
     "Outdoor airflow rate required per person"
-    annotation(Dialog(group="Air flow rates"));
+    annotation(Dialog(group="Ventilation"));
   parameter Real ratP_A[numVAV](each start=5e-2)
     "Occupant density"
-    annotation(Dialog(group="Air flow rates"));
+    annotation(Dialog(group="Ventilation"));
   parameter Real effZ(final unit="1") = 0.8
     "Zone air distribution effectiveness (limiting value) (Ez)"
-    annotation(Dialog(group="Air flow rates"));
+    annotation(Dialog(group="Ventilation"));
   parameter Real divP(final unit="1") = 0.7
     "Occupant diversity ratio (D)"
-    annotation(Dialog(group="Air flow rates"));
+    annotation(Dialog(group="Ventilation"));
 
   parameter Modelica.SIunits.HeatFlowRate QCooCoi_flow=
     1.3 * QSenCooCoi_flow
@@ -135,14 +149,16 @@ record VAVData "Sizing parameters for VAV system"
     "Liquid entering temperature"
     annotation(Dialog(group="Cooling coil design parameters"));
   parameter Modelica.SIunits.MassFlowRate mLiqCooCoi_flow=
-    abs(QCooCoi_flow) / 1020 / 5
+    abs(QCooCoi_flow) / 4186 / 5
     "Liquid mass flow rate"
     annotation(Dialog(group="Cooling coil design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpLiqCooCoi=
+  parameter Modelica.SIunits.PressureDifference dpLiqCooCoi(
+    displayUnit="Pa")=
     2e4
     "Liquid pressure drop"
     annotation(Dialog(group="Cooling coil design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpValCooCoi=
+  parameter Modelica.SIunits.PressureDifference dpValCooCoi(
+    displayUnit="Pa")=
     dpLiqCooCoi
     "Valve pressure drop"
     annotation(Dialog(group="Cooling coil design parameters"));
@@ -158,7 +174,8 @@ record VAVData "Sizing parameters for VAV system"
     m_flow_nominal
     "Air mass flow rate"
     annotation(Dialog(group="Cooling coil design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpAirCooCoi=
+  parameter Modelica.SIunits.PressureDifference dpAirCooCoi(
+    displayUnit="Pa")=
     200
     "Air pressure drop"
     annotation(Dialog(group="Cooling coil design parameters"));
@@ -172,14 +189,16 @@ record VAVData "Sizing parameters for VAV system"
     "Liquid entering temperature"
     annotation(Dialog(group="Heating coil design parameters"));
   parameter Modelica.SIunits.MassFlowRate mLiqHeaCoi_flow=
-    QHeaCoi_flow / 10 / 4186
+    QHeaCoi_flow / 4186 / 10
     "Liquid mass flow rate"
     annotation(Dialog(group="Heating coil design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpLiqHeaCoi=
+  parameter Modelica.SIunits.PressureDifference dpLiqHeaCoi(
+    displayUnit="Pa")=
     0.5e4
     "Liquid pressure drop"
     annotation(Dialog(group="Heating coil design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpValHeaCoi=
+  parameter Modelica.SIunits.PressureDifference dpValHeaCoi(
+    displayUnit="Pa")=
     dpLiqHeaCoi
     "Valve pressure drop"
     annotation(Dialog(group="Heating coil design parameters"));
@@ -190,7 +209,8 @@ record VAVData "Sizing parameters for VAV system"
     m_flow_nominal
     "Air mass flow rate"
     annotation(Dialog(group="Heating coil design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpAirHeaCoi=
+  parameter Modelica.SIunits.PressureDifference dpAirHeaCoi(
+    displayUnit="Pa")=
     50
     "Air pressure drop"
     annotation(Dialog(group="Heating coil design parameters"));
@@ -198,7 +218,8 @@ record VAVData "Sizing parameters for VAV system"
   parameter Modelica.SIunits.MassFlowRate mAirBox_flow_nominal[numVAV]
     "Air mass flow rate"
     annotation(Dialog(group="VAV box design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpAirBox[numVAV]=
+  parameter Modelica.SIunits.PressureDifference dpAirBox[numVAV](
+    each displayUnit="Pa")=
     fill(120, numVAV)
     "Air total pressure drop"
     annotation(Dialog(group="VAV box design parameters"));
@@ -211,14 +232,16 @@ record VAVData "Sizing parameters for VAV system"
     "Reheat coil liquid entering temperature"
     annotation(Dialog(group="VAV box design parameters"));
   parameter Modelica.SIunits.MassFlowRate mLiqRehCoi_flow[numVAV]=
-    QRehCoi_flow / 10 / 4186
+    QRehCoi_flow / 4186 / 10
     "Reheat coil liquid mass flow rate"
     annotation(Dialog(group="VAV box design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpLiqRehCoi[numVAV]=
+  parameter Modelica.SIunits.PressureDifference dpLiqRehCoi[numVAV](
+    each displayUnit="Pa")=
     fill(0.2e4, numVAV)
     "Reheat coil liquid pressure drop"
     annotation(Dialog(group="VAV box design parameters"));
-  parameter Modelica.SIunits.PressureDifference dpValRehCoi[numVAV]=
+  parameter Modelica.SIunits.PressureDifference dpValRehCoi[numVAV](
+    each displayUnit="Pa")=
     dpLiqRehCoi
     "Reheat coil valve pressure drop"
     annotation(Dialog(group="VAV box design parameters"));

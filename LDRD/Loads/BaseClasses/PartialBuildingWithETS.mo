@@ -4,8 +4,6 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     nPorts_heaWat=1,
     nPorts_chiWat=1,
     redeclare Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield ets(
-      QChiWat_flow_nominal=QChiWat_flow_nominal,
-      QHeaWat_flow_nominal=QHeaWat_flow_nominal,
       conCon=Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.Pump,
       dp1Hex_nominal=20E3,
       dp2Hex_nominal=20E3,

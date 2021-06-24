@@ -1,5 +1,7 @@
 ASHRAE2006VAV
+ASHRAE2006VAV_coilDiscretized
 DuctStaticPressureSetpoint
 Guideline36VAV
 PartialOpenLoop
+PartialOpenLoop_coilDiscretized
 VAVReheatBox

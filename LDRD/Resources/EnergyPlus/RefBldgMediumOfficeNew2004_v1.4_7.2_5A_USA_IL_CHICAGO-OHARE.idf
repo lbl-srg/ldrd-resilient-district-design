@@ -7822,4 +7822,14 @@
 
   Output:Meter,Heating:NaturalGas,hourly;
 
-  Output:Variable,*,NONE,;
+  Output:VariableDictionary,regular;
+
+  Output:Variable,*,Fan Air Mass Flow Rate, timestep; ! HVAC Average [kg/s]
+
+  Output:Variable,*,Air System Mechanical Ventilation Flow Rate, timestep; ! HVAC Average [m3/s]
+
+  Output:Variable,*,Zone Mechanical Ventilation Mass Flow Rate, timestep; ! HVAC Average [kg/s]
+
+  Output:Variable,*,Zone Air Terminal Sensible Heating Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Zone Air Terminal Sensible Cooling Rate, timestep; ! HVAC Average [W]

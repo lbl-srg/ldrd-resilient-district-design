@@ -15,3 +15,5 @@ dymosim
 status
 request
 *.bui.building
+debug*mos
+diagnostics*txt

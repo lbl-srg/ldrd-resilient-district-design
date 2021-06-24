@@ -1,6 +1,6 @@
 within LDRD.Loads.BaseClasses.MultiZoneVAV;
-model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
-  extends PartialOpenLoop(
+model ASHRAE2006VAV_coilDiscretized "Variable air volume flow system with terminal reheat"
+  extends PartialOpenLoop_coilDiscretized(
     amb(nPorts=3));
 
   parameter Real ratVFloMin[numVAV](final unit="1")=
@@ -211,6 +211,8 @@ equation
 
   connect(damRet.y, conEco.yRet) annotation (Line(points={{-12,-10},{-18,-10},{-18,146.667},{-58.6667,146.667}},
                                         color={0,0,127}));
+  connect(damExh.y, conEco.yOA) annotation (Line(points={{-40,2},{-40,152},{-58.6667,152}},
+                 color={0,0,127}));
   connect(damOut.y, conEco.yOA) annotation (Line(points={{-40,-28},{-40,-20},{-22,-20},{-22,152},{-58.6667,152}},
                                           color={0,0,127}));
   connect(damExh.port_a, TRet.port_b) annotation (Line(points={{-30,-10},{-26,-10},
@@ -230,7 +232,6 @@ equation
   connect(conTSup.yCoo, valCoo.y)
     annotation (Line(points={{52,-226},{160,-226},{160,-100},{168,-100}}, color={0,0,127}));
   connect(conVAV.yVal, valReh.y) annotation (Line(points={{481,65},{540,65},{540,40}}, color={0,0,127}));
-  connect(conEco.yOA, damExh.y) annotation (Line(points={{-58.6667,152},{-40,152},{-40,2}}, color={0,0,127}));
   annotation (
     Documentation(info="<html>
 <p>
@@ -364,4 +365,4 @@ This is for
 </li>
 </ul>
 </html>"), Icon(coordinateSystem(preserveAspectRatio=false)));
-end ASHRAE2006VAV;
+end ASHRAE2006VAV_coilDiscretized;

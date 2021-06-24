@@ -1,5 +1,5 @@
 within LDRD.Loads.BaseClasses;
-model BuildingSpawnMediumOfficeVAV "Spawn building model"
+model BuildingSpawnMediumOfficeVAV_coilDiscretized "Spawn building model"
   extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuilding(
     redeclare package Medium=Buildings.Media.Water,
     final have_heaWat=true,
@@ -104,7 +104,8 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     annotation (Placement(transformation(extent={{-60,110},{-40,130}})));
   Modelica.Blocks.Sources.Constant qLatGai_flow1[nZonFre](each k=0) "Latent heat gain"
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-  MultiZoneVAV.ASHRAE2006VAV vav "VAV system" annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+  MultiZoneVAV.ASHRAE2006VAV_coilDiscretized vav "VAV system"
+    annotation (Placement(transformation(extent={{90,-10},{110,10}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant FIXME(k=0)
     annotation (Placement(transformation(extent={{190,70},{210,90}})));
   Buildings.Experimental.DHC.Loads.Validation.BaseClasses.Distribution2Pipe disHeaWat(
@@ -251,4 +252,4 @@ First implementation.
         Bitmap(
           extent={{-108,-100},{92,100}},
           fileName="modelica://Buildings/Resources/Images/ThermalZones/EnergyPlus/EnergyPlusLogo.png")}));
-end BuildingSpawnMediumOfficeVAV;
+end BuildingSpawnMediumOfficeVAV_coilDiscretized;

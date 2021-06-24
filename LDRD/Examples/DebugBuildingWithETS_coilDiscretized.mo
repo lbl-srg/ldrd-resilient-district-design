@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model DebugBuildingWithETS
+model DebugBuildingWithETS_coilDiscretized
   extends Modelica.Icons.Example;
   package Medium = Buildings.Media.Water "Medium model";
 
@@ -9,7 +9,7 @@ model DebugBuildingWithETS
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={70,-50})));
-  Loads.BuildingSpawnWithETS bui annotation (Placement(transformation(extent={{-30,-70},{30,-10}})));
+  Loads.BuildingSpawnWithETS_coilDiscretized bui annotation (Placement(transformation(extent={{-30,-70},{30,-10}})));
   Buildings.Fluid.Sources.Boundary_pT bou3(
     redeclare final package Medium = Medium,
     T=282.15,
@@ -43,8 +43,8 @@ equation
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
             -100},{80,100}})),
   experiment(
-      StartTime=16800000,
-      StopTime=19000000,
+      StartTime=8000000,
+      StopTime=9000000,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"));
-end DebugBuildingWithETS;
+end DebugBuildingWithETS_coilDiscretized;

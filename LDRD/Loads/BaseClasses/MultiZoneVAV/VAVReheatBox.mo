@@ -275,5 +275,11 @@ This is for
 <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/2059\">#2024</a>.
 </li>
 </ul>
-</html>"));
+</html>"),
+    experiment(
+      StartTime=8200000,
+      StopTime=8754000,
+      __Dymola_NumberOfIntervals=8760,
+      Tolerance=1e-06,
+      __Dymola_Algorithm="Cvode"));
 end VAVReheatBox;

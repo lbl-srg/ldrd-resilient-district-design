@@ -1,5 +1,5 @@
 within LDRD.Loads.BaseClasses.MultiZoneVAV;
-partial model PartialOpenLoop
+partial model PartialOpenLoop_coilDiscretized
   "Partial model of variable air volume flow system with terminal reheat and five thermal zones"
 
   package MediumA = Buildings.Media.Air "Medium model for air";
@@ -178,19 +178,24 @@ partial model PartialOpenLoop
     "Heating coil"
     annotation (Placement(transformation(extent={{110,-36},{90,-56}})));
 
-  Buildings.Fluid.HeatExchangers.WetCoilEffectivenessNTU cooCoi(
+  /*
+  FIXME: incorrect sizing, UA should be computed in dry coil conditions.
+  Compute UA independently to match design temperature conditions.
+  */
+  Buildings.Fluid.HeatExchangers.WetCoilCounterFlow cooCoi(
     show_T=true,
     redeclare package Medium1 = MediumW,
     redeclare package Medium2 = MediumA,
-    final use_Q_flow_nominal = true,
-    final Q_flow_nominal=datVAV.QCooCoi_flow,
     final m1_flow_nominal=datVAV.mLiqCooCoi_flow,
     final m2_flow_nominal=datVAV.mAirCooCoi_flow,
     final dp1_nominal=0,
     final dp2_nominal=0,
-    final T_a1_nominal=datVAV.TLiqEntCooCoi,
-    final T_a2_nominal=datVAV.TAirEntCooCoi,
-    final w_a2_nominal=datVAV.wAirEntCooCoi,
+    final UA_nominal=datVAV.QSenCooCoi_flow/
+      Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+      T_a1=datVAV.TLiqEntCooCoi,
+      T_b1=datVAV.TLiqEntCooCoi+5,
+      T_a2=datVAV.TAirEntCooCoi,
+      T_b2=datVAV.TSupSet[1]),
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     allowFlowReversal1=false,
     final allowFlowReversal2=allowFlowReversal) "Cooling coil"
@@ -200,7 +205,8 @@ partial model PartialOpenLoop
     final m_flow_nominal=m_flow_nominal,
     redeclare final package Medium = MediumA,
     final allowFlowReversal=allowFlowReversal,
-    final dp_nominal=datVAV.dpDucRet) "Duct pressure drop"
+    final dp_nominal=datVAV.dpDucRet)
+    "Pressure drop for return duct"
     annotation (Placement(transformation(extent={{480,130},{460,150}})));
   Buildings.Fluid.Movers.SpeedControlled_y fanSup(
     redeclare package Medium = MediumA,
@@ -235,8 +241,8 @@ partial model PartialOpenLoop
     final allowFlowReversal=allowFlowReversal)
     annotation (Placement(transformation(extent={{330,-50},{350,-30}})));
   Buildings.Fluid.Sensors.RelativePressure dpDisSupFan(
-    redeclare final package Medium = MediumA) "Supply fan static discharge pressure"
-                                           annotation (Placement(
+    redeclare final package Medium = MediumA)
+    "Supply fan static discharge pressure" annotation (Placement(
         transformation(
         extent={{-10,10},{10,-10}},
         rotation=90,
@@ -675,4 +681,4 @@ This is for
 </ul>
 </html>"),
     Icon(coordinateSystem(extent={{-100,-100},{100,100}}, preserveAspectRatio=false)));
-end PartialOpenLoop;
+end PartialOpenLoop_coilDiscretized;
