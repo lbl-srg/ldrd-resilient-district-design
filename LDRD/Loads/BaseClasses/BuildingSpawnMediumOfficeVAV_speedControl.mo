@@ -1,5 +1,5 @@
 within LDRD.Loads.BaseClasses;
-model BuildingSpawnMediumOfficeVAV "Spawn building model"
+model BuildingSpawnMediumOfficeVAV_speedControl "Spawn building model"
   extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuilding(
     redeclare package Medium=Buildings.Media.Water,
     final have_heaWat=true,
@@ -51,18 +51,6 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     displayUnit="degC")=T_aChiWat_nominal+7
     "Chilled water outlet temperature at nominal conditions"
     annotation (Dialog(group="Nominal condition"));
-  Modelica.Blocks.Interfaces.RealOutput yValHeaMax_actual(
-    final unit="1")
-    "Maximum opening of heating and reheat coil valves" annotation (Placement(transformation(extent={{300,20},{340,60}}),
-        iconTransformation(extent={{-20,-20},{20,20}},
-        rotation=-90,
-        origin={222,-320})));
-  Modelica.Blocks.Interfaces.RealOutput yValCooMax_actual(
-    final unit="1")
-    "Maximum opening of cooling coil valve" annotation (Placement(transformation(extent={{300,-20},{340,20}}),
-        iconTransformation(extent={{-20,-20},{20,20}},
-        rotation=-90,
-        origin={262,-320})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant minTSet[nZonCon](
     k=fill(
       293.15,
@@ -132,71 +120,73 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     final mCon_flow_nominal={datVAV.mLiqCooCoi_flow},
     final dpDis_nominal=datVAV.dpDisChiWat_nominal,
     final nCon=1) "Chilled water distribution"
-    annotation (Placement(transformation(extent={{22,-270},{62,-250}})));
-  Buildings.Fluid.Movers.FlowControlled_m_flow pumChiWat(
+    annotation (Placement(transformation(extent={{80,-270},{120,-250}})));
+  Buildings.Fluid.Movers.SpeedControlled_y pumChiWat(
     redeclare final package Medium = Medium,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-    final m_flow_nominal=datVAV.mChiWat_flow_nominal,
     per(
+      pressure(V_flow={0,1,2}*datVAV.mChiWat_flow_nominal/1000, dp(displayUnit="Pa") = {1.2,1,0}*datVAV.dpPumChiWat_nominal),
       motorCooledByFluid=false),
-    addPowerToMedium=false,
-    nominalValuesDefineDefaultPressureCurve=true,
-    use_inputFilter=false,
-    final dp_nominal=datVAV.dpPumChiWat_nominal)
+    addPowerToMedium=false)
     "Chilled water distribution pump" annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
         origin={-180,-260})));
-  Buildings.Fluid.Movers.FlowControlled_m_flow
-                                           pumHeaWat(
+
+  Buildings.Fluid.Movers.SpeedControlled_y pumHeaWat(
     redeclare final package Medium = Medium,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-    final m_flow_nominal=datVAV.mHeaWat_flow_nominal,
     per(
+      pressure(V_flow={0,1,2}*datVAV.mHeaWat_flow_nominal/1000, dp(displayUnit="Pa") = {1.2,1,0}*datVAV.dpPumHeaWat_nominal),
       motorCooledByFluid=false),
-    addPowerToMedium=false,
-    nominalValuesDefineDefaultPressureCurve=true,
-    use_inputFilter=false,
-    final dp_nominal=datVAV.dpPumHeaWat_nominal)
+    addPowerToMedium=false)
     "Heating hot water distribution pump" annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
         origin={-180,-60})));
+
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant dpHHWSet(k=datVAV.dpSetPumHeaWat)
-    "DP set point" annotation (Placement(transformation(extent={{-280,-10},{-260,10}})));
+    "DP set point" annotation (Placement(transformation(extent={{-260,-30},{-240,-10}})));
   Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.PIDWithEnable
                                             conPumHeaWat(
-    k=0.1,
+    k=0.01,
     Ti=120,
     r=datVAV.dpSetPumHeaWat,
-    yMin=0.1) "Hot water pump controller"
-    annotation (Placement(transformation(extent={{-250,-10},{-230,10}})));
+    yMin=datVAV.speMinPumHeaWat,
+    y_reset=0)                   "Hot water pump controller"
+    annotation (Placement(transformation(extent={{-230,-30},{-210,-10}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant dpCHWSet(k=datVAV.dpSetPumChiWat)
-    "DP set point" annotation (Placement(transformation(extent={{-280,-230},{-260,-210}})));
+    "DP set point" annotation (Placement(transformation(extent={{-260,-230},{-240,-210}})));
   Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.PIDWithEnable
                                             conPumChiWat(
-    k=0.1,
+    k=0.01,
     Ti=120,
     r=datVAV.dpSetPumChiWat,
-    yMin=0.1)                    "Chilled water pump controller"
-    annotation (Placement(transformation(extent={{-250,-230},{-230,-210}})));
+    yMin=datVAV.speMinPumChiWat,
+    y_reset=0)                   "Chilled water pump controller"
+    annotation (Placement(transformation(extent={{-230,-230},{-210,-210}})));
   Buildings.Fluid.FixedResistances.PressureDrop bypChiWat(
     redeclare final package Medium = Medium,
     final m_flow_nominal=0.1 * datVAV.mChiWat_flow_nominal,
     final dp_nominal=datVAV.dpSetPumChiWat)
     "End of line bypass"
-    annotation (Placement(transformation(extent={{70,-270},{90,-250}})));
+    annotation (Placement(transformation(extent={{130,-270},{150,-250}})));
   Buildings.Fluid.FixedResistances.PressureDrop bypHeaWat(
     redeclare final package Medium = Medium,
     final m_flow_nominal=0.1 * datVAV.mHeaWat_flow_nominal,
     final dp_nominal=datVAV.dpSetPumHeaWat)
     "End of line bypass"
     annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain scaHeaWat(k=datVAV.mHeaWat_flow_nominal) "Sacling"
-    annotation (Placement(transformation(extent={{-220,-10},{-200,10}})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain scaChiWat(k=datVAV.mChiWat_flow_nominal) "Sacling"
-    annotation (Placement(transformation(extent={{-220,-230},{-200,-210}})));
-
+  Modelica.Blocks.Interfaces.RealOutput yValHeaMax_actual(final unit="1")
+    "Maximum opening of heating and reheat coil valves" annotation (Placement(transformation(extent={{300,20},{340,60}}),
+        iconTransformation(extent={{-20,-20},{20,20}},
+        rotation=-90,
+        origin={222,-320})));
+  Modelica.Blocks.Interfaces.RealOutput yValCooMax_actual(final unit="1")
+    "Maximum opening of cooling coil valve" annotation (Placement(transformation(extent={{300,-20},{340,20}}),
+        iconTransformation(extent={{-20,-20},{20,20}},
+        rotation=-90,
+        origin={262,-320})));
   Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaPumHeaWat(each t=1e-2, h=5e-3)
     "Threshold comparison to enable distribution pump" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
@@ -226,12 +216,12 @@ equation
   connect(vav.port_coiRehRet, disHeaWat.ports_aCon[2:(nZonCon + 1)])
     annotation (Line(points={{109,-10},{109,-40},{52,-40},{52,-50}},   color={0,127,255}));
   connect(disChiWat.ports_bCon[1], vav.port_coiCooSup)
-    annotation (Line(points={{30,-250},{30,-220},{98,-220},{98,-10},{98.6,-10}}, color={0,127,255}));
+    annotation (Line(points={{88,-250},{88,-240},{98,-240},{98,-10},{98.6,-10}}, color={0,127,255}));
   connect(vav.port_coiCooRet, disChiWat.ports_aCon[1])
-    annotation (Line(points={{101.6,-10},{100,-10},{100,-224},{54,-224},{54,-250}},   color={0,127,255}));
+    annotation (Line(points={{101.6,-10},{102,-10},{102,-240},{112,-240},{112,-250}}, color={0,127,255}));
 
   connect(disChiWat.port_bDisRet, mulChiWatOut[1].port_a)
-    annotation (Line(points={{22,-266},{12,-266},{12,-284},{248,-284},{248,-260},{260,-260}}, color={0,127,255}));
+    annotation (Line(points={{80,-266},{60,-266},{60,-280},{240,-280},{240,-260},{260,-260}}, color={0,127,255}));
   connect(disHeaWat.port_bDisRet, mulHeaWatOut[1].port_a)
     annotation (Line(points={{20,-66},{0,-66},{0,-80},{240,-80},{240,-60},{260,-60}},   color={0,127,255}));
   connect(qRadGai_flow.y,multiplex3_1.u1[1])
@@ -278,41 +268,40 @@ equation
   connect(mulChiWatInl[1].port_b, pumChiWat.port_a)
     annotation (Line(points={{-260,-260},{-190,-260}}, color={0,127,255}));
   connect(pumChiWat.port_b, disChiWat.port_aDisSup)
-    annotation (Line(points={{-170,-260},{22,-260}}, color={0,127,255}));
+    annotation (Line(points={{-170,-260},{80,-260}}, color={0,127,255}));
 
   connect(mulHeaWatInl[1].port_b, pumHeaWat.port_a)
     annotation (Line(points={{-260,-60},{-190,-60}}, color={0,127,255}));
   connect(pumHeaWat.port_b, disHeaWat.port_aDisSup) annotation (Line(points={{-170,-60},{20,-60}}, color={0,127,255}));
-  connect(dpHHWSet.y, conPumHeaWat.u_s) annotation (Line(points={{-258,0},{-252,0}}, color={0,0,127}));
+  connect(dpHHWSet.y, conPumHeaWat.u_s) annotation (Line(points={{-238,-20},{-232,-20}},
+                                                                                     color={0,0,127}));
   connect(disHeaWat.dp, conPumHeaWat.u_m)
-    annotation (Line(points={{62,-57},{64,-57},{64,-20},{-240,-20},{-240,-12}}, color={0,0,127}));
-  connect(dpCHWSet.y, conPumChiWat.u_s) annotation (Line(points={{-258,-220},{-252,-220}}, color={0,0,127}));
+    annotation (Line(points={{62,-57},{64,-57},{64,-38},{-220,-38},{-220,-32}}, color={0,0,127}));
+  connect(conPumHeaWat.y, pumHeaWat.y) annotation (Line(points={{-208,-20},{-180,-20},{-180,-48}},
+                                                                                               color={0,0,127}));
+  connect(dpCHWSet.y, conPumChiWat.u_s) annotation (Line(points={{-238,-220},{-232,-220}}, color={0,0,127}));
   connect(disChiWat.dp, conPumChiWat.u_m)
-    annotation (Line(points={{64,-257},{66,-257},{66,-240},{-240,-240},{-240,-232}},    color={0,0,127}));
+    annotation (Line(points={{122,-257},{126,-257},{126,-240},{-220,-240},{-220,-232}}, color={0,0,127}));
+  connect(conPumChiWat.y, pumChiWat.y) annotation (Line(points={{-208,-220},{-180,-220},{-180,-248}}, color={0,0,127}));
   connect(disChiWat.port_bDisSup, bypChiWat.port_a)
-    annotation (Line(points={{62,-260},{70,-260}},   color={0,127,255}));
+    annotation (Line(points={{120,-260},{130,-260}}, color={0,127,255}));
   connect(bypChiWat.port_b, disChiWat.port_aDisRet)
-    annotation (Line(points={{90,-260},{100,-260},{100,-266},{62,-266}},   color={0,127,255}));
+    annotation (Line(points={{150,-260},{160,-260},{160,-266},{120,-266}}, color={0,127,255}));
   connect(disHeaWat.port_bDisSup, bypHeaWat.port_a) annotation (Line(points={{60,-60},{70,-60}}, color={0,127,255}));
   connect(bypHeaWat.port_b, disHeaWat.port_aDisRet)
     annotation (Line(points={{90,-60},{96,-60},{96,-66},{60,-66}}, color={0,127,255}));
-  connect(conPumHeaWat.y, scaHeaWat.u) annotation (Line(points={{-228,0},{-222,0}}, color={0,0,127}));
-  connect(scaHeaWat.y, pumHeaWat.m_flow_in) annotation (Line(points={{-198,0},{-180,0},{-180,-48}}, color={0,0,127}));
-  connect(conPumChiWat.y, scaChiWat.u) annotation (Line(points={{-228,-220},{-222,-220}}, color={0,0,127}));
-  connect(scaChiWat.y, pumChiWat.m_flow_in)
-    annotation (Line(points={{-198,-220},{-180,-220},{-180,-248}}, color={0,0,127}));
   connect(vav.yValCooMax_actual, yValCooMax_actual)
-    annotation (Line(points={{111,-7},{280,-7},{280,0},{320,0}}, color={0,0,127}));
+    annotation (Line(points={{111,-7},{292,-7},{292,0},{320,0}}, color={0,0,127}));
   connect(vav.yValHeaMax_actual, yValHeaMax_actual)
-    annotation (Line(points={{111,-5},{278,-5},{278,40},{320,40}}, color={0,0,127}));
+    annotation (Line(points={{111,-5},{290,-5},{290,40},{320,40}}, color={0,0,127}));
   connect(vav.yValHeaMax_actual, enaPumHeaWat.u)
     annotation (Line(points={{111,-5},{140,-5},{140,-18}}, color={0,0,127}));
+  connect(enaPumHeaWat.y, conPumHeaWat.uEna)
+    annotation (Line(points={{140,-42},{140,-44},{-224,-44},{-224,-32}}, color={255,0,255}));
   connect(vav.yValCooMax_actual, enaPumChiWat.u)
     annotation (Line(points={{111,-7},{180,-7},{180,-18}}, color={0,0,127}));
-  connect(enaPumHeaWat.y, conPumHeaWat.uEna)
-    annotation (Line(points={{140,-42},{140,-44},{-244,-44},{-244,-12}}, color={255,0,255}));
   connect(enaPumChiWat.y, conPumChiWat.uEna)
-    annotation (Line(points={{180,-42},{180,-244},{-244,-244},{-244,-232}}, color={255,0,255}));
+    annotation (Line(points={{180,-42},{180,-238},{-224,-238},{-224,-232}}, color={255,0,255}));
   annotation (
     Documentation(
       info="
@@ -349,12 +338,10 @@ First implementation.
           textString="- Valve position resets supply T
 - Remote DP sensor (constant set point) modulates pump speed
 
-Flow controlled pumps because of convergence issues with speed controlled.
-
 Note that RP1711 also resets DP set point:
 This logic first resets differential pressure setpoint to maximum before resetting
 chilled water supply temperature setpoint down towards design. Parametric plant
 analysis in a variety of climate zones shows that the pump energy penalty
 incurred with this approach is more than offset by chiller energy savings resulting
 from keeping the chilled water supply temperature setpoint as high as possible.")}));
-end BuildingSpawnMediumOfficeVAV;
+end BuildingSpawnMediumOfficeVAV_speedControl;

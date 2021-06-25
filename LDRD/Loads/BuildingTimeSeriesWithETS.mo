@@ -32,58 +32,24 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
       filNam=Modelica.Utilities.Files.loadResource(filNam))
     "Hot water design load (>=0)"
     annotation (Dialog(group="Design parameter"));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput THotWatSupSet(
-    final unit="K",
-    displayUnit="degC")
-    "Service hot water supply temperature set point"
-    annotation (Placement(
-        transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-320,40}),  iconTransformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-120,30})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput TColWat(
-    final unit="K",
-    displayUnit="degC")
-    "Cold water temperature"
-    annotation (Placement(transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-320,0}),   iconTransformation(
-        extent={{-20,-20},{20,20}},
-        rotation=90,
-        origin={-80,-120})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain loaHeaNor(k=1/bui.QHea_flow_nominal) "Normalized heating load"
+  Buildings.Controls.OBC.CDL.Continuous.Gain
+                                   loaHeaNor(k=1/bui.QHea_flow_nominal) "Normalized heating load"
+    annotation (Placement(transformation(extent={{-200,-70},{-180,-50}})));
+  Buildings.Controls.OBC.CDL.Continuous.Gain
+                                   loaCooNor(k=1/bui.QCoo_flow_nominal) "Normalized cooling load"
     annotation (Placement(transformation(extent={{-200,-110},{-180,-90}})));
-  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaHeaCoo[2](each t=1e-4)
-    "Threshold comparison to enable heating and cooling"
-    annotation (Placement(transformation(extent={{-110,-130},{-90,-110}})));
-  Modelica.Blocks.Sources.BooleanConstant enaSHW(
-    final k=true) if have_hotWat
-    "SHW production enable signal"
-    annotation (Placement(transformation(extent={{0,-130},{-20,-110}})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain loaCooNor(k=1/bui.QCoo_flow_nominal) "Normalized cooling load"
-    annotation (Placement(transformation(extent={{-200,-150},{-180,-130}})));
 equation
 
-  connect(enaHeaCoo[1].y, ets.uHea) annotation (Line(points={{-88,-120},{-40,-120},{-40,-48},{-34,-48}},
-                                color={255,0,255}));
-  connect(enaHeaCoo[2].y, ets.uCoo) annotation (Line(points={{-88,-120},{-40,-120},{-40,-54},{-34,-54}},
-                                color={255,0,255}));
-  connect(loaHeaNor.y, enaHeaCoo[1].u) annotation (Line(points={{-178,-100},{
-          -120,-100},{-120,-120},{-112,-120}},
-                                         color={0,0,127}));
-  connect(loaCooNor.y, enaHeaCoo[2].u) annotation (Line(points={{-178,-140},{
-          -120,-140},{-120,-120},{-112,-120}},
-                                         color={0,0,127}));
-  connect(bui.QReqHea_flow, loaHeaNor.u) annotation (Line(points={{20,4},{20,-6},
-          {-218,-6},{-218,-100},{-202,-100}}, color={0,0,127}));
-  connect(bui.QReqCoo_flow, loaCooNor.u) annotation (Line(points={{24,4},{24,-4},
-          {-220,-4},{-220,-140},{-202,-140}}, color={0,0,127}));
-  connect(loaHeaNor.y, resTHeaWatSup.u) annotation (Line(points={{-178,-100},{
-          -120,-100},{-120,-40},{-112,-40}},                  color={0,0,127}));
+  connect(bui.QReqHea_flow, loaHeaNor.u)
+    annotation (Line(points={{20,4},{20,2},{-208,2},{-208,-60},{-202,-60}}, color={0,0,127}));
+  connect(bui.QReqCoo_flow, loaCooNor.u)
+    annotation (Line(points={{24,4},{24,0},{-206,0},{-206,-100},{-202,-100}}, color={0,0,127}));
+  connect(loaHeaNor.y, resTHeaWatSup.u) annotation (Line(points={{-178,-60},{-132,-60}}, color={0,0,127}));
+  connect(loaCooNor.y, resTChiWatSup.u)
+    annotation (Line(points={{-178,-100},{-150,-100},{-150,-120},{-132,-120}}, color={0,0,127}));
+  connect(loaCooNor.y, enaHeaCoo[2].u) annotation (Line(points={{-178,-100},{-80,-100},{-80,-138}}, color={0,0,127}));
+  connect(loaHeaNor.y, enaHeaCoo[1].u)
+    annotation (Line(points={{-178,-60},{-150,-60},{-150,-92},{-80,-92},{-80,-138}}, color={0,0,127}));
   annotation (Line(
       points={{-1,100},{0.1,100},{0.1,71.4}},
       color={255,204,51},

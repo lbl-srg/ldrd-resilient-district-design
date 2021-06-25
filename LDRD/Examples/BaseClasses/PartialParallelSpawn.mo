@@ -140,22 +140,10 @@ partial model PartialParallelSpawn "Partial model for parallel network"
       each final allowFlowReversalBui=allowFlowReversalBui,
       each final allowFlowReversalSer=allowFlowReversalSer) "Building and ETS"
     annotation (Placement(transformation(extent={{-10,170},{10,190}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMaxSet[nBui](
-    k={if i == idxBuiSpa then buiSpa.THeaWatSup_nominal else bui[i].THeaWatSup_nominal for i in 1:nBui})
-    "Heating water supply temperature set point - Maximum value"
-    annotation (Placement(transformation(extent={{-250,210},{-230,230}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSet[nBui](
-    k={if i == idxBuiSpa then buiSpa.TChiWatSup_nominal else bui[i].TChiWatSup_nominal for i in 1:nBui})
-    "Chilled water supply temperature set point"
-    annotation (Placement(transformation(extent={{-220,190},{-200,210}})));
   Modelica.Blocks.Sources.Constant TSewWat(
     k=273.15 + 17)
     "Sewage water temperature"
     annotation (Placement(transformation(extent={{-280,30},{-260,50}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMinSet[nBui](
-    each k=28 + 273.15)
-    "Heating water supply temperature set point - Minimum value"
-    annotation (Placement(transformation(extent={{-280,230},{-260,250}})));
   Buildings.Experimental.DHC.Loads.BaseClasses.ConstraintViolation conVio(
     uMin=datDes.TLooMin,
     uMax=datDes.TLooMax,
@@ -238,10 +226,6 @@ equation
           20,180},{20,160},{12,160},{12,150}}, color={0,127,255}));
   connect(dis.ports_bCon[idxBuiTim], bui[idxBuiTim].port_aSerAmb) annotation (Line(points={{-12,150},
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
-  connect(THeaWatSupMaxSet[idxBuiTim].y, bui[idxBuiTim].THeaWatSupMaxSet) annotation (Line(points={{
-          -228,220},{-20,220},{-20,187},{-12,187}}, color={0,0,127}));
-  connect(TChiWatSupSet[idxBuiTim].y, bui[idxBuiTim].TChiWatSupSet) annotation (Line(points={{-198,
-          200},{-24,200},{-24,185},{-12,185}}, color={0,0,127}));
   connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},{-180,7.33333},{-161.333,7.33333}},
                               color={0,0,127}));
   connect(pla.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{-140,1.33333},
@@ -249,8 +233,6 @@ equation
   connect(conPla.port_bCon, pla.port_aSerAmb) annotation (Line(points={{-90,-10},
           {-100,-10},{-100,-20},{-200,-20},{-200,1.33333},{-160,1.33333}},
         color={0,127,255}));
-  connect(THeaWatSupMinSet[idxBuiTim].y, bui[idxBuiTim].THeaWatSupMinSet) annotation (Line(points={{
-          -258,240},{-16,240},{-16,189},{-12,189}}, color={0,0,127}));
   connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},{-100,38.6667},{298,38.6667}},
                                          color={0,0,127}));
   connect(TDisWatRet.T, conVio.u[2]) annotation (Line(points={{69,0},{60,0},{60,
@@ -283,12 +265,6 @@ equation
     annotation (Line(points={{-12,150},{-12,160},{40,160}}, color={0,127,255}));
   connect(buiSpa.port_bSerAmb, dis.ports_aCon[idxBuiSpa])
     annotation (Line(points={{60,160},{80,160},{80,150},{12,150}}, color={0,127,255}));
-  connect(TChiWatSupSet[idxBuiSpa].y, buiSpa.TChiWatSupSet)
-    annotation (Line(points={{-198,200},{-40,200},{-40,165},{38,165}}, color={0,0,127}));
-  connect(THeaWatSupMaxSet[idxBuiSpa].y, buiSpa.THeaWatSupMaxSet)
-    annotation (Line(points={{-228,220},{28,220},{28,167},{38,167}}, color={0,0,127}));
-  connect(THeaWatSupMinSet[idxBuiSpa].y, buiSpa.THeaWatSupMinSet)
-    annotation (Line(points={{-258,240},{34,240},{34,169},{38,169}}, color={0,0,127}));
   annotation (Diagram(
     coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
     Documentation(revisions="<html>

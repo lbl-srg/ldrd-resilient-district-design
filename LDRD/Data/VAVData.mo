@@ -108,14 +108,30 @@ record VAVData "Sizing parameters for VAV system"
     annotation(Dialog(group="System level hydronic parameters"));
   parameter Modelica.SIunits.PressureDifference dpPumHeaWat_nominal(
     displayUnit="Pa")=
-    (sum(dpDisHeaWat_nominal) + dpLiqHeaCoi + dpValHeaCoi) * 1.2
+    (2*sum(dpDisHeaWat_nominal) + dpSetPumHeaWat) * 1.2
     "Nominal head of hot water distribution pump"
     annotation(Dialog(group="System level hydronic parameters"));
   parameter Modelica.SIunits.PressureDifference dpPumChiWat_nominal(
     displayUnit="Pa")=
-    (sum(dpDisChiWat_nominal) + dpLiqCooCoi + dpValCooCoi) * 1.2
+    (2*sum(dpDisChiWat_nominal) + dpSetPumChiWat) * 1.2
     "Nominal head of chilled water distribution pump"
     annotation(Dialog(group="System level hydronic parameters"));
+  parameter Modelica.SIunits.PressureDifference dpSetPumHeaWat(
+    displayUnit="Pa")=
+    max(dpLiqRehCoi .+ dpValRehCoi)
+    "DP set point for hot water distribution pump"
+    annotation(Dialog(group="System level hydronic parameters"));
+  parameter Modelica.SIunits.PressureDifference dpSetPumChiWat(
+    displayUnit="Pa")=
+    dpLiqCooCoi + dpValCooCoi
+    "DP set point for chilled water distribution pump"
+    annotation(Dialog(group="System level hydronic parameters"));
+  parameter Real speMinPumHeaWat(final unit="1") = 0.1
+     "Hot water minimum pump speed"
+     annotation(Dialog(group="System level hydronic parameters"));
+  parameter Real speMinPumChiWat(final unit="1") = 0.1
+     "Chilled water minimum pump speed"
+     annotation(Dialog(group="System level hydronic parameters"));
 
   parameter Real ratVFloHea[numVAV](each final unit="1", each start=0.3)
     "VAV box maximum air flow rate ratio in heating mode"

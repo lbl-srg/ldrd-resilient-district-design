@@ -57,49 +57,7 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     "Heating water supply temperature"
     annotation(Dialog(group="ETS model parameters"));
   // IO CONNECTORS
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput TChiWatSupSet(
-    final unit="K",
-    displayUnit="degC")
-    "Chilled water supply temperature set point"
-    annotation (Placement(
-        transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-320,80}), iconTransformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-120,50})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput THeaWatSupMaxSet(
-    final unit="K",
-    displayUnit="degC")
-    "Heating water supply temperature set point - Maximum value"
-    annotation (
-      Placement(transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-320,120}), iconTransformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-120,70})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput THeaWatSupMinSet(
-    final unit="K",
-    displayUnit="degC")
-    "Heating water supply temperature set point - Minimum value"
-    annotation (
-      Placement(transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-320,160}), iconTransformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-120,90})));
   // COMPONENTS
-  Buildings.Controls.OBC.CDL.Continuous.Line resTHeaWatSup "HW supply temperature reset"
-    annotation (Placement(transformation(extent={{-110,-50},{-90,-30}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(k=0) "Zero"
-    annotation (Placement(transformation(extent={{-180,-30},{-160,-10}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant one(k=1) "One"
-    annotation (Placement(transformation(extent={{-180,-70},{-160,-50}})));
   Buildings.Controls.OBC.CDL.Continuous.Gain mulPPumETS(u(final unit="W"), final k=facMul) if have_pum "Scaling"
     annotation (Placement(transformation(extent={{270,-10},{290,10}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput PPumETS(final unit="W") if have_pum "ETS pump power" annotation (
@@ -107,23 +65,56 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={70,120})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupSetMin(k=30 + 273.15) "Min HHWST set point"
+    annotation (Placement(transformation(extent={{-250,30},{-230,50}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupSetMax(k=THeaWatSup_nominal) "Max HHWST set point"
+    annotation (Placement(transformation(extent={{-220,10},{-200,30}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSetMin(k=TChiWatSup_nominal) "Min CHWST set point"
+    annotation (Placement(transformation(extent={{-250,-150},{-230,-130}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSetMax(k=18 + 273.15) "Max CHWST set point"
+    annotation (Placement(transformation(extent={{-220,-170},{-200,-150}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(k=0) "Zero"
+    annotation (Placement(transformation(extent={{-252,-30},{-232,-10}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant one(k=1) "One"
+    annotation (Placement(transformation(extent={{-252,-90},{-232,-70}})));
+  Buildings.Controls.OBC.CDL.Continuous.Line resTHeaWatSup "HHW supply temperature reset"
+    annotation (Placement(transformation(extent={{-130,-70},{-110,-50}})));
+  Buildings.Controls.OBC.CDL.Continuous.Line resTChiWatSup "CHW supply temperature reset"
+    annotation (Placement(transformation(extent={{-130,-130},{-110,-110}})));
+  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaHeaCoo[2](
+    each t=1e-4)
+    "Threshold comparison to enable heating and cooling"
+    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        rotation=-90,
+        origin={-80,-150})));
 equation
-  connect(TChiWatSupSet, ets.TChiWatSupSet) annotation (Line(points={{-320,80},{-132,80},{-132,-66},{-34,-66}},
-                                         color={0,0,127}));
-  connect(resTHeaWatSup.y, ets.THeaWatSupSet) annotation (Line(points={{-88,-40},{-60,-40},{-60,-60},{-34,-60}},
-                                          color={0,0,127}));
-  connect(THeaWatSupMaxSet, resTHeaWatSup.f2) annotation (Line(points={{-320,120},
-          {-280,120},{-280,-48},{-112,-48}}, color={0,0,127}));
-  connect(THeaWatSupMinSet, resTHeaWatSup.f1) annotation (Line(points={{-320,160},
-          {-276,160},{-276,-36},{-112,-36}}, color={0,0,127}));
-  connect(one.y, resTHeaWatSup.x2) annotation (Line(points={{-158,-60},{-126,-60},
-          {-126,-44},{-112,-44}}, color={0,0,127}));
-  connect(zer.y, resTHeaWatSup.x1) annotation (Line(points={{-158,-20},{-116,-20},
-          {-116,-32},{-112,-32}}, color={0,0,127}));
   connect(mulPPumETS.y, PPumETS)
     annotation (Line(points={{292,0},{320,0}},   color={0,0,127}));
   connect(ets.PPum, mulPPumETS.u) annotation (Line(points={{34,-60},{240,-60},{
           240,0},{268,0}},   color={0,0,127}));
+  connect(THeaWatSupSetMin.y, resTHeaWatSup.f1)
+    annotation (Line(points={{-228,40},{-140,40},{-140,-56},{-132,-56}}, color={0,0,127}));
+  connect(THeaWatSupSetMax.y, resTHeaWatSup.f2)
+    annotation (Line(points={{-198,20},{-142,20},{-142,-68},{-132,-68}}, color={0,0,127}));
+  connect(zer.y, resTHeaWatSup.x1)
+    annotation (Line(points={{-230,-20},{-138,-20},{-138,-52},{-132,-52}}, color={0,0,127}));
+  connect(one.y, resTHeaWatSup.x2)
+    annotation (Line(points={{-230,-80},{-136,-80},{-136,-64},{-132,-64}}, color={0,0,127}));
+  connect(TChiWatSupSetMin.y, resTChiWatSup.f1)
+    annotation (Line(points={{-228,-140},{-140,-140},{-140,-116},{-132,-116}}, color={0,0,127}));
+  connect(TChiWatSupSetMax.y, resTChiWatSup.f2)
+    annotation (Line(points={{-198,-160},{-136,-160},{-136,-128},{-132,-128}}, color={0,0,127}));
+  connect(zer.y, resTChiWatSup.x1)
+    annotation (Line(points={{-230,-20},{-138,-20},{-138,-112},{-132,-112}}, color={0,0,127}));
+  connect(one.y, resTChiWatSup.x2)
+    annotation (Line(points={{-230,-80},{-136,-80},{-136,-124},{-132,-124}}, color={0,0,127}));
+  connect(resTHeaWatSup.y, ets.THeaWatSupSet) annotation (Line(points={{-108,-60},{-34,-60}}, color={0,0,127}));
+  connect(resTChiWatSup.y, ets.TChiWatSupSet)
+    annotation (Line(points={{-108,-120},{-60,-120},{-60,-66},{-34,-66}}, color={0,0,127}));
+  connect(enaHeaCoo[1].y, ets.uHea)
+    annotation (Line(points={{-80,-162},{-80,-180},{-40,-180},{-40,-48},{-34,-48}}, color={255,0,255}));
+  connect(enaHeaCoo[2].y, ets.uCoo)
+    annotation (Line(points={{-80,-162},{-80,-180},{-40,-180},{-40,-54},{-34,-54}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>

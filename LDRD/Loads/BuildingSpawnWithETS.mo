@@ -1,6 +1,7 @@
 within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
-  extends BaseClasses.PartialBuildingWithETS(redeclare BaseClasses.BuildingSpawnMediumOfficeVAV bui(
+  extends BaseClasses.PartialBuildingWithETS(
+    redeclare BaseClasses.BuildingSpawnMediumOfficeVAV_speedControl bui(
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal - 5,
       T_aChiWat_nominal=TChiWatSup_nominal,
@@ -19,18 +20,30 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     min=Modelica.Constants.eps)=datVAV.QHeaCoi_flow + sum(datVAV.QRehCoi_flow)
     "Space heating design load (>=0)"
     annotation (Dialog(group="Design parameter"));
-  Buildings.Controls.OBC.CDL.Logical.Sources.Constant FIXME1[2](k=fill(true, 2))
-    "Threshold comparison to enable heating and cooling"
-    annotation (Placement(transformation(extent={{-260,-120},{-240,-100}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant FIXME(k=1) "One"
-    annotation (Placement(transformation(extent={{-260,-80},{-240,-60}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant opeValMax(k=0.9) "Maximum valve opening"
+    annotation (Placement(transformation(extent={{-290,-90},{-270,-70}})));
+  Buildings.Controls.OBC.CDL.Continuous.PID conResHeaWat(
+    k=0.1,
+    Ti=120,
+    reverseActing=false) "Controller for HHWST reset"
+    annotation (Placement(transformation(extent={{-210,-70},{-190,-50}})));
+  Buildings.Controls.OBC.CDL.Continuous.PID conResChiWat(k=0.1, Ti=120) "Controller for CHWST reset"
+    annotation (Placement(transformation(extent={{-210,-130},{-190,-110}})));
 equation
-  connect(FIXME1[1].y, ets.uHea)
-    annotation (Line(points={{-238,-110},{-40,-110},{-40,-48},{-34,-48}}, color={255,0,255}));
-  connect(FIXME1[2].y, ets.uCoo)
-    annotation (Line(points={{-238,-110},{-40,-110},{-40,-54},{-34,-54}}, color={255,0,255}));
-  connect(FIXME.y, resTHeaWatSup.u)
-    annotation (Line(points={{-238,-70},{-220,-70},{-220,-40},{-112,-40}}, color={0,0,127}));
+  connect(opeValMax.y, conResHeaWat.u_s)
+    annotation (Line(points={{-268,-80},{-260,-80},{-260,-60},{-212,-60}}, color={0,0,127}));
+  connect(opeValMax.y, conResChiWat.u_s)
+    annotation (Line(points={{-268,-80},{-260,-80},{-260,-120},{-212,-120}}, color={0,0,127}));
+  connect(bui.yValHeaMax_actual, conResHeaWat.u_m)
+    annotation (Line(points={{22.2,6},{22,6},{22,2},{-180,2},{-180,-80},{-200,-80},{-200,-72}}, color={0,0,127}));
+  connect(bui.yValCooMax_actual, conResChiWat.u_m)
+    annotation (Line(points={{26.2,6},{26,6},{26,0},{-178,0},{-178,-136},{-200,-136},{-200,-132}}, color={0,0,127}));
+  connect(conResChiWat.y, resTChiWatSup.u) annotation (Line(points={{-188,-120},{-132,-120}}, color={0,0,127}));
+  connect(conResHeaWat.y, resTHeaWatSup.u) annotation (Line(points={{-188,-60},{-132,-60}}, color={0,0,127}));
+  connect(bui.yValHeaMax_actual, enaHeaCoo[1].u)
+    annotation (Line(points={{22.2,6},{22,6},{22,2},{-80,2},{-80,-138}}, color={0,0,127}));
+  connect(bui.yValCooMax_actual, enaHeaCoo[2].u)
+    annotation (Line(points={{26.2,6},{26,6},{26,0},{-80,0},{-80,-138}}, color={0,0,127}));
   annotation (Line(
       points={{-1,100},{0.1,100},{0.1,71.4}},
       color={255,204,51},
@@ -56,8 +69,5 @@ First implementation.
 </ul>
 </html>"),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-300,-300},{
-            300,300}}), graphics={Text(
-          extent={{-286,-78},{-180,-104}},
-          lineColor={28,108,200},
-          textString="FIXME: enable heating and cooling signal and TSup reset based on terminal valve demand")}));
+            300,300}})));
 end BuildingSpawnWithETS;

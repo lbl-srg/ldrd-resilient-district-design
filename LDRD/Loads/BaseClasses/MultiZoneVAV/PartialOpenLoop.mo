@@ -154,6 +154,17 @@ partial model PartialOpenLoop
     "Total cooling heat flow rate transferred to the loads (<=0)"
     annotation (Placement(transformation(extent={{800,220},{840,260}}),
       iconTransformation(extent={{100,60},{120,80}})));
+  Modelica.Blocks.Interfaces.RealOutput yValHeaMax_actual(
+    final unit="1")
+    "Maximum opening of heating and reheat coil valves"
+    annotation (Placement(transformation(extent={{800,140},{840,180}}),
+        iconTransformation(extent={{100,-60},{120,-40}})));
+  Modelica.Blocks.Interfaces.RealOutput yValCooMax_actual(
+    final quantity="1")
+    "Maximum opening of cooling coil valve"
+    annotation (Placement(transformation(extent={{800,100},{840,140}}),
+        iconTransformation(extent={{100,-80},{120,-60}})));
+
 
   Buildings.Fluid.Sources.Outside amb(
     redeclare package Medium = MediumA,
@@ -374,12 +385,6 @@ partial model PartialOpenLoop
         extent={{10,-10},{-10,10}},
         rotation=0,
         origin={540,28})));
-  Modelica.Blocks.Interfaces.RealOutput yValHeaMax_actual(final quantity="Power", final unit="W")
-    "Maximum opening of heating and reheat coil valves" annotation (Placement(transformation(extent={{800,140},{840,180}}),
-        iconTransformation(extent={{100,-60},{120,-40}})));
-  Modelica.Blocks.Interfaces.RealOutput yValCooMax_actual(final quantity="Power", final unit="W")
-    "Maximum opening of cooling coil valve" annotation (Placement(transformation(extent={{800,100},{840,140}}),
-        iconTransformation(extent={{100,-80},{120,-60}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiMax maxHea(
     nin=1 + numVAV) "Compute max signal"
     annotation (Placement(transformation(extent={{760,150},{780,170}})));
