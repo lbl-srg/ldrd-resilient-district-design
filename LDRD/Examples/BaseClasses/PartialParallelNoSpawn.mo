@@ -16,9 +16,6 @@ partial model PartialParallelNoSpawn "Partial model for parallel network"
   parameter Integer idxBuiTim[nBui] = {1,2}
     "Indices of building models based on time series"
     annotation (Evaluate=true);
-  inner Data.VAVDataMediumOffice datVAV
-    "Spawn building data"
-    annotation (Placement(transformation(extent={{-340,180},{-320,200}})));
   inner parameter Data.DesignDataSpawn datDes(
     final mCon_flow_nominal=bui.mSerWat_flow_nominal)
     "Design data" annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
@@ -182,7 +179,8 @@ equation
           20,180},{20,160},{12,160},{12,150}}, color={0,127,255}));
   connect(dis.ports_bCon[idxBuiTim], bui[idxBuiTim].port_aSerAmb) annotation (Line(points={{-12,150},
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
-  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},{-180,7.33333},{-161.333,7.33333}},
+  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},
+          {-180,7.33333},{-161.333,7.33333}},
                               color={0,0,127}));
   connect(pla.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{-140,1.33333},
           {-100,1.33333},{-100,-4},{-90,-4}}, color={0,127,255}));

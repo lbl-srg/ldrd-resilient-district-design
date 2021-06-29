@@ -27,7 +27,8 @@ equation
           {60,-60},{60,-60},{68,-60}}, color={0,0,127}));
   connect(pumSto.m_flow_in, masFloMaiPum.y) annotation (Line(points={{-180,-68},
           {-180,-60},{-259,-60}}, color={0,0,127}));
-  connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{-184,20},{-184,4.66667},{-161.333,4.66667}},
+  connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{
+          -184,20},{-184,4.66667},{-161.333,4.66667}},
                                                   color={0,0,127}));
   connect(dis.port_bDisSup, dis.port_aDisRet) annotation (Line(points={{20,140},
           {40,140},{40,134},{20,134}}, color={0,127,255}));

@@ -19,9 +19,6 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   parameter Integer idxBuiTim[nBui-1] = datDes.idxBuiTim
     "Indices of building models based on time series"
     annotation (Evaluate=true);
-  inner Data.VAVDataMediumOffice datVAV
-    "Spawn building data"
-    annotation (Placement(transformation(extent={{-340,180},{-320,200}})));
   inner parameter Data.DesignDataSpawn datDes(
     final mCon_flow_nominal={if i == idxBuiSpa then buiSpa.mSerWat_flow_nominal else bui[i].mSerWat_flow_nominal
       for i in 1:nBui})
@@ -226,23 +223,25 @@ equation
           20,180},{20,160},{12,160},{12,150}}, color={0,127,255}));
   connect(dis.ports_bCon[idxBuiTim], bui[idxBuiTim].port_aSerAmb) annotation (Line(points={{-12,150},
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
-  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},{-180,7.33333},{-161.333,7.33333}},
+  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},
+          {-180,7.33333},{-161.333,7.33333}},
                               color={0,0,127}));
   connect(pla.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{-140,1.33333},
           {-100,1.33333},{-100,-4},{-90,-4}}, color={0,127,255}));
   connect(conPla.port_bCon, pla.port_aSerAmb) annotation (Line(points={{-90,-10},
           {-100,-10},{-100,-20},{-200,-20},{-200,1.33333},{-160,1.33333}},
         color={0,127,255}));
-  connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},{-100,38.6667},{298,38.6667}},
-                                         color={0,0,127}));
+  connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},
+          {-100,38.6667},{298,38.6667}}, color={0,0,127}));
   connect(TDisWatRet.T, conVio.u[2]) annotation (Line(points={{69,0},{60,0},{60,
           40},{298,40}}, color={0,0,127}));
-  connect(TDisWatBorLvg.T, conVio.u[3]) annotation (Line(points={{-91,-40},{-102,-40},{-102,41.3333},{298,41.3333}},
+  connect(TDisWatBorLvg.T, conVio.u[3]) annotation (Line(points={{-91,-40},{
+          -102,-40},{-102,41.3333},{298,41.3333}},
                                               color={0,0,127}));
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
-  connect(pla.PPum, EPumPla.u) annotation (Line(points={{-138.667,5.33333},{-108,5.33333},{-108,44},{180,44},{180,60},{
-          198,60}},                                            color={0,0,127}));
+  connect(pla.PPum, EPumPla.u) annotation (Line(points={{-138.667,5.33333},{
+          -108,5.33333},{-108,44},{180,44},{180,60},{198,60}}, color={0,0,127}));
   connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
           240,121.5},{258,121.5}},
                                color={0,0,127}));
