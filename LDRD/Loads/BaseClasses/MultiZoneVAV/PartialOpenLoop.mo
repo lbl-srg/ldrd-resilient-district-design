@@ -216,7 +216,7 @@ partial model PartialOpenLoop
   Buildings.Fluid.Movers.SpeedControlled_y fanSup(
     redeclare package Medium = MediumA,
     per(pressure(
-      V_flow={0, m_flow_nominal / 1.2 * 2},
+      V_flow=2*{0, m_flow_nominal / 1.2},
       dp=2*{datVAV.dpTot, 0})),
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial)
     "Supply fan"

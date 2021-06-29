@@ -251,7 +251,7 @@
     -8.00,                   !- Time Zone {hr}
     5;                       !- Elevation {m}
 
-! SAN_FRANCISCO_CA_USA Annual Heating 99.6%, MaxDB=3.2°C
+! SAN_FRANCISCO_CA_USA Annual Heating 99.6%, MaxDB=3.2ï¿½C
 
   SizingPeriod:DesignDay,
     SAN_FRANCISCO Ann Htg 99.6% Condns DB,  !- Name
@@ -281,7 +281,7 @@
     ,                        !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance (taud) {dimensionless}
     0.00;                    !- Sky Clearness
 
-! SAN_FRANCISCO_CA_USA Annual Cooling (WB=>MDB) .4%, MDB=25.7°C WB=18.4°C
+! SAN_FRANCISCO_CA_USA Annual Cooling (WB=>MDB) .4%, MDB=25.7ï¿½C WB=18.4ï¿½C
 
   SizingPeriod:DesignDay,
     SAN_FRANCISCO Ann Clg .4% Condns WB=>MDB,  !- Name
@@ -9535,3 +9535,20 @@
 
   Output:Meter,WaterSystems:NaturalGas,hourly;
 
+  Output:VariableDictionary,regular;
+
+  Output:Variable,*,Fan Air Mass Flow Rate, timestep; ! HVAC Average [kg/s]
+
+  Output:Variable,*,Air System Mechanical Ventilation Flow Rate, timestep; ! HVAC Average [m3/s]
+
+  Output:Variable,*,Zone Mechanical Ventilation Mass Flow Rate, timestep; ! HVAC Average [kg/s]
+
+  Output:Variable,*,Zone Air Terminal Sensible Heating Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Zone Air Terminal Sensible Cooling Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Cooling Coil Total Cooling Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Cooling Coil Sensible Cooling Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Heating Coil Heating Rate, timestep; ! HVAC Average [W]

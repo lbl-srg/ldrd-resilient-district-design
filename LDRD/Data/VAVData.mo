@@ -8,6 +8,9 @@ record VAVData "Sizing parameters for VAV system"
   parameter Integer numRet(min=1, start=numVAV)
     "Number of return air inlets"
     annotation(Dialog(group="Configuration"));
+  parameter Boolean have_WSE=false
+    "Set to true in case a waterside economizer is used"
+    annotation (Dialog(group="Configuration"), Evaluate=true);
 
   parameter String namZonCon[numVAV]
     "Name of conditioned zones"
@@ -106,15 +109,22 @@ record VAVData "Sizing parameters for VAV system"
     fill(1500, 1)
     "Nominal pressure drop in chilled water distribution system"
     annotation(Dialog(group="System level hydronic parameters"));
+  parameter Modelica.SIunits.PressureDifference dp2WSE_nominal(displayUnit="Pa")=0
+    "Nominal pressure drop across waterside economizer on building side"
+    annotation (Dialog(group="System level hydronic parameters", enable=have_WSE));
+  parameter Modelica.SIunits.PressureDifference dpVal2WSE_nominal(
+    displayUnit="Pa")=dp2WSE_nominal/10
+    "Nominal pressure drop of waterside economizer bypass valve"
+    annotation (Dialog(group="System level hydronic parameters", enable=have_WSE));
   parameter Modelica.SIunits.PressureDifference dpPumHeaWat_nominal(
     displayUnit="Pa")=
     (2*sum(dpDisHeaWat_nominal) + dpSetPumHeaWat) * 1.2
-    "Nominal head of hot water distribution pump"
+    "Nominal head of hot water distribution pump (20% sizing margin)"
     annotation(Dialog(group="System level hydronic parameters"));
   parameter Modelica.SIunits.PressureDifference dpPumChiWat_nominal(
     displayUnit="Pa")=
-    (2*sum(dpDisChiWat_nominal) + dpSetPumChiWat) * 1.2
-    "Nominal head of chilled water distribution pump"
+    (2*sum(dpDisChiWat_nominal) + dpSetPumChiWat + dp2WSE_nominal + dpVal2WSE_nominal) * 1.2
+    "Nominal head of chilled water distribution pump (20% sizing margin)"
     annotation(Dialog(group="System level hydronic parameters"));
   parameter Modelica.SIunits.PressureDifference dpSetPumHeaWat(
     displayUnit="Pa")=

@@ -13,7 +13,6 @@ model DebugBuildingWithETS
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={-70,0})));
-  inner Data.VAVDataMediumOffice datVAV annotation (Placement(transformation(extent={{-10,64},{10,84}})));
   Buildings.Fluid.Sources.Boundary_pT bou1(redeclare final package Medium = Medium, nPorts=1)
     "Boundary pressure condition representing the expansion vessel"
     annotation (Placement(transformation(
@@ -27,8 +26,8 @@ equation
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
             -100},{80,100}})),
   experiment(
-      StartTime=2500000,
-      StopTime=3500000,
+      StartTime=18903200,
+      StopTime=19412800,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"));
 end DebugBuildingWithETS;

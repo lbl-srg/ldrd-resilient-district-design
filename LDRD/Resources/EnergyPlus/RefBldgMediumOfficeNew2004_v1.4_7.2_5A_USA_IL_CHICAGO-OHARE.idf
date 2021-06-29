@@ -7833,3 +7833,9 @@
   Output:Variable,*,Zone Air Terminal Sensible Heating Rate, timestep; ! HVAC Average [W]
 
   Output:Variable,*,Zone Air Terminal Sensible Cooling Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Cooling Coil Total Cooling Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Cooling Coil Sensible Cooling Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Heating Coil Heating Rate, timestep; ! HVAC Average [W]

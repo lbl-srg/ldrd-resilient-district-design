@@ -167,13 +167,13 @@ model BuildingSpawnMediumOfficeVAV_speedControl "Spawn building model"
     annotation (Placement(transformation(extent={{-230,-230},{-210,-210}})));
   Buildings.Fluid.FixedResistances.PressureDrop bypChiWat(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=0.1 * datVAV.mChiWat_flow_nominal,
+    final m_flow_nominal=0.1*datVAV.mChiWat_flow_nominal,
     final dp_nominal=datVAV.dpSetPumChiWat)
     "End of line bypass"
     annotation (Placement(transformation(extent={{130,-270},{150,-250}})));
   Buildings.Fluid.FixedResistances.PressureDrop bypHeaWat(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=0.1 * datVAV.mHeaWat_flow_nominal,
+    final m_flow_nominal=0.1*datVAV.mHeaWat_flow_nominal,
     final dp_nominal=datVAV.dpSetPumHeaWat)
     "End of line bypass"
     annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
