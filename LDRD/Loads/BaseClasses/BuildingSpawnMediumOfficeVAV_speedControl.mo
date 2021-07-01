@@ -11,6 +11,10 @@ model BuildingSpawnMediumOfficeVAV_speedControl "Spawn building model"
 
   outer replaceable Data.VAVData datVAV;
 
+  parameter Boolean have_bypEnd = false
+    "Set to true for end-of-the-line bypass valve"
+    annotation(Dialog(group="Configuration"), Evaluate=true);
+
   final parameter String namZonCon[nZonCon] = datVAV.namZonCon
     "Name of conditioned zones"
     annotation(Dialog(group="Configuration"));
@@ -165,18 +169,6 @@ model BuildingSpawnMediumOfficeVAV_speedControl "Spawn building model"
     yMin=datVAV.speMinPumChiWat,
     y_reset=0)                   "Chilled water pump controller"
     annotation (Placement(transformation(extent={{-230,-230},{-210,-210}})));
-  Buildings.Fluid.FixedResistances.PressureDrop bypChiWat(
-    redeclare final package Medium = Medium,
-    final m_flow_nominal=0.1*datVAV.mChiWat_flow_nominal,
-    final dp_nominal=datVAV.dpSetPumChiWat)
-    "End of line bypass"
-    annotation (Placement(transformation(extent={{130,-270},{150,-250}})));
-  Buildings.Fluid.FixedResistances.PressureDrop bypHeaWat(
-    redeclare final package Medium = Medium,
-    final m_flow_nominal=0.1*datVAV.mHeaWat_flow_nominal,
-    final dp_nominal=datVAV.dpSetPumHeaWat)
-    "End of line bypass"
-    annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
   Modelica.Blocks.Interfaces.RealOutput yValHeaMax_actual(final unit="1")
     "Maximum opening of heating and reheat coil valves" annotation (Placement(transformation(extent={{300,20},{340,60}}),
         iconTransformation(extent={{-20,-20},{20,20}},
@@ -187,16 +179,41 @@ model BuildingSpawnMediumOfficeVAV_speedControl "Spawn building model"
         iconTransformation(extent={{-20,-20},{20,20}},
         rotation=-90,
         origin={262,-320})));
-  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaPumHeaWat(each t=1e-2, h=5e-3)
+  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaPumHeaWat(each t=2e-2,
+      h=1e-2)
     "Threshold comparison to enable distribution pump" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={140,-30})));
-  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaPumChiWat(each t=1e-2, h=5e-3)
+  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaPumChiWat(each t=2e-2,
+      h=1e-2)
     "Threshold comparison to enable distribution pump" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={180,-30})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTHeaWatRet(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datVAV.mHeaWat_flow_nominal,
+    tau=0) "Sensor for HHW return temperature (diagnostic, no state)"
+    annotation (Placement(transformation(extent={{210,-90},{230,-70}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort
+                                         senTChiWatRet(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datVAV.mChiWat_flow_nominal,
+    tau=0) "Sensor for CHW return temperature (diagnostic, no state)"
+    annotation (Placement(transformation(extent={{210,-290},{230,-270}})));
+  Buildings.Fluid.FixedResistances.PressureDrop bypEnd(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=0.05*datVAV.mHeaWat_flow_nominal,
+    final dp_nominal=datVAV.dpSetPumHeaWat) if have_bypEnd
+    "End of the line bypass (optional)"
+    annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
+  Buildings.Fluid.FixedResistances.PressureDrop bypEnd1(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=0.05*datVAV.mChiWat_flow_nominal,
+    final dp_nominal=datVAV.dpSetPumChiWat) if have_bypEnd
+    "End of the line bypass (optional)"
+    annotation (Placement(transformation(extent={{130,-270},{150,-250}})));
 equation
   for iFre in 1:nZonFre loop
     for iCon in 1:nZonCon loop
@@ -220,10 +237,6 @@ equation
   connect(vav.port_coiCooRet, disChiWat.ports_aCon[1])
     annotation (Line(points={{101.6,-10},{102,-10},{102,-240},{112,-240},{112,-250}}, color={0,127,255}));
 
-  connect(disChiWat.port_bDisRet, mulChiWatOut[1].port_a)
-    annotation (Line(points={{80,-266},{60,-266},{60,-280},{240,-280},{240,-260},{260,-260}}, color={0,127,255}));
-  connect(disHeaWat.port_bDisRet, mulHeaWatOut[1].port_a)
-    annotation (Line(points={{20,-66},{0,-66},{0,-80},{240,-80},{240,-60},{260,-60}},   color={0,127,255}));
   connect(qRadGai_flow.y,multiplex3_1.u1[1])
     annotation (Line(points={{51,150},{60,150},{60,128},{68,128},{68,127}},
        color={0,0,127},smooth=Smooth.None));
@@ -283,13 +296,6 @@ equation
   connect(disChiWat.dp, conPumChiWat.u_m)
     annotation (Line(points={{122,-257},{126,-257},{126,-240},{-220,-240},{-220,-232}}, color={0,0,127}));
   connect(conPumChiWat.y, pumChiWat.y) annotation (Line(points={{-208,-220},{-180,-220},{-180,-248}}, color={0,0,127}));
-  connect(disChiWat.port_bDisSup, bypChiWat.port_a)
-    annotation (Line(points={{120,-260},{130,-260}}, color={0,127,255}));
-  connect(bypChiWat.port_b, disChiWat.port_aDisRet)
-    annotation (Line(points={{150,-260},{160,-260},{160,-266},{120,-266}}, color={0,127,255}));
-  connect(disHeaWat.port_bDisSup, bypHeaWat.port_a) annotation (Line(points={{60,-60},{70,-60}}, color={0,127,255}));
-  connect(bypHeaWat.port_b, disHeaWat.port_aDisRet)
-    annotation (Line(points={{90,-60},{96,-60},{96,-66},{60,-66}}, color={0,127,255}));
   connect(vav.yValCooMax_actual, yValCooMax_actual)
     annotation (Line(points={{111,-7},{292,-7},{292,0},{320,0}}, color={0,0,127}));
   connect(vav.yValHeaMax_actual, yValHeaMax_actual)
@@ -302,6 +308,22 @@ equation
     annotation (Line(points={{111,-7},{180,-7},{180,-18}}, color={0,0,127}));
   connect(enaPumChiWat.y, conPumChiWat.uEna)
     annotation (Line(points={{180,-42},{180,-238},{-224,-238},{-224,-232}}, color={255,0,255}));
+  connect(senTHeaWatRet.port_b, mulHeaWatOut[1].port_a) annotation (Line(points=
+         {{230,-80},{240,-80},{240,-60},{260,-60}}, color={0,127,255}));
+  connect(disHeaWat.port_bDisRet, senTHeaWatRet.port_a) annotation (Line(points=
+         {{20,-66},{0,-66},{0,-80},{210,-80}}, color={0,127,255}));
+  connect(disChiWat.port_bDisRet, senTChiWatRet.port_a) annotation (Line(points=
+         {{80,-266},{60,-266},{60,-280},{210,-280}}, color={0,127,255}));
+  connect(senTChiWatRet.port_b, mulChiWatOut[1].port_a) annotation (Line(points=
+         {{230,-280},{240,-280},{240,-260},{260,-260}}, color={0,127,255}));
+  connect(disHeaWat.port_bDisSup, bypEnd.port_a)
+    annotation (Line(points={{60,-60},{70,-60}}, color={0,127,255}));
+  connect(bypEnd.port_b, disHeaWat.port_aDisRet) annotation (Line(points={{90,-60},
+          {96,-60},{96,-66},{60,-66}}, color={0,127,255}));
+  connect(disChiWat.port_bDisSup, bypEnd1.port_a)
+    annotation (Line(points={{120,-260},{130,-260}}, color={0,127,255}));
+  connect(disChiWat.port_aDisRet, bypEnd1.port_b) annotation (Line(points={{120,
+          -266},{160,-266},{160,-260},{150,-260}}, color={0,127,255}));
   annotation (
     Documentation(
       info="
@@ -332,7 +354,7 @@ First implementation.
           extent={{-108,-100},{92,100}},
           fileName="modelica://Buildings/Resources/Images/ThermalZones/EnergyPlus/EnergyPlusLogo.png")}),
     Diagram(graphics={Text(
-          extent={{-240,-102},{-28,-174}},
+          extent={{-156,-116},{56,-188}},
           lineColor={28,108,200},
           horizontalAlignment=TextAlignment.Left,
           textString="- Valve position resets supply T
@@ -343,5 +365,11 @@ This logic first resets differential pressure setpoint to maximum before resetti
 chilled water supply temperature setpoint down towards design. Parametric plant
 analysis in a variety of climate zones shows that the pump energy penalty
 incurred with this approach is more than offset by chiller energy savings resulting
-from keeping the chilled water supply temperature setpoint as high as possible.")}));
+from keeping the chilled water supply temperature setpoint as high as possible.
+
+This is in contradiction with Trane Chiller System Design and Control: 
+\"Lower chilled-water temperature makes the chiller work harder. 
+However, while the lower water temperature increases chiller energy consumption, 
+it significantly reduces the chilled-water flow rate and pump energy. This
+combination often lowers system energy consumption.")}));
 end BuildingSpawnMediumOfficeVAV_speedControl;

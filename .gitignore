@@ -1,4 +1,5 @@
 eplus_out
 *.xml
 *.so
+*.csv
 debug*mos

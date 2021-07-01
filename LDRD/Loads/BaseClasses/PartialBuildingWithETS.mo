@@ -76,9 +76,8 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     annotation (Placement(transformation(extent={{-130,-70},{-110,-50}})));
   Buildings.Controls.OBC.CDL.Continuous.Line resTChiWatSup "CHW supply temperature reset"
     annotation (Placement(transformation(extent={{-130,-130},{-110,-110}})));
-  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaHeaCoo[2](
-    each t= 1e-2,
-    each h=5e-3)
+  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold enaHeaCoo[2](each t=
+        2e-2, each h=1e-2)
     "Threshold comparison to enable heating and cooling"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=-90,

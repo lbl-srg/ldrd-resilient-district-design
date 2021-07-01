@@ -56,8 +56,8 @@ equation
   connect(bui.yValCooMax_actual, enaHeaCoo[2].u)
     annotation (Line(points={{26.2,6},{26,6},{26,0},{-80,0},{-80,-138}}, color={0,0,127}));
   connect(enaHeaCoo[1].y, conResHeaWat.trigger) annotation (Line(points={{-80,
-          -162},{-80,-180},{-182,-180},{-182,-76},{-206,-76},{-206,-72}}, color
-        ={255,0,255}));
+          -162},{-80,-180},{-182,-180},{-182,-76},{-206,-76},{-206,-72}}, color=
+         {255,0,255}));
   connect(enaHeaCoo[2].y, conResChiWat.trigger) annotation (Line(points={{-80,
           -162},{-80,-180},{-182,-180},{-182,-144},{-206,-144},{-206,-132}},
         color={255,0,255}));
