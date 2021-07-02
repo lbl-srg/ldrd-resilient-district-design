@@ -1,11 +1,14 @@
 within LDRD.Loads;
 model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
-  extends BaseClasses.PartialBuildingWithETS(
-    redeclare BaseClasses.BuildingSpawnMediumOfficeVAV_speedControl bui(
+  extends BaseClasses.PartialBuildingWithETS(redeclare
+      BaseClasses.BuildingSpawnMediumOfficeVAV bui(
+      final idfName=idfName,
+      final weaName=weaName,
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal - 5,
       T_aChiWat_nominal=TChiWatSup_nominal,
-      T_bChiWat_nominal=TChiWatSup_nominal + 5), ets(
+      T_bChiWat_nominal=TChiWatSup_nominal + 5),
+      ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
       QHeaWat_flow_nominal=QHea_flow_nominal));
@@ -17,6 +20,13 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     "VAV system parameters"
     annotation (Placement(transformation(extent={{-40,180},{-20,202}})));
 
+  parameter String idfName=
+    "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"
+    "Name of the IDF file";
+  parameter String weaName=
+    "modelica://LDRD/Resources/WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_modified.mos"
+    "Name of the weather file";
+
   final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal(
     max=-Modelica.Constants.eps)=datVAV.QCooCoi_flow
     "Space cooling design load (<=0)"
@@ -25,7 +35,8 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     min=Modelica.Constants.eps)=datVAV.QHeaCoi_flow + sum(datVAV.QRehCoi_flow)
     "Space heating design load (>=0)"
     annotation (Dialog(group="Design parameter"));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant opeValMax(k=0.9) "Maximum valve opening"
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant opeValMax(k=0.9)
+    "Maximum valve opening"
     annotation (Placement(transformation(extent={{-290,-90},{-270,-70}})));
   Buildings.Controls.OBC.CDL.Continuous.PIDWithReset
                                             conResHeaWat(
@@ -34,11 +45,11 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     reverseActing=false,
     y_reset=1)           "Controller for HHWST reset"
     annotation (Placement(transformation(extent={{-210,-70},{-190,-50}})));
-  Buildings.Controls.OBC.CDL.Continuous.PIDWithReset
-                                            conResChiWat(
+  Buildings.Controls.OBC.CDL.Continuous.PIDWithReset conResChiWat(
     k=0.1,
     Ti=600,
-    y_reset=0)                                                          "Controller for CHWST reset"
+    y_reset=0)
+    "Controller for CHWST reset"
     annotation (Placement(transformation(extent={{-210,-130},{-190,-110}})));
 equation
   connect(opeValMax.y, conResHeaWat.u_s)
