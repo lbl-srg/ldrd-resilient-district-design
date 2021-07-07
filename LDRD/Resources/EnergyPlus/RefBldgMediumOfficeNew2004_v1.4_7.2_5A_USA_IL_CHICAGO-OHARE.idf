@@ -7840,6 +7840,12 @@
 
   Output:Variable,*,Heating Coil Heating Rate, timestep; ! HVAC Average [W]
 
+  Output:Variable,*,Plant Supply Side Cooling Demand Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Plant Supply Side Heating Demand Rate, timestep; ! HVAC Average [W]
+
+  Output:Variable,*,Water Use Equipment Heating Rate, timestep; ! HVAC Average [W]
+
   Output:Variable,*,Water Use Equipment Zone Sensible Heat Gain Rate,hourly; !HVAC,Average,[W]
   Output:Variable,*,Water Use Equipment Zone Latent Gain Rate,hourly; ! HVAC,Average,[W]
   Output:Variable,*,Zone Total Internal Radiant Heating Rate,hourly;  ! Zone,Average,[W]

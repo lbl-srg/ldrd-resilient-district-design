@@ -36,7 +36,7 @@ equation
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
-      StopTime=31536000,
+      StopTime=31532400,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
     Documentation(revisions="<html>

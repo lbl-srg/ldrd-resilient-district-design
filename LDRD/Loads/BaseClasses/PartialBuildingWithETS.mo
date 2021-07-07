@@ -3,7 +3,7 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
   extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuildingWithPartialETS(
     nPorts_heaWat=1,
     nPorts_chiWat=1,
-    redeclare Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield ets(
+    redeclare EnergyTransferStations.Combined.Generation5.ChillerBorefield ets(
       conCon=Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.Pump,
       dp1Hex_nominal=20E3,
       dp2Hex_nominal=20E3,

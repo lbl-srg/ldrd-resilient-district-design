@@ -26,8 +26,8 @@ equation
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
             -100},{80,100}})),
   experiment(
-      StartTime=16416000,
-      StopTime=17625600,
+      StopTime=31532400,
+      __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"));
 end DebugBuildingWithETS;

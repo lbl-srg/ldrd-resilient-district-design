@@ -35,11 +35,17 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"
     "Name of the IDF file";
   parameter String weaName=
-    "modelica://LDRD/Resources/WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_modified.mos"
+    "modelica://LDRD/Resources/WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
     "Name of the weather file";
   parameter String gaiCnvName=
-    "modelica://LDRD/Resources/HeatGains/conv.csv"
-    "Name of file with corrections of convective heat gains";
+    "modelica://LDRD/Resources/HeatGains/cnv.csv"
+    "Name of file with offsets of convective heat gains";
+  parameter String gaiRadName=
+    "modelica://LDRD/Resources/HeatGains/rad.csv"
+    "Name of file with offsets of radiative heat gains";
+  parameter String gaiLatName=
+    "modelica://LDRD/Resources/HeatGains/lat.csv"
+    "Name of file with offsets of latent heat gains";
 
   parameter Modelica.SIunits.Temperature T_aHeaWat_nominal=313.15
     "Heating water inlet temperature at nominal conditions"
@@ -93,16 +99,16 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     zoneName=namZonFre,
     each final nPorts=2)
     "Thermal zone - Free floating"
-    annotation (Placement(transformation(extent={{0,30},{40,70}})));
+    annotation (Placement(transformation(extent={{-70,30},{-30,70}})));
   Modelica.Blocks.Sources.Constant qConGai_flow1[nZonFre](each k=0) "Convective heat gain"
-    annotation (Placement(transformation(extent={{-100,110},{-80,130}})));
+    annotation (Placement(transformation(extent={{-170,110},{-150,130}})));
   Modelica.Blocks.Sources.Constant qRadGai_flow1[nZonFre](each k=0)
     "Radiative heat gain"
-    annotation (Placement(transformation(extent={{-100,140},{-80,160}})));
+    annotation (Placement(transformation(extent={{-170,140},{-150,160}})));
   Modelica.Blocks.Routing.Multiplex3 multiplex3_2[nZonFre]
-    annotation (Placement(transformation(extent={{-60,110},{-40,130}})));
+    annotation (Placement(transformation(extent={{-130,110},{-110,130}})));
   Modelica.Blocks.Sources.Constant qLatGai_flow1[nZonFre](each k=0) "Latent heat gain"
-    annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    annotation (Placement(transformation(extent={{-170,80},{-150,100}})));
   MultiZoneVAV.ASHRAE2006VAV vav "VAV system" annotation (Placement(transformation(extent={{90,-10},{110,10}})));
   Buildings.Experimental.DHC.Loads.Validation.BaseClasses.Distribution2Pipe disHeaWat(
     redeclare final package Medium=Medium,
@@ -215,30 +221,58 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     extrapolation=Modelica.Blocks.Types.Extrapolation.Periodic,
     timeScale=1,
     smoothness=Modelica.Blocks.Types.Smoothness.MonotoneContinuousDerivative1)
-    "Convection heat gains"
-    annotation (Placement(transformation(extent={{-150,190},{-130,210}})));
+    "Offset of convective heat gains"
+    annotation (Placement(transformation(extent={{-30,110},{-10,130}})));
   Buildings.Controls.OBC.CDL.Continuous.Add addPPum "Add pump power"
     annotation (Placement(transformation(extent={{240,70},{260,90}})));
-  Buildings.Controls.OBC.CDL.Routing.RealExtractSignal extSig[nZonCon](
-    each final nin=nZonCon,
-    final extract={{i} for i in 1:nZonCon})
+  Buildings.Controls.OBC.CDL.Routing.RealExtractSignal extSigCnv[nZonCon](each final
+            nin=nZonCon, final extract={{i} for i in 1:nZonCon})
     "Extract zone signal"
     annotation (Placement(transformation(extent={{30,110},{50,130}})));
-  Modelica.Blocks.Sources.Constant qRadGai_flow[nZonCon](
-    each k=0) "Radiative heat gain"
+  Modelica.Blocks.Routing.Replicator repCnv[nZonCon](each final nout=nZonCon)
+    "Replicate signal"
+    annotation (Placement(transformation(extent={{0,110},{20,130}})));
+  Modelica.Blocks.Sources.CombiTimeTable rad(
+    tableOnFile=true,
+    tableName="tab1",
+    fileName=Modelica.Utilities.Files.loadResource(gaiRadName),
+    columns=2:(nZonCon + 1),
+    extrapolation=Modelica.Blocks.Types.Extrapolation.Periodic,
+    timeScale=1,
+    smoothness=Modelica.Blocks.Types.Smoothness.MonotoneContinuousDerivative1)
+    "Offset of radiative heat gains"
+    annotation (Placement(transformation(extent={{-30,140},{-10,160}})));
+  Buildings.Controls.OBC.CDL.Routing.RealExtractSignal extSigRad[nZonCon](each final
+            nin=nZonCon, final extract={{i} for i in 1:nZonCon})
+    "Extract zone signal"
     annotation (Placement(transformation(extent={{30,140},{50,160}})));
-  Modelica.Blocks.Sources.Constant qLatGai_flow[nZonCon](
-    each k=0) "Latent heat gain"
+  Modelica.Blocks.Routing.Replicator repRad[nZonCon](each final nout=nZonCon)
+    "Replicate signal"
+    annotation (Placement(transformation(extent={{0,140},{20,160}})));
+  Modelica.Blocks.Sources.CombiTimeTable lat(
+    tableOnFile=true,
+    tableName="tab1",
+    fileName=Modelica.Utilities.Files.loadResource(gaiLatName),
+    columns=2:(nZonCon + 1),
+    extrapolation=Modelica.Blocks.Types.Extrapolation.Periodic,
+    timeScale=1,
+    smoothness=Modelica.Blocks.Types.Smoothness.MonotoneContinuousDerivative1)
+    "Offset of latent heat gains"
+    annotation (Placement(transformation(extent={{-30,80},{-10,100}})));
+  Buildings.Controls.OBC.CDL.Routing.RealExtractSignal extSigLat[nZonCon](each final
+            nin=nZonCon, final extract={{i} for i in 1:nZonCon})
+    "Extract zone signal"
     annotation (Placement(transformation(extent={{30,80},{50,100}})));
-  Modelica.Blocks.Routing.Replicator rep[nZonCon](
-    each final nout=nZonCon)
-    annotation (Placement(transformation(extent={{-120,190},{-100,210}})));
+  Modelica.Blocks.Routing.Replicator repLat[nZonCon](each final nout=nZonCon)
+    "Replicate signal"
+    annotation (Placement(transformation(extent={{0,80},{20,100}})));
 equation
   for iFre in 1:nZonFre loop
     for iCon in 1:nZonCon loop
       if rouZon[iFre, iCon] then
         connect(zonFre[iFre].ports[2], zon[iCon].ports[2])
-          annotation (Line(points={{22,30.9},{22,20},{162,20},{162,30.9}}, color={0,127,255}));
+          annotation (Line(points={{-48,30.9},{-48,20},{162,20},{162,30.9}},
+                                                                           color={0,127,255}));
       end if;
     end for;
   end for;
@@ -259,19 +293,19 @@ equation
   connect(multiplex3_1.y, zon.qGai_flow) annotation (Line(points={{91,120},{120,120},{120,60},{138,60}},
                                                                                                    color={0,0,127}));
   connect(qRadGai_flow1.y, multiplex3_2.u1[1]) annotation (Line(
-      points={{-79,150},{-70,150},{-70,130},{-62,130},{-62,127}},
+      points={{-149,150},{-140,150},{-140,130},{-132,130},{-132,127}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(qConGai_flow1.y, multiplex3_2.u2[1])
     annotation (Line(
-      points={{-79,120},{-62,120}},
+      points={{-149,120},{-132,120}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(multiplex3_2.u3[1], qLatGai_flow1.y)
-    annotation (Line(points={{-62,113},{-62,114},{-70,114},{-70,90},{-79,90}},
+    annotation (Line(points={{-132,113},{-132,114},{-140,114},{-140,90},{-149,90}},
                                                                        color={0,0,127}));
   connect(multiplex3_2.y, zonFre.qGai_flow)
-    annotation (Line(points={{-39,120},{-30,120},{-30,60},{-2,60}},
+    annotation (Line(points={{-109,120},{-100,120},{-100,60},{-72,60}},
                                                                  color={0,0,127}));
   connect(building.weaBus, vav.weaBus)
     annotation (Line(
@@ -281,7 +315,8 @@ equation
   connect(vav.ports_b, zon.ports[1]) annotation (Line(points={{110,0},{158,0},{158,30.9}},      color={0,127,255}));
   connect(zon.TAir, vav.TRooAir)
     annotation (Line(points={{181,68},{184,68},{184,80},{80,80},{80,8},{89,8}},   color={0,0,127}));
-  connect(vav.ports_a, zonFre.ports[1]) annotation (Line(points={{90,0},{18,0},{18,30.9}},      color={0,127,255}));
+  connect(vav.ports_a, zonFre.ports[1]) annotation (Line(points={{90,0},{-52,0},
+          {-52,24},{-52,24},{-52,30.9}},                                                        color={0,127,255}));
   connect(vav.QCoo_flow, mulQCoo_flow.u)
     annotation (Line(points={{111,7},{130,7},{130,240},{268,240}},     color={0,0,127}));
   connect(vav.QHea_flow, mulQHea_flow.u)
@@ -340,16 +375,24 @@ equation
           {224,74},{238,74}}, color={0,0,127}));
   connect(addPPum.y, mulPPum.u)
     annotation (Line(points={{262,80},{268,80}}, color={0,0,127}));
-  connect(qRadGai_flow.y, multiplex3_1.u1[1]) annotation (Line(points={{51,150},
-          {60,150},{60,127},{68,127}}, color={0,0,127}));
-  connect(qLatGai_flow.y, multiplex3_1.u3[1]) annotation (Line(points={{51,90},{
-          60,90},{60,113},{68,113}}, color={0,0,127}));
-  connect(extSig.y[1], multiplex3_1.u2[1])
+  connect(extSigCnv.y[1], multiplex3_1.u2[1])
     annotation (Line(points={{52,120},{68,120}}, color={0,0,127}));
-  connect(rep.u, cnv.y)
-    annotation (Line(points={{-122,200},{-129,200}}, color={0,0,127}));
-  connect(rep.y, extSig.u) annotation (Line(points={{-99,200},{0,200},{0,120},{28,
-          120}}, color={0,0,127}));
+  connect(repCnv.u, cnv.y)
+    annotation (Line(points={{-2,120},{-9,120}}, color={0,0,127}));
+  connect(repCnv.y, extSigCnv.u)
+    annotation (Line(points={{21,120},{28,120}}, color={0,0,127}));
+  connect(repRad.u, rad.y)
+    annotation (Line(points={{-2,150},{-9,150}}, color={0,0,127}));
+  connect(repRad.y, extSigRad.u)
+    annotation (Line(points={{21,150},{28,150}}, color={0,0,127}));
+  connect(repLat.u, lat.y)
+    annotation (Line(points={{-2,90},{-9,90}}, color={0,0,127}));
+  connect(repLat.y, extSigLat.u)
+    annotation (Line(points={{21,90},{28,90}}, color={0,0,127}));
+  connect(extSigLat.y[1], multiplex3_1.u3[1]) annotation (Line(points={{52,90},{
+          60,90},{60,113},{68,113}}, color={0,0,127}));
+  connect(extSigRad.y[1], multiplex3_1.u1[1]) annotation (Line(points={{52,150},
+          {60,150},{60,127},{68,127}}, color={0,0,127}));
   annotation (
     Documentation(
       info="
