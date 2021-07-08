@@ -3,7 +3,10 @@ model DebugBuildingWithETS
   extends Modelica.Icons.Example;
   package Medium = Buildings.Media.Water "Medium model";
 
-  Loads.BuildingSpawnWithETS bui annotation (Placement(transformation(extent={{-30,-30},{30,30}})));
+  Loads.BuildingSpawnWithETS bui(
+    bui(facMul=10))
+    "Building with ETS"
+    annotation (Placement(transformation(extent={{-30,-30},{30,30}})));
   Buildings.Fluid.Sources.Boundary_pT bou3(
     redeclare final package Medium = Medium,
     T=282.15,
@@ -26,8 +29,8 @@ equation
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})), Icon(coordinateSystem(extent={{-100,
             -100},{80,100}})),
   experiment(
-      StopTime=31532400,
-      __Dymola_NumberOfIntervals=8760,
+      StartTime=16520800,
+      StopTime=17625600,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"));
 end DebugBuildingWithETS;

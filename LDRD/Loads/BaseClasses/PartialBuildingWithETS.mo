@@ -4,19 +4,25 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     nPorts_heaWat=1,
     nPorts_chiWat=1,
     redeclare EnergyTransferStations.Combined.Generation5.ChillerBorefield ets(
+      hex(show_T=true),
+      WSE(show_T=true),
       conCon=Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.Pump,
       dp1Hex_nominal=20E3,
       dp2Hex_nominal=20E3,
       QHex_flow_nominal=abs(QChiWat_flow_nominal),
-      T_a1Hex_nominal=284.15,
-      T_b1Hex_nominal=279.15,
-      T_a2Hex_nominal=277.15,
-      T_b2Hex_nominal=282.15,
+      T_a1Hex_nominal=282.15,
+      T_b1Hex_nominal=278.15,
+      T_a2Hex_nominal=276.15,
+      T_b2Hex_nominal=280.15,
       have_WSE=true,
       QWSE_flow_nominal=QChiWat_flow_nominal,
       dpCon_nominal=15E3,
       dpEva_nominal=15E3,
-      final datChi=datChi));
+      final datChi=datChi,
+      T_a1WSE_nominal=281.15,
+      T_b1WSE_nominal=286.15,
+      T_a2WSE_nominal=291.15,
+      T_b2WSE_nominal=283.15));
   final parameter Modelica.SIunits.MassFlowRate mCon_flow_nominal(min=0)=
     abs(QChiWat_flow_nominal)*(1+1/datChi.COP_nominal)/5/4186
     "Condenser water mass flow rate"
@@ -27,21 +33,21 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     annotation (Dialog(group="ETS model parameters"));
   parameter Buildings.Fluid.Chillers.Data.ElectricEIR.Generic datChi(
     QEva_flow_nominal=QChiWat_flow_nominal,
-    COP_nominal=3,
+    COP_nominal=4,
     PLRMax=1,
     PLRMinUnl=0.3,
     PLRMin=0.3,
     etaMotor=1,
-    mEva_flow_nominal=abs(QChiWat_flow_nominal)/5/4186,
-    final mCon_flow_nominal=mCon_flow_nominal,
-    TEvaLvg_nominal=277.15,
+    mEva_flow_nominal=abs(QChiWat_flow_nominal)/4/4186,
+    final mCon_flow_nominal=mCon_flow_nominal*4/5,
+    TEvaLvg_nominal=276.15,
     capFunT={1.72,0.02,0,-0.02,0,0},
     EIRFunT={0.28,-0.02,0,0.02,0,0},
     EIRFunPLR={0.1,0.9,0},
-    TEvaLvgMin=277.15,
+    TEvaLvgMin=276.15,
     TEvaLvgMax=288.15,
     TConEnt_nominal=313.15,
-    TConEntMin=298.15,
+    TConEntMin=291.15,
     TConEntMax=328.15)
     "Chiller performance data"
     annotation (Placement(transformation(extent={{20,180},{40,200}})));

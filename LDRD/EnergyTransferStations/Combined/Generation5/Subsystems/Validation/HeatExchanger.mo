@@ -81,7 +81,6 @@ model HeatExchanger
     redeclare final package Medium2 = Medium,
     show_T=true,
     conCon=LDRD.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve,
-
     dp1Hex_nominal=20E3,
     dp2Hex_nominal=20E3,
     QHex_flow_nominal=1E6,
@@ -92,6 +91,7 @@ model HeatExchanger
     dT1HexSet=abs(hexVal.T_b1Hex_nominal - hexVal.T_a1Hex_nominal) .* {1 + 1/3,
         1}) "Heat exchanger with primary control valve"
     annotation (Placement(transformation(extent={{-10,10},{10,30}})));
+
   Buildings.Fluid.Sources.Boundary_pT bou1Val(
     redeclare package Medium = Medium,
     p=Medium.p_default + 30E3,

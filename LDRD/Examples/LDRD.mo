@@ -1,6 +1,8 @@
 within LDRD.Examples;
 model LDRD "Example of parallel connection with constant district water mass flow rate"
   extends BaseClasses.PartialParallelSpawn(
+    final facMulTim={1, 10},
+    final facMulSpa=10,
     redeclare
       Loads.BuildingTimeSeriesWithETS bui[nBui-1](final filNam=filNam),
     datDes(
@@ -11,32 +13,28 @@ model LDRD "Example of parallel connection with constant district water mass flo
       epsPla=0.91),
     dis(show_entFlo=true));
   parameter String filNam[nBui-1]={
-    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissHospital_20190916.mos",
-    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissResidential_20190916.mos"}
+    "modelica://LDRD/Resources/Loads/RefBldgHospitalNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",
+    "modelica://LDRD/Resources/Loads/RefBldgMidriseApartmentNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos"}
     "Library paths of the files with thermal loads as time series";
   Modelica.Blocks.Sources.Constant masFloMaiPum(
     k=datDes.mPumDis_flow_nominal)
     "Distribution pump mass flow rate"
     annotation (Placement(transformation(extent={{-280,-70},{-260,-50}})));
-  Modelica.Blocks.Sources.Constant masFloDisPla(k=datDes.mPla_flow_nominal)
-    "District water mass flow rate to plant"
-    annotation (Placement(transformation(extent={{-250,10},{-230,30}})));
 
 equation
   connect(masFloMaiPum.y, pumDis.m_flow_in) annotation (Line(points={{-259,-60},
           {60,-60},{60,-60},{68,-60}}, color={0,0,127}));
   connect(pumSto.m_flow_in, masFloMaiPum.y) annotation (Line(points={{-180,-68},
           {-180,-60},{-259,-60}}, color={0,0,127}));
-  connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{
-          -184,20},{-184,4.66667},{-161.333,4.66667}},
-                                                  color={0,0,127}));
   connect(dis.port_bDisSup, dis.port_aDisRet) annotation (Line(points={{20,140},
           {40,140},{40,134},{20,134}}, color={0,127,255}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
-      StopTime=31532400,
+      StartTime=1800000,
+      StopTime=4000000,
+      __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
     Documentation(revisions="<html>

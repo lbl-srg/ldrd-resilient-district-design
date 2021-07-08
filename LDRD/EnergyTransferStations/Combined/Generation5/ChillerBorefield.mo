@@ -103,9 +103,9 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
     "Record with performance data for primary pump of waterside economizer"
     annotation (
     Dialog(group="Waterside economizer", enable=not have_val1Hex and have_WSE),
-
     choicesAllMatching=true,
     Placement(transformation(extent={{220,222},{240,242}})));
+
   parameter Modelica.SIunits.Temperature TBorWatEntMax=313.15
     "Maximum value of borefield water entering temperature"
     annotation (Dialog(group="Borefield",enable=have_borFie));

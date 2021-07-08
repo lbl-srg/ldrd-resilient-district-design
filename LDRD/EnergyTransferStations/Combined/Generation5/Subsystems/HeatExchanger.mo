@@ -79,7 +79,6 @@ model HeatExchanger
     redeclare final package Medium2 = Medium2,
     final use_Q_flow_nominal=true,
     configuration=Buildings.Fluid.Types.HeatExchangerConfiguration.CounterFlow,
-
     final allowFlowReversal1=allowFlowReversal1,
     final allowFlowReversal2=allowFlowReversal2,
     final dp1_nominal=if have_val1Hex then 0 else dp1Hex_nominal,
@@ -93,6 +92,7 @@ model HeatExchanger
         extent={{10,10},{-10,-10}},
         rotation=180,
         origin={0,0})));
+
   LDRD.EnergyTransferStations.BaseClasses.Pump_m_flow pum1Hex(
     redeclare final package Medium = Medium1,
     final per=perPum1,

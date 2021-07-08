@@ -84,7 +84,6 @@ model WatersideEconomizer
     redeclare final package Medium2 = Medium2,
     final use_Q_flow_nominal=true,
     configuration=Buildings.Fluid.Types.HeatExchangerConfiguration.CounterFlow,
-
     final allowFlowReversal1=allowFlowReversal1,
     final allowFlowReversal2=allowFlowReversal2,
     final dp1_nominal=dp1Hex_nominal,
@@ -95,6 +94,7 @@ model WatersideEconomizer
     final T_a1_nominal=T_a1Hex_nominal,
     final T_a2_nominal=T_a2Hex_nominal) "Heat exchanger" annotation (Placement(
         transformation(extent={{10,10},{-10,-10}}, rotation=180)));
+
   LDRD.EnergyTransferStations.BaseClasses.Pump_m_flow pum1Hex(
     redeclare final package Medium = Medium1,
     final per=perPum1,

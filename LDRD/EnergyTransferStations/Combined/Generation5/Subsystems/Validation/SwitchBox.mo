@@ -37,8 +37,8 @@ model SwitchBox "Validation of flow switch box"
     redeclare final package Medium = Medium,
     trueHoldDuration=300) "Flow switch box"
     annotation (Placement(transformation(extent={{-10,-60},{10,-40}})));
-  Buildings.Fluid.Sensors.MassFlowRate senMasFlo(redeclare final package Medium
-      = Medium) "District water mass flow rate" annotation (Placement(
+  Buildings.Fluid.Sensors.MassFlowRate senMasFlo(redeclare final package Medium =
+        Medium) "District water mass flow rate" annotation (Placement(
         transformation(
         extent={{10,-10},{-10,10}},
         rotation=0,

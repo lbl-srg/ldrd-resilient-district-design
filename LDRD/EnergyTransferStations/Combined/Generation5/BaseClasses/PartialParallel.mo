@@ -3,13 +3,13 @@ model PartialParallel
   "Partial ETS model with district heat exchanger and parallel connection of production systems"
   extends LDRD.EnergyTransferStations.BaseClasses.PartialETS(
     final typ=Buildings.Experimental.DHC.Types.DistrictSystemType.CombinedGeneration5,
-
     final have_heaWat=true,
     final have_chiWat=true,
     final have_pum=true,
     have_hotWat=false,
     have_eleHea=false,
     have_weaBus=false);
+
   parameter EnergyTransferStations.Types.ConnectionConfiguration conCon=
       EnergyTransferStations.Types.ConnectionConfiguration.Pump
     "District connection configuration" annotation (Evaluate=true);

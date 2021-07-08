@@ -40,8 +40,8 @@ model Borefield
         rotation=0,
         origin={-10,-20})));
   parameter Buildings.Fluid.Geothermal.Borefields.Data.Borefield.Example datBorFie(conDat=
-        Buildings.Fluid.Geothermal.Borefields.Data.Configuration.Example(cooBor
-        =cooBor, dp_nominal=0)) "Borefield design data"
+        Buildings.Fluid.Geothermal.Borefields.Data.Configuration.Example(cooBor=
+         cooBor, dp_nominal=0)) "Borefield design data"
     annotation (Placement(transformation(extent={{60,60},{80,80}})));
   Modelica.Blocks.Sources.TimeTable TInlVal(
     y(final unit="K",

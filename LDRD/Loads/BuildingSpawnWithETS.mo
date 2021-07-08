@@ -28,11 +28,12 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     "Name of the weather file";
 
   final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal(
-    max=-Modelica.Constants.eps)=datVAV.QCooCoi_flow
+    max=-Modelica.Constants.eps)=bui.facMul * datVAV.QCooCoi_flow
     "Space cooling design load (<=0)"
     annotation (Dialog(group="Design parameter"));
   final parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal(
-    min=Modelica.Constants.eps)=datVAV.QHeaCoi_flow + sum(datVAV.QRehCoi_flow)
+    min=Modelica.Constants.eps)=
+    bui.facMul * (datVAV.QHeaCoi_flow + sum(datVAV.QRehCoi_flow))
     "Space heating design load (>=0)"
     annotation (Dialog(group="Design parameter"));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant opeValMax(k=0.9)

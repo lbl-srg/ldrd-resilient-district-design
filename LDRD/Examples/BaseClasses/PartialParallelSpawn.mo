@@ -2,8 +2,12 @@ within LDRD.Examples.BaseClasses;
 partial model PartialParallelSpawn "Partial model for parallel network"
   extends Modelica.Icons.Example;
   package Medium = Buildings.Media.Water "Medium model";
-  constant Real facMul = 10
-    "Building loads multiplier factor";
+  parameter Real facMulTim[nBui-1] = fill(1, nBui-1)
+    "Building loads multiplier factor - Time series"
+    annotation(Evaluate=true);
+  parameter Real facMulSpa = 1
+    "Building loads multiplier factor - Spawn"
+    annotation(Evaluate=true);
   parameter Boolean allowFlowReversalSer = true
     "Set to true to allow flow reversal in the service lines"
     annotation(Dialog(tab="Assumptions"), Evaluate=true);
@@ -24,7 +28,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
       for i in 1:nBui})
     "Design data" annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
-  Buildings.Experimental.DHC.Examples.Combined.Generation5.ThermalStorages.BoreField
+  ThermalStorages.BoreField
     borFie(redeclare final package Medium = Medium)
     "Bore field"
     annotation (
@@ -99,15 +103,6 @@ partial model PartialParallelSpawn "Partial model for parallel network"
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-80,-90})));
-  Buildings.Experimental.DHC.Examples.Combined.Generation5.CentralPlants.SewageHeatRecovery
-    pla(
-    redeclare package Medium = Medium,
-    final mSew_flow_nominal=datDes.mPla_flow_nominal,
-    final mDis_flow_nominal=datDes.mPla_flow_nominal,
-    final dpSew_nominal=datDes.dpPla_nominal,
-    final dpDis_nominal=datDes.dpPla_nominal,
-    final epsHex=datDes.epsPla) "Sewage heat recovery plant"
-    annotation (Placement(transformation(extent={{-160,-10},{-140,10}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatSup(
     redeclare final package Medium = Medium,
     final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water supply temperature"
@@ -131,16 +126,12 @@ partial model PartialParallelSpawn "Partial model for parallel network"
         origin={-80,-40})));
   replaceable Loads.BaseClasses.PartialBuildingWithETS bui[nBui - 1]
     constrainedby Loads.BaseClasses.PartialBuildingWithETS(
-      bui(each final facMul=facMul),
+      bui(final facMul=facMulTim),
       redeclare each final package MediumBui = Medium,
       redeclare each final package MediumSer = Medium,
       each final allowFlowReversalBui=allowFlowReversalBui,
       each final allowFlowReversalSer=allowFlowReversalSer) "Building and ETS"
     annotation (Placement(transformation(extent={{-10,170},{10,190}})));
-  Modelica.Blocks.Sources.Constant TSewWat(
-    k=273.15 + 17)
-    "Sewage water temperature"
-    annotation (Placement(transformation(extent={{-280,30},{-260,50}})));
   Buildings.Experimental.DHC.Loads.BaseClasses.ConstraintViolation conVio(
     uMin=datDes.TLooMin,
     uMax=datDes.TLooMax,
@@ -172,11 +163,17 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     annotation (Placement(transformation(extent={{200,-150},{220,-130}})));
   replaceable Loads.BuildingSpawnWithETS buiSpa constrainedby
     Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuildingWithPartialETS(
+    bui(final facMul=facMulSpa),
     redeclare final package MediumBui = Medium,
     redeclare final package MediumSer = Medium,
     final allowFlowReversalBui=allowFlowReversalBui,
-    final allowFlowReversalSer=allowFlowReversalSer) "Spawn building model and ETS"
+    final allowFlowReversalSer=allowFlowReversalSer)
+    "Spawn building model and ETS"
     annotation (Placement(transformation(extent={{40,150},{60,170}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant
+                                                 FIXME(k=0)
+    "Connect to plant pump power"
+    annotation (Placement(transformation(extent={{-180,50},{-160,70}})));
 initial equation
   for i in 1:nBui loop
     Modelica.Utilities.Streams.print(
@@ -223,14 +220,6 @@ equation
           20,180},{20,160},{12,160},{12,150}}, color={0,127,255}));
   connect(dis.ports_bCon[idxBuiTim], bui[idxBuiTim].port_aSerAmb) annotation (Line(points={{-12,150},
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
-  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},
-          {-180,7.33333},{-161.333,7.33333}},
-                              color={0,0,127}));
-  connect(pla.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{-140,1.33333},
-          {-100,1.33333},{-100,-4},{-90,-4}}, color={0,127,255}));
-  connect(conPla.port_bCon, pla.port_aSerAmb) annotation (Line(points={{-90,-10},
-          {-100,-10},{-100,-20},{-200,-20},{-200,1.33333},{-160,1.33333}},
-        color={0,127,255}));
   connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},
           {-100,38.6667},{298,38.6667}}, color={0,0,127}));
   connect(TDisWatRet.T, conVio.u[2]) annotation (Line(points={{69,0},{60,0},{60,
@@ -240,8 +229,6 @@ equation
                                               color={0,0,127}));
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
-  connect(pla.PPum, EPumPla.u) annotation (Line(points={{-138.667,5.33333},{
-          -108,5.33333},{-108,44},{180,44},{180,60},{198,60}}, color={0,0,127}));
   connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
           240,121.5},{258,121.5}},
                                color={0,0,127}));
@@ -264,6 +251,8 @@ equation
     annotation (Line(points={{-12,150},{-12,160},{40,160}}, color={0,127,255}));
   connect(buiSpa.port_bSerAmb, dis.ports_aCon[idxBuiSpa])
     annotation (Line(points={{60,160},{80,160},{80,150},{12,150}}, color={0,127,255}));
+  connect(FIXME.y, EPumPla.u)
+    annotation (Line(points={{-158,60},{198,60}}, color={0,0,127}));
   annotation (Diagram(
     coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
     Documentation(revisions="<html>

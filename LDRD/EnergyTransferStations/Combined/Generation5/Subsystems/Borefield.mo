@@ -3,7 +3,7 @@ model Borefield
   "Base subsystem with geothermal borefield"
   extends Buildings.Fluid.Interfaces.PartialTwoPortInterface(
     final m_flow_nominal=datBorFie.conDat.mBorFie_flow_nominal);
-  replaceable model BoreFieldType=
+  replaceable model BoreFieldType =
       Buildings.Fluid.Geothermal.Borefields.OneUTube constrainedby
     Buildings.Fluid.Geothermal.Borefields.BaseClasses.PartialBorefield(
     redeclare package Medium = Medium,
