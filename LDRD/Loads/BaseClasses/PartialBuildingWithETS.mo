@@ -6,7 +6,7 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     redeclare EnergyTransferStations.Combined.Generation5.ChillerBorefield ets(
       hex(show_T=true),
       WSE(show_T=true),
-      conCon=Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.Pump,
+      conCon=LDRD.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve,
       dp1Hex_nominal=20E3,
       dp2Hex_nominal=20E3,
       QHex_flow_nominal=abs(QChiWat_flow_nominal),
@@ -33,20 +33,20 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     annotation (Dialog(group="ETS model parameters"));
   parameter Buildings.Fluid.Chillers.Data.ElectricEIR.Generic datChi(
     QEva_flow_nominal=QChiWat_flow_nominal,
-    COP_nominal=4,
+    COP_nominal=3.8,
     PLRMax=1,
     PLRMinUnl=0.3,
     PLRMin=0.3,
     etaMotor=1,
     mEva_flow_nominal=abs(QChiWat_flow_nominal)/4/4186,
-    final mCon_flow_nominal=mCon_flow_nominal*4/5,
+    mCon_flow_nominal=mCon_flow_nominal*4/8,
     TEvaLvg_nominal=276.15,
     capFunT={1.72,0.02,0,-0.02,0,0},
     EIRFunT={0.28,-0.02,0,0.02,0,0},
     EIRFunPLR={0.1,0.9,0},
     TEvaLvgMin=276.15,
     TEvaLvgMax=288.15,
-    TConEnt_nominal=313.15,
+    TConEnt_nominal=315.15,
     TConEntMin=291.15,
     TConEntMax=328.15)
     "Chiller performance data"

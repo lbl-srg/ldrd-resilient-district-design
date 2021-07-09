@@ -13,7 +13,8 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
       QChiWat_flow_nominal=QCoo_flow_nominal,
       QHeaWat_flow_nominal=QHea_flow_nominal));
 
-  inner replaceable Data.VAVDataMediumOffice datVAV
+  inner replaceable Data.VAVDataMediumOffice datVAV(TLiqEntCooCoi=
+        TChiWatSup_nominal, TLiqEntHeaCoi=THeaWatSup_nominal)
     constrainedby LDRD.Data.VAVData(
       have_WSE=ets.have_WSE,
       dp2WSE_nominal=if ets.have_WSE then ets.dp2WSE_nominal else 0)
@@ -39,12 +40,12 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant opeValMax(k=0.9)
     "Maximum valve opening"
     annotation (Placement(transformation(extent={{-290,-90},{-270,-70}})));
-  Buildings.Controls.OBC.CDL.Continuous.PIDWithReset
-                                            conResHeaWat(
+  Buildings.Controls.OBC.CDL.Continuous.PIDWithReset conResHeaWat(
     k=0.1,
     Ti=600,
     reverseActing=false,
-    y_reset=1)           "Controller for HHWST reset"
+    y_reset=1)
+    "Controller for HHWST reset"
     annotation (Placement(transformation(extent={{-210,-70},{-190,-50}})));
   Buildings.Controls.OBC.CDL.Continuous.PIDWithReset conResChiWat(
     k=0.1,

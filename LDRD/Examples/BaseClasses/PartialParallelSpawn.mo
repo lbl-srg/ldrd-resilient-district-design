@@ -24,7 +24,8 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     "Indices of building models based on time series"
     annotation (Evaluate=true);
   inner parameter Data.DesignDataSpawn datDes(
-    final mCon_flow_nominal={if i == idxBuiSpa then buiSpa.mSerWat_flow_nominal else bui[i].mSerWat_flow_nominal
+    final mCon_flow_nominal={
+      if i == idxBuiSpa then buiSpa.mSerWat_flow_nominal else bui[i].mSerWat_flow_nominal
       for i in 1:nBui})
     "Design data" annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
@@ -36,9 +37,16 @@ partial model PartialParallelSpawn "Partial model for parallel network"
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-130,-80})));
-  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pumDis(
+  Buildings.Fluid.Movers.SpeedControlled_y  pumDis(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPumDis_flow_nominal)
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    per(
+      pressure(
+        V_flow={0,1,2}*datDes.mPumDis_flow_nominal/1000,
+        dp(displayUnit="Pa") = {1.2,1,0}*datDes.dpPumDis_nominal),
+      motorCooledByFluid=false),
+    addPowerToMedium=false,
+    use_inputFilter=true)
     "Distribution pump"
     annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
@@ -54,7 +62,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
       origin={112,-20})));
   Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pumSto(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mSto_flow_nominal,
+    final m_flow_nominal=borFie.borFieDat.conDat.mBorFie_flow_nominal,
     final allowFlowReversal=allowFlowReversalSer) "Bore field pump" annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
@@ -62,7 +70,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesStandard
     conPla(
     redeclare final package Medium = Medium,
-    final mDis_flow_nominal=datDes.mPipDis_flow_nominal,
+    final mDis_flow_nominal=datDes.mPumDis_flow_nominal,
     final mCon_flow_nominal=datDes.mPla_flow_nominal,
     lDis=0,
     lCon=0,
@@ -79,7 +87,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     redeclare final package Medium = Medium,
     final nCon=nBui,
     final dp_length_nominal=datDes.dp_length_nominal,
-    final mDis_flow_nominal=datDes.mPipDis_flow_nominal,
+    final mDis_flow_nominal=datDes.mPumDis_flow_nominal,
     final mCon_flow_nominal=datDes.mCon_flow_nominal,
     final mDisCon_flow_nominal=datDes.mDisCon_flow_nominal,
     final mEnd_flow_nominal=datDes.mEnd_flow_nominal,
@@ -91,8 +99,8 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesStandard
     conSto(
     redeclare final package Medium = Medium,
-    final mDis_flow_nominal=datDes.mPipDis_flow_nominal,
-    final mCon_flow_nominal=datDes.mSto_flow_nominal,
+    final mDis_flow_nominal=datDes.mPumDis_flow_nominal,
+    final mCon_flow_nominal=pumSto.m_flow_nominal,
     lDis=0,
     lCon=0,
     dhDis=0.2,
@@ -119,7 +127,8 @@ partial model PartialParallelSpawn "Partial model for parallel network"
         origin={80,0})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatBorLvg(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water borefield leaving temperature" annotation (Placement(
+    final m_flow_nominal=datDes.mPumDis_flow_nominal)
+    "District water borefield leaving temperature"                                                   annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
@@ -174,6 +183,12 @@ partial model PartialParallelSpawn "Partial model for parallel network"
                                                  FIXME(k=0)
     "Connect to plant pump power"
     annotation (Placement(transformation(extent={{-180,50},{-160,70}})));
+  Buildings.Fluid.Sensors.MassFlowRate mDisWat_flow(redeclare final package
+      Medium = Medium) "District water mass flow rate" annotation (Placement(
+        transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=0,
+        origin={0,-120})));
 initial equation
   for i in 1:nBui loop
     Modelica.Utilities.Streams.print(
@@ -196,8 +211,6 @@ equation
     annotation (Line(points={{102,-20},{80,-20},{80,-50}}, color={0,127,255}));
   connect(borFie.port_b, conSto.port_aCon) annotation (Line(points={{-120,-80},
           {-100,-80},{-100,-84},{-90,-84}}, color={0,127,255}));
-  connect(pumDis.port_b, conSto.port_aDis) annotation (Line(points={{80,-70},{
-          80,-120},{-80,-120},{-80,-100}}, color={0,127,255}));
   connect(borFie.port_a, pumSto.port_b)
     annotation (Line(points={{-140,-80},{-170,-80}}, color={0,127,255}));
   connect(conSto.port_bCon, pumSto.port_a) annotation (Line(points={{-90,-90},{
@@ -253,6 +266,10 @@ equation
     annotation (Line(points={{60,160},{80,160},{80,150},{12,150}}, color={0,127,255}));
   connect(FIXME.y, EPumPla.u)
     annotation (Line(points={{-158,60},{198,60}}, color={0,0,127}));
+  connect(pumDis.port_b, mDisWat_flow.port_a) annotation (Line(points={{80,-70},
+          {80,-120},{10,-120}}, color={0,127,255}));
+  connect(mDisWat_flow.port_b, conSto.port_aDis) annotation (Line(points={{-10,
+          -120},{-80,-120},{-80,-100}}, color={0,127,255}));
   annotation (Diagram(
     coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
     Documentation(revisions="<html>

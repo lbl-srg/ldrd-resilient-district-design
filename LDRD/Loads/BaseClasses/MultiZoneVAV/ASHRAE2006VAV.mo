@@ -35,7 +35,7 @@ model ASHRAE2006VAV "Variable air volume flow system with terminal reheat"
   DuctStaticPressureSetpoint
     pSetDuc(nin=numVAV, pMin=50) "Duct static pressure setpoint"
     annotation (Placement(transformation(extent={{160,-10},{180,10}})));
-  Buildings.Examples.VAVReheat.Controls.RoomVAV conVAV[numVAV](
+  RoomVAV conVAV[numVAV](
     final ratVFloMin=ratVFloMin,
     final ratVFloHea=ratVFloHea,
     each kCoo=0.05,

@@ -233,11 +233,15 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
     "Waterside economizer"
     annotation (Placement(transformation(extent={{220,116},{240,136}})));
   LDRD.EnergyTransferStations.BaseClasses.Junction splWSE(redeclare final
-      package Medium = MediumBui, final m_flow_nominal=mDisWat_flow_nominal*{1,
+      package Medium = MediumBui,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
+                                  final m_flow_nominal=mDisWat_flow_nominal*{1,
         -1,-1}) "Flow splitter for WSE"
     annotation (Placement(transformation(extent={{-270,-270},{-250,-250}})));
   LDRD.EnergyTransferStations.BaseClasses.Junction mixWSE(redeclare final
-      package Medium = MediumBui, final m_flow_nominal=mDisWat_flow_nominal*{1,
+      package Medium = MediumBui,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
+                                  final m_flow_nominal=mDisWat_flow_nominal*{1,
         -1,1}) "Flow mixer for WSE"
     annotation (Placement(transformation(extent={{244,-250},{264,-270}})));
 

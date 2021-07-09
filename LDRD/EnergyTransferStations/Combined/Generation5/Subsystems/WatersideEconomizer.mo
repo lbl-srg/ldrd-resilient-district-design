@@ -20,7 +20,7 @@ model WatersideEconomizer
     "Nominal pressure drop across heat exchanger on building side"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.PressureDifference dpVal1Hex_nominal(
-    displayUnit="Pa")=dp1Hex_nominal/2
+    displayUnit="Pa")=if have_val1Hex then dp1Hex_nominal/2 else 0
     "Nominal pressure drop of primary control valve"
     annotation (Dialog(enable=have_val1Hex,group="Nominal condition"));
   parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(
@@ -94,7 +94,6 @@ model WatersideEconomizer
     final T_a1_nominal=T_a1Hex_nominal,
     final T_a2_nominal=T_a2Hex_nominal) "Heat exchanger" annotation (Placement(
         transformation(extent={{10,10},{-10,-10}}, rotation=180)));
-
   LDRD.EnergyTransferStations.BaseClasses.Pump_m_flow pum1Hex(
     redeclare final package Medium = Medium1,
     final per=perPum1,
@@ -118,7 +117,8 @@ model WatersideEconomizer
     redeclare final package Medium = Medium2,
     final m_flow_nominal=m2_flow_nominal,
     final allowFlowReversal=allowFlowReversal2)
-    "Heat exchanger secondary water leaving temperature" annotation (Placement(
+    "Heat exchanger secondary water leaving temperature"
+    annotation (Placement(
         transformation(
         extent={{10,-10},{-10,10}},
         rotation=0,
@@ -128,8 +128,8 @@ model WatersideEconomizer
     final m_flow_nominal=m1_flow_nominal,
     from_dp=true,
     final dpValve_nominal=dpVal1Hex_nominal,
-    use_inputFilter=false,
-    final dpFixed_nominal=0) if have_val1Hex
+    final dpFixed_nominal=0,
+    use_inputFilter=false) if have_val1Hex
     "Heat exchanger primary control valve"
     annotation (Placement(transformation(extent={{70,70},{90,90}})));
   Buildings.Controls.OBC.CDL.Continuous.Gain gai1(
@@ -203,8 +203,6 @@ equation
     annotation (Line(points={{-10,-6},{-20,-6},{-20,-60},{-30,-60}}, color={0,127,255}));
   connect(preDro1.port_a, hex.port_a1) annotation (Line(points={{-10,20},{-20,
           20},{-20,6},{-10,6}},                                                                     color={0,127,255}));
-  connect(preDro1.port_b, hex.port_b1) annotation (Line(points={{10,20},{20,20},
-          {20,6},{10,6}},                                                                       color={0,127,255}));
   connect(senT1HexWatEnt.port_b, hex.port_a1) annotation (Line(points={{-20,30},
           {-20,6},{-10,6}},                                                                       color={0,127,255}));
   connect(senT1HexWatEnt.port_a, pum1Hex.port_b)
@@ -230,6 +228,8 @@ equation
     annotation (Line(points={{30,-60},{10,-60}}, color={0,127,255}));
   connect(preDro2.port_b, senT2HexWatLvg.port_a)
     annotation (Line(points={{-10,-60},{-30,-60}}, color={0,127,255}));
+  connect(preDro1.port_b, hex.port_b1) annotation (Line(points={{10,20},{20,20},
+          {20,6},{10,6}}, color={0,127,255}));
   annotation (
     defaultComponentName="hex",
     Icon(

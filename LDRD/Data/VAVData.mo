@@ -215,7 +215,7 @@ record VAVData "Sizing parameters for VAV system"
     "Liquid entering temperature"
     annotation(Dialog(group="Heating coil design parameters"));
   parameter Modelica.SIunits.MassFlowRate mLiqHeaCoi_flow=
-    QHeaCoi_flow / 4186 / 10
+    QHeaCoi_flow / 4186 / 8
     "Liquid mass flow rate"
     annotation(Dialog(group="Heating coil design parameters"));
   parameter Modelica.SIunits.PressureDifference dpLiqHeaCoi(
@@ -258,7 +258,7 @@ record VAVData "Sizing parameters for VAV system"
     "Reheat coil liquid entering temperature"
     annotation(Dialog(group="VAV box design parameters"));
   parameter Modelica.SIunits.MassFlowRate mLiqRehCoi_flow[numVAV]=
-    QRehCoi_flow / 4186 / 10
+    QRehCoi_flow / 4186 / 8
     "Reheat coil liquid mass flow rate"
     annotation(Dialog(group="VAV box design parameters"));
   parameter Modelica.SIunits.PressureDifference dpLiqRehCoi[numVAV](

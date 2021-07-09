@@ -9,30 +9,55 @@ model BoreField "Geothermal borefield model"
     final dT_dz=0.02,
     final dynFil=true,
     borFieDat(
-      final filDat=Buildings.Fluid.Geothermal.Borefields.Data.Filling.Bentonite(
-          kFil=2.0,
-          cFil=3040,
-          dFil=1450),
-      final soiDat=Buildings.Fluid.Geothermal.Borefields.Data.Soil.SandStone(
-          kSoi=2.3,
-          cSoi=1000,
-          dSoi=2600),
-      final conDat=
-          Buildings.Fluid.Geothermal.Borefields.Data.Configuration.Example(
-          borCon=Buildings.Fluid.Geothermal.Borefields.Types.BoreholeConfiguration.DoubleUTubeParallel,
-          dp_nominal=40000,
-          hBor=170,
-          rBor=0.095,
-          nBor=450,
-          cooBor={dBor*{mod(i - 1, 10),floor((i - 1)/10)} for i in 1:450},
-          dBor=dBor,
-          rTub=0.02,
-          kTub=0.5,
-          eTub=0.0037,
-          xC=0.05)),
-    final show_T=true);
-  parameter Integer dBor = 6
+      filDat=Buildings.Fluid.Geothermal.Borefields.Data.Filling.Bentonite(
+        kFil=2.0,
+        cFil=3040,
+        dFil=1450),
+      soiDat=Buildings.Fluid.Geothermal.Borefields.Data.Soil.SandStone(
+        kSoi=2.3,
+        cSoi=1000,
+        dSoi=2600),
+      conDat=Buildings.Fluid.Geothermal.Borefields.Data.Configuration.Example(
+        borCon=Buildings.Fluid.Geothermal.Borefields.Types.BoreholeConfiguration.DoubleUTubeParallel,
+        dp_nominal=dpBorFie_nominal,
+        mBor_flow_nominal=1.0,
+        hBor=hBor,
+        rBor=0.075,
+        nBor=400,
+        cooBor=cooBor,
+        dBor=1,
+        rTub=0.02,
+        kTub=0.5,
+        eTub=0.0037,
+        xC=0.05)),
+    show_T=true);
+  /* 
+  Some parameters (nBor, mBor_flow_nominal) cannot be propagated down to 
+  borFieDat.conDat otherwise Dymola fails to expand.
+  We assign them literally within borFieDat.conDat and propagate them up here.
+  */
+  parameter Integer nBor = borFieDat.conDat.nBor
+    "Length of borehole"
+    annotation(Evaluate=true);
+  parameter Modelica.SIunits.Height hBor = 150
+    "Total height of the borehole";
+  parameter Real dxyBor = 6
     "Distance between boreholes";
+  final parameter Modelica.SIunits.Length cooBor[nBor, 2]=
+    {dxyBor * {mod(i - 1, 10), floor((i - 1)/10)} for i in 1:nBor}
+    "Cartesian coordinates of the boreholes in meters";
+  /*
+  1 kg/s in double-U DN40 HDPE yields 120 Pa/m in each tube.
+  We add 30% singular pressure drop.
+  */
+  parameter Modelica.SIunits.MassFlowRate mBor_flow_nominal=
+    borFieDat.conDat.mBor_flow_nominal
+    "Nominal mass flow rate per borehole"
+    annotation (Dialog(group="Nominal condition"));
+  parameter Modelica.SIunits.Pressure dpBorFie_nominal(displayUnit="Pa")=
+    2 * hBor * 120 * (mBor_flow_nominal / 1.0)^2 * 1.30
+    "Pressure losses for the entire borefield"
+    annotation (Dialog(group="Nominal condition"));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput Q_flow(final unit="W")
     "Rate at which heat is extracted from soil"
     annotation (Placement(transformation(extent={{100,-50},{120,-30}}),
