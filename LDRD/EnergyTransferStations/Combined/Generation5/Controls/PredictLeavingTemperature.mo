@@ -1,12 +1,12 @@
 within LDRD.EnergyTransferStations.Combined.Generation5.Controls;
-model PredictLeavingTemperature "Block that predicts heat exchanger leaving water temperatureBlock that predicts heat exchanger leaving water temperature"
+model PredictLeavingTemperature
+  "Block that predicts heat exchanger leaving water temperature"
   extends Modelica.Blocks.Icons.Block;
   parameter Modelica.SIunits.TemperatureDifference dTApp_nominal
     "Heat exchanger approach"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(
-    displayUnit="Pa")
-    "Nominal pressure drop of heat exchanger bypass valve"
+  parameter Modelica.SIunits.MassFlowRate m2_flow_nominal
+    "Heat exchanger secondary mass flow rate"
     annotation (Dialog(group="Nominal condition"));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput T1HexWatEnt(
     final unit="K",
@@ -20,15 +20,15 @@ model PredictLeavingTemperature "Block that predicts heat exchanger leaving wate
     "Heat exchanger secondary water leaving temperature"
     annotation (Placement(transformation(extent={{100,-20},{140,20}}),
         iconTransformation(extent={{100,-20},{140,20}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput dp2(
-    final unit="Pa")
-    "Pressure drop across heat exchanger bypass valve"
-    annotation (Placement(transformation(extent={{-140,20},{-100,60}}),
-        iconTransformation(extent={{-140,30},{-100,70}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput m2_flow(
+    final unit="kg/s")
+    "Heat exchanger secondary mass flow rate" annotation (Placement(
+        transformation(extent={{-140,20},{-100,60}}), iconTransformation(extent=
+           {{-140,30},{-100,70}})));
 protected
   Real ratLoa "Part load ratio";
 equation
-  ratLoa = min(1, abs(dp2 / dpVal2Hex_nominal)^0.5);
+  ratLoa = min(1, abs(m2_flow / m2_flow_nominal));
   T2HexWatLvg = T1HexWatEnt + dTApp_nominal * ratLoa;
 annotation (
   defaultComponentName="calTemLvg",
