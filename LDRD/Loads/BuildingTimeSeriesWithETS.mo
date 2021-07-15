@@ -3,7 +3,7 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
   extends BaseClasses.PartialBuildingWithETS(
     redeclare Buildings.Experimental.DHC.Loads.Examples.BaseClasses.BuildingTimeSeries bui(
       final filNam=filNam,
-      have_hotWat=true,
+      have_hotWat=false,
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal-5,
       T_aChiWat_nominal=TChiWatSup_nominal,
@@ -11,10 +11,9 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
       facMulHea=10*QHea_flow_nominal/(1.7E5),
       facMulCoo=40*QCoo_flow_nominal/(-1.5E5)),
     ets(
-      have_hotWat=true,
+      have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
-      QHeaWat_flow_nominal=QHea_flow_nominal,
-      QHotWat_flow_nominal=QHot_flow_nominal));
+      QHeaWat_flow_nominal=QHea_flow_nominal));
   parameter String filNam
     "Library path of the file with thermal loads as time series";
   final parameter Modelica.SIunits.HeatFlowRate QCoo_flow_nominal(
@@ -24,13 +23,6 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
   final parameter Modelica.SIunits.HeatFlowRate QHea_flow_nominal(
     min=Modelica.Constants.eps)=bui.facMul * bui.QHea_flow_nominal
     "Space heating design load (>=0)"
-    annotation (Dialog(group="Design parameter"));
-  final parameter Modelica.SIunits.HeatFlowRate QHot_flow_nominal(
-    min=Modelica.Constants.eps)=bui.facMul *
-    Buildings.Experimental.DHC.Loads.BaseClasses.getPeakLoad(
-      string="#Peak water heating load",
-      filNam=Modelica.Utilities.Files.loadResource(filNam))
-    "Hot water design load (>=0)"
     annotation (Dialog(group="Design parameter"));
   Buildings.Controls.OBC.CDL.Continuous.Gain loaHeaNor(
     k=1/bui.QHea_flow_nominal) "Normalized heating load"

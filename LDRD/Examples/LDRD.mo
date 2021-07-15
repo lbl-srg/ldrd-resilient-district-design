@@ -9,7 +9,9 @@ model LDRD "Example of parallel connection with constant district water mass flo
       idxBuiSpa=3,
       dp_length_nominal=250,
       dpPumDisSet=2 * max(buiSpa.ets.dp1Hex_nominal, buiSpa.ets.dp1WSE_nominal)),
-    dis(show_entFlo=true));
+    dis(show_entFlo=true),
+    conSto(show_entFlo=true),
+    conPla(show_entFlo=true));
   /*
   Differential pressure set point takes valve + HX nominal pressure drop,
   assuming 50% authority for the control valve.
@@ -30,7 +32,7 @@ model LDRD "Example of parallel connection with constant district water mass flo
     annotation (Placement(transformation(extent={{30,-70},{50,-50}})));
   Buildings.Fluid.FixedResistances.PressureDrop bypEnd(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=0.05*datDes.mPumDis_flow_nominal,
+    final m_flow_nominal=datDes.mEnd_flow_nominal,
     from_dp=true,
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
@@ -63,7 +65,7 @@ equation
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
       StopTime=31622400,
-      __Dymola_NumberOfIntervals=8760,
+      __Dymola_NumberOfIntervals=35040,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
     Documentation(revisions="<html>
