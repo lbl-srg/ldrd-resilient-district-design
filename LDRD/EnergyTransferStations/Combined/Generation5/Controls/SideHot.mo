@@ -194,9 +194,10 @@ equation
   connect(uHeaCoo,mulAnd.u[1])
     annotation (Line(points={{-200,100},{-56,100},{-56,-75.3333},{-42,-75.3333}},color={255,0,255}));
   connect(isValIsoConClo.y,mulAnd.u[2])
-    annotation (Line(points={{-138,-80},{-42,-80}},color={255,0,255}));
-  connect(isBelLoc.y,mulAnd.u[3])
-    annotation (Line(points={{-68,60},{-60,60},{-60,-84.6667},{-42,-84.6667}},color={255,0,255}));
+    annotation (Line(points={{-138,-80},{-90,-80},{-90,-80},{-42,-80}},
+                                                   color={255,0,255}));
+  connect(isBelLoc.y, mulAnd.u[3]) annotation (Line(points={{-68,60},{-60,60},{
+          -60,-84.6667},{-42,-84.6667}}, color={255,0,255}));
   annotation (
     defaultComponentName="conHot",
     Documentation(

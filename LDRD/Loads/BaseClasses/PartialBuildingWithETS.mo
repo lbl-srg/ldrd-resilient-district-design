@@ -27,8 +27,14 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     abs(QChiWat_flow_nominal)*(1+1/datChi.COP_nominal)/5/4186
     "Condenser water mass flow rate"
     annotation (Dialog(group="ETS model parameters"));
+  /*
+  To size the service water mass flow rate, we add 20% to the max of 
+  WSE and main HX primary flow rates, considering that the peak loads on those 
+  2 pieces of equipment are not coincident.
+  This might be wrong and needs to be checked by simulation.
+  */
   final parameter Modelica.SIunits.MassFlowRate mSerWat_flow_nominal(min=0)=
-    ets.hex.m1_flow_nominal
+    1.2 * max(ets.hex.m1_flow_nominal, ets.m1WSE_flow_nominal)
     "Service water mass flow rate"
     annotation (Dialog(group="ETS model parameters"));
   parameter Buildings.Fluid.Chillers.Data.ElectricEIR.Generic datChi(

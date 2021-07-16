@@ -1,9 +1,10 @@
 within LDRD.EnergyTransferStations.Combined.Generation5.Subsystems;
 model WatersideEconomizer
   "Base subsystem with waterside economizer"
-  extends Buildings.Fluid.Interfaces.PartialFourPortInterface(final
-      m1_flow_nominal=abs(QHex_flow_nominal/4200/(T_b1Hex_nominal -
-        T_a1Hex_nominal)), final m2_flow_nominal=abs(QHex_flow_nominal/4200/(
+  extends Buildings.Fluid.Interfaces.PartialFourPortInterface(
+    final m1_flow_nominal=abs(QHex_flow_nominal/4200/(
+        T_b1Hex_nominal - T_a1Hex_nominal)),
+    final m2_flow_nominal=abs(QHex_flow_nominal/4200/(
         T_b2Hex_nominal - T_a2Hex_nominal)));
   parameter LDRD.EnergyTransferStations.Types.ConnectionConfiguration conCon
     "District connection configuration" annotation (Evaluate=true);

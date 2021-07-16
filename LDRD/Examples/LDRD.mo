@@ -8,7 +8,7 @@ model LDRD "Example of parallel connection with constant district water mass flo
     datDes(
       idxBuiSpa=3,
       dp_length_nominal=250,
-      dpPumDisSet=2 * max(buiSpa.ets.dp1Hex_nominal, buiSpa.ets.dp1WSE_nominal)),
+      dpPumDisSet=dpPumDisSet),
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true));
@@ -16,6 +16,10 @@ model LDRD "Example of parallel connection with constant district water mass flo
   Differential pressure set point takes valve + HX nominal pressure drop,
   assuming 50% authority for the control valve.
   */
+  parameter Modelica.SIunits.PressureDifference dpPumDisSet=
+    2 * (max(buiSpa.ets.dp1Hex_nominal, buiSpa.ets.dp1WSE_nominal) +
+    datDes.dp_length_nominal * datDes.lCon[nBui])
+    "Differential pressure set point at remote location";
 
   parameter String filNam[nBui-1]={
     "modelica://LDRD/Resources/Loads/RefBldgHospitalNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",
@@ -65,7 +69,7 @@ equation
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
       StopTime=31622400,
-      __Dymola_NumberOfIntervals=35040,
+      __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
     Documentation(revisions="<html>
