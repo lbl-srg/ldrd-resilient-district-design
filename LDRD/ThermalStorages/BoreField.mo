@@ -23,7 +23,7 @@ model BoreField "Geothermal borefield model"
         mBor_flow_nominal=1.0,
         hBor=hBor,
         rBor=0.075,
-        nBor=400,
+        nBor=550,
         cooBor=cooBor,
         dBor=1,
         rTub=0.02,

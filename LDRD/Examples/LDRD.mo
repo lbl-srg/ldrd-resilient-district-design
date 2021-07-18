@@ -68,8 +68,8 @@ equation
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
-      StopTime=31622400,
-      __Dymola_NumberOfIntervals=8760,
+      StopTime=63244800,
+      __Dymola_NumberOfIntervals=17520,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
     Documentation(revisions="<html>

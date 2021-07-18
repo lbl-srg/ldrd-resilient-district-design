@@ -1,6 +1,7 @@
 within LDRD.Loads.BaseClasses;
 model PartialBuildingWithETS "Partial model with ETS model and partial building model"
-  extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuildingWithPartialETS(
+  extends
+    Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuildingWithPartialETS(
     nPorts_heaWat=1,
     nPorts_chiWat=1,
     redeclare EnergyTransferStations.Combined.Generation5.ChillerBorefield ets(
@@ -77,9 +78,9 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupSetMax(k=THeaWatSup_nominal) "Max HHWST set point"
     annotation (Placement(transformation(extent={{-220,10},{-200,30}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSetMin(k=TChiWatSup_nominal) "Min CHWST set point"
-    annotation (Placement(transformation(extent={{-250,-150},{-230,-130}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSetMax(k=18 + 273.15) "Max CHWST set point"
     annotation (Placement(transformation(extent={{-220,-170},{-200,-150}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSetMax(k=18 + 273.15) "Max CHWST set point"
+    annotation (Placement(transformation(extent={{-250,-150},{-230,-130}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(k=0) "Zero"
     annotation (Placement(transformation(extent={{-252,-30},{-232,-10}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant one(k=1) "One"
@@ -107,10 +108,6 @@ equation
     annotation (Line(points={{-230,-20},{-138,-20},{-138,-52},{-132,-52}}, color={0,0,127}));
   connect(one.y, resTHeaWatSup.x2)
     annotation (Line(points={{-230,-80},{-136,-80},{-136,-64},{-132,-64}}, color={0,0,127}));
-  connect(TChiWatSupSetMin.y, resTChiWatSup.f1)
-    annotation (Line(points={{-228,-140},{-140,-140},{-140,-116},{-132,-116}}, color={0,0,127}));
-  connect(TChiWatSupSetMax.y, resTChiWatSup.f2)
-    annotation (Line(points={{-198,-160},{-136,-160},{-136,-128},{-132,-128}}, color={0,0,127}));
   connect(zer.y, resTChiWatSup.x1)
     annotation (Line(points={{-230,-20},{-138,-20},{-138,-112},{-132,-112}}, color={0,0,127}));
   connect(one.y, resTChiWatSup.x2)
@@ -122,6 +119,10 @@ equation
     annotation (Line(points={{-80,-162},{-80,-180},{-40,-180},{-40,-48},{-34,-48}}, color={255,0,255}));
   connect(enaHeaCoo[2].y, ets.uCoo)
     annotation (Line(points={{-80,-162},{-80,-180},{-40,-180},{-40,-54},{-34,-54}}, color={255,0,255}));
+  connect(TChiWatSupSetMin.y, resTChiWatSup.f2) annotation (Line(points={{-198,
+          -160},{-136,-160},{-136,-128},{-132,-128}}, color={0,0,127}));
+  connect(TChiWatSupSetMax.y, resTChiWatSup.f1) annotation (Line(points={{-228,
+          -140},{-140,-140},{-140,-116},{-132,-116}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
