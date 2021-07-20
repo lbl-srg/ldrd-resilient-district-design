@@ -41,9 +41,8 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     redeclare final package Medium = Medium,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     per(
-      pressure(
-        V_flow={0,1,2}*datDes.mPumDis_flow_nominal/1000,
-        dp(displayUnit="Pa") = {1.2,1,0}*datDes.dpPumDis_nominal),
+      pressure(V_flow={0,1,2}*datDes.mPumDis_flow_nominal/1000,
+      dp = {1.2,1,0}*datDes.dpPumDis_nominal),
       motorCooledByFluid=false),
     addPowerToMedium=false,
     use_inputFilter=true)
@@ -152,11 +151,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     initType=Modelica.Blocks.Types.Init.InitialState)
     "ETS pump electric energy"
     annotation (Placement(transformation(extent={{200,190},{220,210}})));
-  Modelica.Blocks.Continuous.Integrator EPumPla(
-    initType=Modelica.Blocks.Types.Init.InitialState)
-    "Plant pump electric energy"
-    annotation (Placement(transformation(extent={{200,50},{220,70}})));
-  Buildings.Controls.OBC.CDL.Continuous.MultiSum EPum(nin=4) "Total pump electric energy"
+  Buildings.Controls.OBC.CDL.Continuous.MultiSum EPum(nin=3) "Total pump electric energy"
     annotation (Placement(transformation(extent={{260,110},{280,130}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum PChi(final nin=nBui) "Chiller power"
     annotation (Placement(transformation(extent={{120,150},{140,170}})));
@@ -166,7 +161,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     annotation (Placement(transformation(extent={{300,150},{320,170}})));
   Modelica.Blocks.Continuous.Integrator EPumDis(initType=Modelica.Blocks.Types.Init.InitialState)
     "Distribution pump electric energy"
-    annotation (Placement(transformation(extent={{200,-90},{220,-70}})));
+    annotation (Placement(transformation(extent={{200,-110},{220,-90}})));
   Modelica.Blocks.Continuous.Integrator EPumSto(initType=Modelica.Blocks.Types.Init.InitialState)
     "Storage pump electric energy"
     annotation (Placement(transformation(extent={{200,-150},{220,-130}})));
@@ -179,10 +174,6 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     final allowFlowReversalSer=allowFlowReversalSer)
     "Spawn building model and ETS"
     annotation (Placement(transformation(extent={{40,150},{60,170}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant
-                                                 FIXME(k=0)
-    "Connect to plant pump power"
-    annotation (Placement(transformation(extent={{-180,50},{-160,70}})));
   Buildings.Fluid.Sensors.MassFlowRate mDisWat_flow(redeclare final package
       Medium = Medium) "District water mass flow rate" annotation (Placement(
         transformation(
@@ -243,29 +234,26 @@ equation
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
   connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
-          240,121.5},{258,121.5}},
+          240,121.333},{258,121.333}},
                                color={0,0,127}));
-  connect(EPumPla.y, EPum.u[2]) annotation (Line(points={{221,60},{240,60},{240,
-          120.5},{258,120.5}}, color={0,0,127}));
-  connect(EPumDis.y,EPum. u[3]) annotation (Line(points={{221,-80},{242,-80},{
-          242,119.5},{258,119.5}},
-                               color={0,0,127}));
-  connect(EPumSto.y,EPum. u[4]) annotation (Line(points={{221,-140},{244,-140},
-          {244,118.5},{258,118.5}},color={0,0,127}));
+  connect(EPumDis.y,EPum. u[2]) annotation (Line(points={{221,-100},{242,-100},
+          {242,120},{258,120}},color={0,0,127}));
+  connect(EPumSto.y,EPum. u[3]) annotation (Line(points={{221,-140},{244,-140},
+          {244,118.667},{258,118.667}},
+                                   color={0,0,127}));
   connect(PChi.y, EChi.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
   connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,161},{298,161}}, color={0,0,127}));
   connect(EPum.y,ETot. u[2]) annotation (Line(points={{282,120},{290,120},{290,
           159},{298,159}}, color={0,0,127}));
   connect(pumDis.P, EPumDis.u)
-    annotation (Line(points={{71,-71},{71,-80},{198,-80}}, color={0,0,127}));
+    annotation (Line(points={{71,-71},{71,-100},{198,-100}},
+                                                           color={0,0,127}));
   connect(pumSto.P, EPumSto.u) annotation (Line(points={{-169,-71},{-160,-71},{
           -160,-140},{198,-140}}, color={0,0,127}));
   connect(dis.ports_bCon[idxBuiSpa], buiSpa.port_aSerAmb)
     annotation (Line(points={{-12,150},{-12,160},{40,160}}, color={0,127,255}));
   connect(buiSpa.port_bSerAmb, dis.ports_aCon[idxBuiSpa])
     annotation (Line(points={{60,160},{80,160},{80,150},{12,150}}, color={0,127,255}));
-  connect(FIXME.y, EPumPla.u)
-    annotation (Line(points={{-158,60},{198,60}}, color={0,0,127}));
   connect(pumDis.port_b, mDisWat_flow.port_a) annotation (Line(points={{80,-70},
           {80,-120},{10,-120}}, color={0,127,255}));
   connect(mDisWat_flow.port_b, conSto.port_aDis) annotation (Line(points={{-10,

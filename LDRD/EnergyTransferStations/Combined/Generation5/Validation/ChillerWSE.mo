@@ -1,5 +1,6 @@
 within LDRD.EnergyTransferStations.Combined.Generation5.Validation;
-model ChillerWSE "Validation of the ETS model with heat recovery chiller and waterside economizer"
+model ChillerWSE
+  "Validation of the ETS model with heat recovery chiller and waterside economizer"
   extends ChillerOnly(
     ets(
       have_WSE=true), TChiWatSupSet(k=12 + 273.15));

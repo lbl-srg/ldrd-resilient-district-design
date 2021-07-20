@@ -7,7 +7,7 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     final have_eleHea=false,
     final have_eleCoo=false,
     final have_pum=true,
-    final have_weaBus=false);
+    final have_weaBus=true);
 
   outer replaceable Data.VAVData datVAV;
 
@@ -128,7 +128,8 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     redeclare final package Medium = Medium,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     per(
-      pressure(V_flow={0,1,2}*datVAV.mChiWat_flow_nominal/1000, dp(displayUnit="Pa") = {1.2,1,0}*datVAV.dpPumChiWat_nominal),
+      pressure(V_flow={0,1,2}*datVAV.mChiWat_flow_nominal/1000, dp=
+             {1.2,1,0}*datVAV.dpPumChiWat_nominal),
       motorCooledByFluid=false),
     addPowerToMedium=false)
     "Chilled water distribution pump" annotation (Placement(transformation(
@@ -140,7 +141,8 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     redeclare final package Medium = Medium,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     per(
-      pressure(V_flow={0,1,2}*datVAV.mHeaWat_flow_nominal/1000, dp(displayUnit="Pa") = {1.2,1,0}*datVAV.dpPumHeaWat_nominal),
+      pressure(V_flow={0,1,2}*datVAV.mHeaWat_flow_nominal/1000, dp=
+             {1.2,1,0}*datVAV.dpPumHeaWat_nominal),
       motorCooledByFluid=false),
     addPowerToMedium=false)
     "Heating hot water distribution pump" annotation (Placement(transformation(
@@ -393,6 +395,14 @@ equation
           60,90},{60,113},{68,113}}, color={0,0,127}));
   connect(extSigRad.y[1], multiplex3_1.u1[1]) annotation (Line(points={{52,150},
           {60,150},{60,127},{68,127}}, color={0,0,127}));
+  connect(building.weaBus, weaBus) annotation (Line(
+      points={{62,190},{100,190},{100,300},{1,300}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
   annotation (
     Documentation(
       info="

@@ -120,7 +120,8 @@ block SideHot
     annotation (Placement(transformation(extent={{-160,-90},{-140,-70}})));
   Buildings.Controls.OBC.CDL.Continuous.LessThreshold isValIsoEvaClo(
     final t=1E-6,
-    h=0.5E-6) "Check if isolation valve is closed"
+    h=0.5E-6)
+    "At least one signal is non zero"
     annotation (Placement(transformation(extent={{-160,-130},{-140,-110}})));
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(
     nu=3)
@@ -194,10 +195,9 @@ equation
   connect(uHeaCoo,mulAnd.u[1])
     annotation (Line(points={{-200,100},{-56,100},{-56,-75.3333},{-42,-75.3333}},color={255,0,255}));
   connect(isValIsoConClo.y,mulAnd.u[2])
-    annotation (Line(points={{-138,-80},{-90,-80},{-90,-80},{-42,-80}},
-                                                   color={255,0,255}));
-  connect(isBelLoc.y, mulAnd.u[3]) annotation (Line(points={{-68,60},{-60,60},{
-          -60,-84.6667},{-42,-84.6667}}, color={255,0,255}));
+    annotation (Line(points={{-138,-80},{-42,-80}},color={255,0,255}));
+  connect(isBelLoc.y,mulAnd.u[3])
+    annotation (Line(points={{-68,60},{-60,60},{-60,-84.6667},{-42,-84.6667}},color={255,0,255}));
   annotation (
     defaultComponentName="conHot",
     Documentation(

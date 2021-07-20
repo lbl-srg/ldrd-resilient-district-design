@@ -20,7 +20,7 @@ record DesignDataSpawn "Record with design data for parallel network with Spawn 
     "Nominal mass flow rate of main distribution pump";
   parameter Modelica.SIunits.MassFlowRate mCon_flow_nominal[nBui]
     "Nominal mass flow rate in each connection line";
-  parameter Modelica.SIunits.MassFlowRate mPla_flow_nominal = 11.45
+  parameter Modelica.SIunits.MassFlowRate mPla_flow_nominal = mPumDis_flow_nominal
     "Plant HX nominal mass flow rate (primary = secondary)";
   final parameter Modelica.SIunits.MassFlowRate mDisCon_flow_nominal[nBui]=
     {max(mCon_flow_nominal[nBui], facDiv * sum(mCon_flow_nominal[i:nBui])) for i in 1:nBui}

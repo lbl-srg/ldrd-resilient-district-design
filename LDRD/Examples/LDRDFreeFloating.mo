@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model LDRD "Example of parallel connection with constant district water mass flow rate"
+model LDRDFreeFloating "Example of parallel connection"
   extends BaseClasses.PartialParallelSpawn(
     final facMulTim={1, 10},
     final facMulSpa=10,
@@ -88,4 +88,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end LDRD;
+end LDRDFreeFloating;

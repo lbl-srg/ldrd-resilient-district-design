@@ -1,5 +1,6 @@
 BugAutosize
 DebugBuilding
 DebugBuildingWithETS
-LDRD
+LDRDFreeFloating
+LDRDCoolingTower
 BaseClasses

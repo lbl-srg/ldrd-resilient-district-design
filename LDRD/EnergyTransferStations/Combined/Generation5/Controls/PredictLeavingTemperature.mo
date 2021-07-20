@@ -8,13 +8,13 @@ model PredictLeavingTemperature
   parameter Modelica.SIunits.MassFlowRate m2_flow_nominal
     "Heat exchanger secondary mass flow rate"
     annotation (Dialog(group="Nominal condition"));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput T1HexWatEnt(
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput T1WatEnt(
     final unit="K",
     displayUnit="degC")
     "Heat exchanger primary water entering temperature"
     annotation (Placement(transformation(extent={{-140,-60},{-100,-20}}),
       iconTransformation(extent={{-140,-70},{-100,-30}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealOutput T2HexWatLvg(
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput T2WatLvg(
     final unit="K",
     displayUnit="degC")
     "Heat exchanger secondary water leaving temperature"
@@ -29,21 +29,36 @@ protected
   Real ratLoa "Part load ratio";
 equation
   ratLoa = min(1, abs(m2_flow / m2_flow_nominal));
-  T2HexWatLvg = T1HexWatEnt + dTApp_nominal * ratLoa;
+  T2WatLvg = T1WatEnt + dTApp_nominal * ratLoa;
 annotation (
   defaultComponentName="calTemLvg",
   Documentation(
     revisions="<html>
 <ul>
 <li>
-July 31, 2020, by Antoine Gautier:<br/>
+July 14, 2021, by Antoine Gautier:<br/>
 First implementation.
 </li>
 </ul>
 </html>",
       info="<html>
 <p>
-TODO
+This block computes the predicted heat exchanger leaving water temperature
+as used in
+<a href=\"modelica://Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.WatersideEconomizer\">
+Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.WatersideEconomizer</a>.
+</p>
+<p>
+The predicted heat exchanger approach is computed as
+</p>
+<p>
+<i>dTApp = dTApp_nominal * m2_flow / m2_flow_nominal</i>.
+</p>
+<p>
+Which gives the predicted heat exchanger leaving water temperature as
+</p>
+<p>
+<i>T2WatLvg = T1WatEnt + dTApp</i>.
 </p>
 </html>"));
 end PredictLeavingTemperature;

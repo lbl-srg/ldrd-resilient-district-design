@@ -31,16 +31,14 @@ model HeatExchanger
     redeclare final package Medium1 = Medium,
     redeclare final package Medium2 = Medium,
     show_T=true,
-    conCon=LDRD.EnergyTransferStations.Types.ConnectionConfiguration.Pump,
+    conCon=Types.ConnectionConfiguration.Pump,
     dp1Hex_nominal=20E3,
     dp2Hex_nominal=20E3,
-    QHex_flow_nominal=1E6,
-    T_a1Hex_nominal=281.15,
-    T_b1Hex_nominal=277.15,
-    T_a2Hex_nominal=275.15,
-    T_b2Hex_nominal=279.15,
-    dT1HexSet=abs(hexPum.T_b1Hex_nominal - hexPum.T_a1Hex_nominal) .* {1 + 1/3,
-        1}) "Heat exchanger with primary pump"
+    Q_flow_nominal=1E6,
+    T_a1_nominal=281.15,
+    T_b1_nominal=277.15,
+    T_a2_nominal=275.15,
+    T_b2_nominal=279.15) "Heat exchanger with primary pump"
     annotation (Placement(transformation(extent={{-10,-70},{10,-50}})));
   Buildings.Controls.OBC.CDL.Logical.Switch swi
     annotation (Placement(transformation(extent={{-160,-70},{-140,-50}})));
@@ -80,16 +78,14 @@ model HeatExchanger
     redeclare final package Medium1 = Medium,
     redeclare final package Medium2 = Medium,
     show_T=true,
-    conCon=LDRD.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve,
+    conCon=Types.ConnectionConfiguration.TwoWayValve,
     dp1Hex_nominal=20E3,
     dp2Hex_nominal=20E3,
-    QHex_flow_nominal=1E6,
-    T_a1Hex_nominal=281.15,
-    T_b1Hex_nominal=277.15,
-    T_a2Hex_nominal=275.15,
-    T_b2Hex_nominal=279.15,
-    dT1HexSet=abs(hexVal.T_b1Hex_nominal - hexVal.T_a1Hex_nominal) .* {1 + 1/3,
-        1}) "Heat exchanger with primary control valve"
+    Q_flow_nominal=1E6,
+    T_a1_nominal=281.15,
+    T_b1_nominal=277.15,
+    T_a2_nominal=275.15,
+    T_b2_nominal=279.15) "Heat exchanger with primary control valve"
     annotation (Placement(transformation(extent={{-10,10},{10,30}})));
 
   Buildings.Fluid.Sources.Boundary_pT bou1Val(

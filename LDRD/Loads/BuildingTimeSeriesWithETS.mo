@@ -25,10 +25,10 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
     "Space heating design load (>=0)"
     annotation (Dialog(group="Design parameter"));
   Buildings.Controls.OBC.CDL.Continuous.Gain loaHeaNor(
-    k=1/bui.QHea_flow_nominal) "Normalized heating load"
+    k=1/QHea_flow_nominal) "Normalized heating load"
     annotation (Placement(transformation(extent={{-200,-70},{-180,-50}})));
   Buildings.Controls.OBC.CDL.Continuous.Gain loaCooNor(
-    k=1/bui.QCoo_flow_nominal) "Normalized cooling load"
+    k=1/QCoo_flow_nominal) "Normalized cooling load"
     annotation (Placement(transformation(extent={{-200,-110},{-180,-90}})));
 equation
 

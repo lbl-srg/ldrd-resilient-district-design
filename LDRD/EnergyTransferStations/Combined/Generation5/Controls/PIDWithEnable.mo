@@ -89,7 +89,7 @@ equation
     Documentation(
       info="<html>
 <p>
-This is an update of 
+This is an update of
 <a href=\"modelica://Buildings.Controls.OBC.CDL.Continuous.PIDWithReset\">
 Buildings.Controls.OBC.CDL.Continuous.PIDWithReset</a>
 with an additional Boolean input representing an enable signal.
@@ -99,7 +99,7 @@ with an additional Boolean input representing an enable signal.
 When enabled, the controller output is identical to
 <a href=\"modelica://Buildings.Controls.OBC.CDL.Continuous.PIDWithReset\">
 Buildings.Controls.OBC.CDL.Continuous.PIDWithReset</a>
-(and the controller integral term is reset to <code>yMin</code> at 
+(and the controller integral term is reset to <code>yMin</code> at
 enabling time).
 </li>
 <li>

@@ -3,6 +3,7 @@ model PartialParallel
   "Partial ETS model with district heat exchanger and parallel connection of production systems"
   extends LDRD.EnergyTransferStations.BaseClasses.PartialETS(
     final typ=Buildings.Experimental.DHC.Types.DistrictSystemType.CombinedGeneration5,
+
     final have_heaWat=true,
     final have_chiWat=true,
     final have_pum=true,
@@ -49,10 +50,6 @@ model PartialParallel
   parameter Modelica.SIunits.Temperature T_b2Hex_nominal
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="District heat exchanger"));
-  final parameter Modelica.SIunits.MassFlowRate mDisWat_flow_nominal(min=0)=
-    hex.m1_flow_nominal
-    "District water mass flow rate"
-    annotation (Dialog(group="Nominal condition"));
   parameter Real spePum1HexMin(
     final unit="1",
     min=0)=0.1
@@ -141,13 +138,13 @@ model PartialParallel
     final conCon=conCon,
     final dp1Hex_nominal=dp1Hex_nominal,
     final dp2Hex_nominal=dp2Hex_nominal,
-    final QHex_flow_nominal=QHex_flow_nominal,
-    final T_a1Hex_nominal=T_a1Hex_nominal,
-    final T_b1Hex_nominal=T_b1Hex_nominal,
-    final T_a2Hex_nominal=T_a2Hex_nominal,
-    final T_b2Hex_nominal=T_b2Hex_nominal,
-    final spePum1HexMin=spePum1HexMin,
-    final spePum2HexMin=spePum2HexMin) "District heat exchanger"
+    final Q_flow_nominal=QHex_flow_nominal,
+    final T_a1_nominal=T_a1Hex_nominal,
+    final T_b1_nominal=T_b1Hex_nominal,
+    final T_a2_nominal=T_a2Hex_nominal,
+    final T_b2_nominal=T_b2Hex_nominal,
+    final spePum1Min=spePum1HexMin,
+    final spePum2Min=spePum2HexMin) "District heat exchanger"
     annotation (Placement(transformation(extent={{-10,-244},{10,-264}})));
   EnergyTransferStations.BaseClasses.StratifiedTank tanChiWat(
     redeclare final package Medium = MediumBui,
@@ -213,7 +210,7 @@ model PartialParallel
         origin={190,-34})));
 protected
   parameter Boolean have_val1Hex=
-    conCon ==LDRD.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
+    conCon ==Types.ConnectionConfiguration.TwoWayValve
     "True in case of control valve on district side, false in case of a pump";
 equation
   connect(hex.PPum,totPPum.u[1])
@@ -246,9 +243,11 @@ equation
   connect(uHea,conSup.uHea)
     annotation (Line(points={{-320,100},{-290,100},{-290,31},{-262,31}},color={255,0,255}));
   connect(valIsoEva.port_a,colChiWat.ports_aCon[1])
-    annotation (Line(points={{70,-120},{108,-120},{108,-24}},color={0,127,255}));
+    annotation (Line(points={{70,-120},{90,-120},{90,-24},{108,-24}},
+                                                             color={0,127,255}));
   connect(colAmbWat.port_aDisRet,colChiWat.ports_bCon[1])
-    annotation (Line(points={{20,-100},{132,-100},{132,-24}},color={0,127,255}));
+    annotation (Line(points={{20,-100},{150,-100},{150,-24},{132,-24}},
+                                                             color={0,127,255}));
   connect(conSup.yValIsoEva,valIsoEva.y)
     annotation (Line(points={{-238,21},{-220,21},{-220,-80},{60,-80},{60,-108}},color={0,0,127}));
   connect(conSup.yValIsoCon,valIsoCon.y)
@@ -264,9 +263,11 @@ equation
   connect(tanHeaWat.port_bBot,colHeaWat.port_aDisSup)
     annotation (Line(points={{-200,100},{-180,100},{-180,-34},{-140,-34}},color={0,127,255}));
   connect(valIsoCon.port_a,colHeaWat.ports_aCon[1])
-    annotation (Line(points={{-70,-120},{-108,-120},{-108,-24}},color={0,127,255}));
+    annotation (Line(points={{-70,-120},{-90,-120},{-90,-24},{-108,-24}},
+                                                                color={0,127,255}));
   connect(colAmbWat.port_bDisRet,colHeaWat.ports_bCon[1])
-    annotation (Line(points={{-20,-100},{-132,-100},{-132,-24}},color={0,127,255}));
+    annotation (Line(points={{-20,-100},{-150,-100},{-150,-24},{-132,-24}},
+                                                                color={0,127,255}));
   connect(totPHea.y,PHea)
     annotation (Line(points={{282,60},{290,60},{290,80},{320,80}},
                                                 color={0,0,127}));
@@ -345,8 +346,10 @@ as the connections are in parallel.
 </li>
 </ul>
 <p>
-Eventually, note that this hydronic layout is not compatible with a
-compressor-less cooling mode using only the district heat exchanger.
+Note that the model includes a pressure boundary condition which
+is shared between the hot water and chilled water circuits, the two circuits
+being hydronically connected.
+<br/>
 </p>
 <p>
 <img alt=\"Sequence chart\"
@@ -355,6 +358,11 @@ src=\"modelica://Buildings/Resources/Images/Experimental/DHC/EnergyTransferStati
 </html>",
 revisions="<html>
 <ul>
+<li>
+July 14, 2021, by Antoine Gautier:<br/>
+Added pressure boundary condition.<br/>
+This is for <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/2561\">issue #2561</a>.
+</li>
 <li>
 December 21, 2020, by Antoine Gautier:<br/>
 Added outputs for distributed energy flow rate.

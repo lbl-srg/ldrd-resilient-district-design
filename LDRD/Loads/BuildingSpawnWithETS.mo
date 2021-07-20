@@ -51,7 +51,7 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     k=0.1,
     Ti=600,
     reverseActing=false,
-    y_reset=0)
+    y_reset=1)
     "Controller for CHWST reset"
     annotation (Placement(transformation(extent={{-210,-130},{-190,-110}})));
 equation
@@ -62,8 +62,10 @@ equation
   connect(bui.yValHeaMax_actual, conResHeaWat.u_m)
     annotation (Line(points={{22.2,6},{22,6},{22,2},{-180,2},{-180,-80},{-200,-80},{-200,-72}}, color={0,0,127}));
   connect(bui.yValCooMax_actual, conResChiWat.u_m)
-    annotation (Line(points={{26.2,6},{26,6},{26,0},{-178,0},{-178,-136},{-200,-136},{-200,-132}}, color={0,0,127}));
-  connect(conResChiWat.y, resTChiWatSup.u) annotation (Line(points={{-188,-120},{-132,-120}}, color={0,0,127}));
+    annotation (Line(points={{26.2,6},{26,6},{26,0},{-178,0},{-178,-136},{-200,
+          -136},{-200,-132}},                                                                      color={0,0,127}));
+  connect(conResChiWat.y, resTChiWatSup.u) annotation (Line(points={{-188,-120},
+          {-132,-120}},                                                                       color={0,0,127}));
   connect(conResHeaWat.y, resTHeaWatSup.u) annotation (Line(points={{-188,-60},{-132,-60}}, color={0,0,127}));
   connect(bui.yValHeaMax_actual, enaHeaCoo[1].u)
     annotation (Line(points={{22.2,6},{22,6},{22,2},{-80,2},{-80,-138}}, color={0,0,127}));
@@ -100,5 +102,9 @@ First implementation.
 </ul>
 </html>"),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-300,-300},{
-            300,300}})));
+            300,300}}), graphics={Text(
+          extent={{-238,100},{-118,50}},
+          lineColor={28,108,200},
+          textString=
+              "Important to reset the controllers for STSP to extreme set point values when enabled.")}));
 end BuildingSpawnWithETS;

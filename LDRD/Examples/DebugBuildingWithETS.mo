@@ -9,6 +9,7 @@ model DebugBuildingWithETS
     annotation (Placement(transformation(extent={{-30,-30},{30,30}})));
   Buildings.Fluid.Sources.Boundary_pT bou3(
     redeclare final package Medium = Medium,
+    p=Medium.p_default + 2*max(bui.ets.dp1Hex_nominal, bui.ets.dp1WSE_nominal),
     T=282.15,
     nPorts=1)
     "Boundary pressure condition representing the expansion vessel"
@@ -16,6 +17,7 @@ model DebugBuildingWithETS
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={-70,0})));
+
   Buildings.Fluid.Sources.Boundary_pT bou1(redeclare final package Medium = Medium, nPorts=1)
     "Boundary pressure condition representing the expansion vessel"
     annotation (Placement(transformation(
