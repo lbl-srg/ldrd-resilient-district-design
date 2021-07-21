@@ -69,6 +69,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
   Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesStandard
     conPla(
     redeclare final package Medium = Medium,
+    show_entFlo=true,
     final mDis_flow_nominal=datDes.mPumDis_flow_nominal,
     final mCon_flow_nominal=datDes.mPla_flow_nominal,
     lDis=0,
@@ -180,6 +181,9 @@ partial model PartialParallelSpawn "Partial model for parallel network"
         extent={{10,-10},{-10,10}},
         rotation=0,
         origin={0,-120})));
+  Modelica.Blocks.Continuous.Integrator EPla(initType=Modelica.Blocks.Types.Init.InitialState)
+    "Pant energy"
+    annotation (Placement(transformation(extent={{200,0},{220,20}})));
 initial equation
   for i in 1:nBui loop
     Modelica.Utilities.Streams.print(
@@ -258,6 +262,8 @@ equation
           {80,-120},{10,-120}}, color={0,127,255}));
   connect(mDisWat_flow.port_b, conSto.port_aDis) annotation (Line(points={{-10,
           -120},{-80,-120},{-80,-100}}, color={0,127,255}));
+  connect(conPla.dH_flow, EPla.u)
+    annotation (Line(points={{-87,2},{-87,10},{198,10}}, color={0,0,127}));
   annotation (Diagram(
     coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
     Documentation(revisions="<html>

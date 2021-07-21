@@ -29,7 +29,7 @@ model CoolingTower "Cooling tower"
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     TAirInWB_nominal=298.65,
     final TApp_nominal=dTApp_nominal,
-    TRan_nominal=5,
+    TRan_nominal=4,
     fraPFan_nominal=130,
     yMin=0.1)
     "Cooling tower"

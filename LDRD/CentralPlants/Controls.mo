@@ -211,20 +211,22 @@ in short circuit for additional night cooling without circulating
 water through the whole DHC network.
 </p>
 <p> 
-Basic logic control
+Control logic
 </p>
 <ul> 
 <li>
 Enable with similar logic as WSE: 
-based on predicted leaving water temperature, and
-deltaT across borefield is lower than 1 K
+based on predicted leaving water temperature that must
+be lower (with margin) than entering and higher than minimum district 
+water temperature, and deltaT across borefield is lower than 1 K.
 </li>
 <li>
 When enabled, modulate fan speed between minimum when deltaT 
 across borefield is 1 K and maximum when -2 K. 
 </li>
 <li>
-Disable if leaving temperature lower than entering +0.5
+Disable if leaving temperature higher (with margin) than entering
+or lower than minimum district water temperature.
 </li>
 </ul>
 </html>"));

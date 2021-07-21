@@ -13,7 +13,8 @@ model LDRDCoolingTower
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true),
-    conVio(nu=4));
+    conVio(nu=4),
+    EPum(nin=4));
   /*
   Differential pressure set point takes valve + HX nominal pressure drop,
   assuming 50% authority for the control valve.
@@ -60,9 +61,9 @@ model LDRDCoolingTower
   Modelica.Blocks.Continuous.Integrator ESto(initType=Modelica.Blocks.Types.Init.InitialState)
     "Stored energy"
     annotation (Placement(transformation(extent={{200,-70},{220,-50}})));
-  Modelica.Blocks.Continuous.Integrator EPla(initType=Modelica.Blocks.Types.Init.InitialState)
-    "Cooling tower energy"
-    annotation (Placement(transformation(extent={{200,10},{220,30}})));
+  Modelica.Blocks.Continuous.Integrator EPumPla(initType=Modelica.Blocks.Types.Init.InitialState)
+    "Plant pump energy"
+    annotation (Placement(transformation(extent={{200,50},{220,70}})));
   Modelica.Blocks.Continuous.Integrator EFanPla(initType=Modelica.Blocks.Types.Init.InitialState)
     "Plant fan electric energy"
     annotation (Placement(transformation(extent={{200,90},{220,110}})));
@@ -102,26 +103,26 @@ equation
           0},{-60,-36},{-165.333,-36},{-165.333,-22.6667}}, color={0,0,127}));
   connect(cooTow.weaBus, buiSpa.weaBus) annotation (Line(
       points={{-177.733,0.0666667},{-200,0.0666667},{-200,200},{50,200},{50,170}},
-
       color={255,204,51},
       thickness=0.5));
+
   connect(mDisWat_flow.m_flow, cooTow.m_flow) annotation (Line(points={{0,-109},
           {0,-106},{-250,-106},{-250,-40},{-178,-40},{-178,-22.6667},{-177.333,
           -22.6667}}, color={0,0,127}));
   connect(conSto.dH_flow, ESto.u) annotation (Line(points={{-87,-78},{180,-78},
           {180,-60},{198,-60}}, color={215,215,215}));
-  connect(conPla.dH_flow, EPla.u) annotation (Line(points={{-87,2},{-88,2},{-88,
-          20},{198,20}}, color={215,215,215}));
   connect(cooTow.PPum, EPumPla.u) annotation (Line(points={{-170.667,22.6667},{
           -170.667,60},{198,60}}, color={215,215,215}));
   connect(cooTow.PFan, EFanPla.u) annotation (Line(points={{-173.333,22.6667},{
           -173.333,100},{198,100}}, color={215,215,215}));
+  connect(EPumPla.y, EPum.u[4]) annotation (Line(points={{221,60},{240,60},{240,
+          120},{258,120}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
-      StopTime=31622400,
-      __Dymola_NumberOfIntervals=8760,
+      StopTime=63244800,
+      __Dymola_NumberOfIntervals=17520,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
     Documentation(revisions="<html>
