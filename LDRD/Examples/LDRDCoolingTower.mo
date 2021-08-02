@@ -90,17 +90,15 @@ equation
           -173.333,-40},{-173.333,-22.6667}},
                                      color={0,0,127}));
   connect(conPla.port_bCon, cooTow.port_aSerAmb) annotation (Line(points={{-90,-10},
-          {-110,-10},{-110,-34},{-162.667,-34},{-162.667,-20}}, color={0,127,255}));
+          {-110,-10},{-110,-30},{-162.667,-30},{-162.667,-20}}, color={0,127,255}));
   connect(cooTow.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
-          -162.667,20},{-164,20},{-164,28},{-110,28},{-110,-4},{-90,-4}},
+          -162.667,20},{-162.667,26},{-162.667,30},{-110,30},{-110,-4},{-90,-4}},
                                                                  color={0,127,255}));
   connect(TDisWatSup.T, conVio.u[4]) annotation (Line(points={{-91,20},{-100,20},
           {-100,38.6667},{298,38.6667},{298,40}}, color={0,0,127}));
   connect(TDisWatSup.T, cooTow.TWatLvg) annotation (Line(points={{-91,20},{-100,
           20},{-100,-38},{-170,-38},{-170,-22.6667},{-169.333,-22.6667}}, color=
          {0,0,127}));
-  connect(TDisWatRet.T, cooTow.TBorWatEnt) annotation (Line(points={{69,0},{-60,
-          0},{-60,-36},{-165.333,-36},{-165.333,-22.6667}}, color={0,0,127}));
   connect(cooTow.weaBus, buiSpa.weaBus) annotation (Line(
       points={{-177.733,0.0666667},{-200,0.0666667},{-200,200},{50,200},{50,170}},
       color={255,204,51},

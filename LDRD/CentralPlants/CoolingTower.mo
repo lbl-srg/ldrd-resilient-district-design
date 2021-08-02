@@ -18,10 +18,15 @@ model CoolingTower "Cooling tower"
     annotation(Dialog(group = "Nominal condition"));
   parameter Modelica.SIunits.TemperatureDifference TLvgMin = 9 + 273.15
     "Minimum leaving temperature";
+  parameter Modelica.SIunits.TemperatureDifference TEntMax = 12 + 273.15
+    "Entering temperature for maximum fan speed";
   parameter Modelica.SIunits.TemperatureDifference dTApp_nominal = 4
     "Approach"
     annotation (Dialog(group="Nominal condition"));
-
+  parameter Modelica.SIunits.TemperatureDifference TRan_nominal(
+    displayUnit="K") = 4
+    "Design range temperature (water in - water out)"
+    annotation (Dialog(group="Nominal condition"));
   Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc yorkCalc(
     redeclare final package Medium = Medium,
     final m_flow_nominal=m_flow_nominal,
@@ -29,7 +34,7 @@ model CoolingTower "Cooling tower"
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     TAirInWB_nominal=298.65,
     final TApp_nominal=dTApp_nominal,
-    TRan_nominal=4,
+    final TRan_nominal=TRan_nominal,
     fraPFan_nominal=130,
     yMin=0.1)
     "Cooling tower"
@@ -55,7 +60,8 @@ model CoolingTower "Cooling tower"
   Controls.CoolingTower con(
     final m_flow_nominal=m_flow_nominal,
     final dTApp_nominal=dTApp_nominal,
-    final TLvgMin=TLvgMin)
+    final TLvgMin=TLvgMin,
+    final TEntMax=TEntMax)
     "Controller"
     annotation (Placement(transformation(extent={{-70,80},{-50,100}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TWatLvg(final unit="K",
@@ -66,10 +72,6 @@ model CoolingTower "Cooling tower"
       displayUnit="degC") "Water entering temperature" annotation (Placement(
         transformation(extent={{-340,120},{-300,160}}),  iconTransformation(
           extent={{-380,160},{-300,240}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput TBorWatEnt(final unit="K",
-      displayUnit="degC") "Borefield water entering temperature" annotation (
-      Placement(transformation(extent={{-340,40},{-300,80}}),
-        iconTransformation(extent={{-380,40},{-300,120}})));
 equation
   connect(yorkCalc.TAir, weaBus.TWetBul) annotation (Line(points={{-12,44},{-20,
           44},{-20,60},{1,60},{1,266}}, color={0,0,127}), Text(
@@ -95,8 +97,6 @@ equation
       index=1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
-  connect(TBorWatEnt, con.TBorWatEnt) annotation (Line(points={{-320,60},{-80,60},
-          {-80,84},{-72,84}}, color={0,0,127}));
   connect(TWatLvg, con.TWatLvg) annotation (Line(points={{-320,100},{-120,100},{
           -120,87},{-72,87}}, color={0,0,127}));
   connect(TWatEnt, con.TWatEnt) annotation (Line(points={{-320,140},{-112,140},{
