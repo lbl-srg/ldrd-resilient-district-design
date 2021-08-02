@@ -30,6 +30,12 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
   Buildings.Controls.OBC.CDL.Continuous.Gain loaCooNor(
     k=1/QCoo_flow_nominal) "Normalized cooling load"
     annotation (Placement(transformation(extent={{-200,-110},{-180,-90}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaChi
+    "Chiller compressor enable signal" annotation (Placement(transformation(
+          extent={{-340,140},{-300,180}}), iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={-120,60})));
 equation
 
   connect(bui.QReqHea_flow, loaHeaNor.u)
@@ -42,6 +48,8 @@ equation
   connect(loaCooNor.y, enaHeaCoo[2].u) annotation (Line(points={{-178,-100},{-80,-100},{-80,-138}}, color={0,0,127}));
   connect(loaHeaNor.y, enaHeaCoo[1].u)
     annotation (Line(points={{-178,-60},{-150,-60},{-150,-92},{-80,-92},{-80,-138}}, color={0,0,127}));
+  connect(uEnaChi, ets.uEnaChi) annotation (Line(points={{-320,160},{-50,160},{
+          -50,-72},{-34,-72}}, color={255,0,255}));
   annotation (Line(
       points={{-1,100},{0.1,100},{0.1,71.4}},
       color={255,204,51},

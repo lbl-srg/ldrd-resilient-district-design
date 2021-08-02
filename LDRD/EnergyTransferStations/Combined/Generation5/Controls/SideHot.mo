@@ -124,7 +124,7 @@ block SideHot
     "At least one signal is non zero"
     annotation (Placement(transformation(extent={{-160,-130},{-140,-110}})));
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(
-    nu=3)
+    nin=3)
     annotation (Placement(transformation(extent={{-40,-90},{-20,-70}})));
   Buildings.Controls.OBC.CDL.Continuous.AddParameter addDea(
     p=dTDea,
@@ -149,7 +149,7 @@ equation
   connect(TSet,conColRej.u_s)
     annotation (Line(points={{-200,0},{-140,0},{-140,-40},{-12,-40}},color={0,0,127}));
   connect(TTop,conColRej.u_m)
-    annotation (Line(points={{-200,-40},{-160,-40},{-160,-58},{0,-58},{0,-52}},color={0,0,127}));
+    annotation (Line(points={{-200,-40},{-160,-40},{-160,-60},{0,-60},{0,-52}},color={0,0,127}));
   connect(conHeaRej.y,greThr.u)
     annotation (Line(points={{-68,0},{38,0}},color={0,0,127}));
   connect(x1.y,mapFun.x1)

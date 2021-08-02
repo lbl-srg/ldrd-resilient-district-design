@@ -1,6 +1,5 @@
 within LDRD.CentralPlants.Controls;
-block CoolingTower
-  "Cooling tower controller"
+block CoolingTowers "Cooling towers controller"
   extends Modelica.Blocks.Icons.Block;
 
   parameter Modelica.SIunits.MassFlowRate m_flow_nominal
@@ -67,7 +66,7 @@ block CoolingTower
     annotation (Placement(transformation(extent={{-60,-50},{-40,-30}})));
   inner Modelica.StateGraph.StateGraphRoot stateGraphRoot "Root of state graph"
     annotation (Placement(transformation(extent={{-90,40},{-70,60}})));
-  Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nu=3)
+  Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nin=3)
     "Enable if cooling enabled and temperature criterion verified"
     annotation (Placement(transformation(extent={{-10,-50},{10,-30}})));
   Buildings.Controls.OBC.CDL.Logical.Timer tim(t=1200)
@@ -102,7 +101,7 @@ block CoolingTower
   Buildings.Controls.OBC.CDL.Continuous.LessThreshold comTLvg(t=TLvgMin)
     "Compare to threshold for disabling"
     annotation (Placement(transformation(extent={{-110,-130},{-90,-110}})));
-  Buildings.Controls.OBC.CDL.Logical.MultiOr  mulOr(nu=2)
+  Buildings.Controls.OBC.CDL.Logical.MultiOr  mulOr(nin=2)
     "Enable if cooling enabled and temperature criterion verified"
     annotation (Placement(transformation(extent={{-10,-110},{10,-90}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant minT(final k=TLvgMin +
@@ -120,14 +119,15 @@ equation
   connect(TWatLvg, delT1.u2) annotation (Line(points={{-200,-120},{-160,-120},{-160,
           -106},{-152,-106}}, color={0,0,127}));
   connect(delT1.y,delTemDis. u) annotation (Line(points={{-128,-100},{-72,-100}},color={0,0,127}));
-  connect(TAir, calTemLvg.T1WatEnt) annotation (Line(points={{-200,-40},{-190,-40},
-          {-190,-45},{-152,-45}}, color={0,0,127}));
+  connect(TAir, calTemLvg.T1WatEnt) annotation (Line(points={{-200,-40},{-160,
+          -40},{-160,-45},{-152,-45}},
+                                  color={0,0,127}));
   connect(calTemLvg.T2WatLvg,addDelTem. u) annotation (Line(points={{-128,-40},{
           -112,-40}},                                                                      color={0,0,127}));
   connect(addDelTem.y,delTemDis1. u1) annotation (Line(points={{-88,-40},{-62,-40}},
                                                                                   color={0,0,127}));
-  connect(TWatEnt, delTemDis1.u2) annotation (Line(points={{-200,-80},{-90,-80},
-          {-90,-48},{-62,-48}}, color={0,0,127}));
+  connect(TWatEnt, delTemDis1.u2) annotation (Line(points={{-200,-80},{-80,-80},
+          {-80,-48},{-62,-48}}, color={0,0,127}));
   connect(iniSta.outPort[1],ena. inPort) annotation (Line(points={{-19.5,40},{6,
           40}},                                                                         color={0,0,0}));
   connect(ena.outPort,actSta. inPort[1]) annotation (Line(points={{11.5,40},{39,
@@ -172,8 +172,8 @@ equation
     annotation (Line(points={{-200,-120},{-112,-120}},color={0,0,127}));
   connect(mulOr.y, and2.u2)
     annotation (Line(points={{12,-100},{58,-100}}, color={255,0,255}));
-  connect(delTemDis.y, mulOr.u[1]) annotation (Line(points={{-48,-100},{-24,-100},
-          {-24,-96.5},{-12,-96.5}},
+  connect(delTemDis.y, mulOr.u[1]) annotation (Line(points={{-48,-100},{-24,
+          -100},{-24,-96.5},{-12,-96.5}},
                                  color={255,0,255}));
   connect(comTLvg.y, mulOr.u[2]) annotation (Line(points={{-88,-120},{-30,-120},
           {-30,-103.5},{-12,-103.5}},                        color={255,0,255}));
@@ -207,20 +207,20 @@ Optionally, if piped in the borefield loop they may be used
 in short circuit for additional night cooling without circulating
 water through the whole DHC network.
 </p>
-<p> 
+<p>
 Control logic
 </p>
-<ul> 
+<ul>
 <li>
-Enable with similar logic as WSE: 
+Enable with similar logic as WSE:
 based on predicted leaving water temperature that must
-be lower (with margin) than entering and higher than minimum 
+be lower (with margin) than entering and higher than minimum
 leaving temperature.
 </li>
 <li>
-When enabled, modulate fan speed between minimum when 
-entering water temperature equals <code>TLvgMin + dTEna</code>, 
-and maximum when entering water temperature equals <code>TEntMax</code>. 
+When enabled, modulate fan speed between minimum when
+entering water temperature equals <code>TLvgMin + dTEna</code>,
+and maximum when entering water temperature equals <code>TEntMax</code>.
 </li>
 <li>
 Disable if leaving temperature higher (with margin) than entering
@@ -228,5 +228,5 @@ or lower than <code>TLvgMin</code>.
 </li>
 </ul>
 </html>"),
-    Icon(coordinateSystem(extent={{-180,-160},{220,160}})));
-end CoolingTower;
+    Icon(coordinateSystem(extent={{-100,-100},{100,100}})));
+end CoolingTowers;

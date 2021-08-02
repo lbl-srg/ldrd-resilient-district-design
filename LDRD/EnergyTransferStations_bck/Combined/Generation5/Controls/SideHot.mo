@@ -123,7 +123,7 @@ block SideHot
     h=0.5E-6) "Check if isolation valve is closed"
     annotation (Placement(transformation(extent={{-160,-130},{-140,-110}})));
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(
-    nu=3)
+    nin=3)
     annotation (Placement(transformation(extent={{-40,-90},{-20,-70}})));
   Buildings.Controls.OBC.CDL.Continuous.AddParameter addDea(
     p=dTDea,

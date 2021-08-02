@@ -10,12 +10,12 @@ model Chiller
     "Maximum value of evaporator water entering temperature";
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uCoo
     "Cooling enable signal"
-    annotation (Placement(transformation(extent={{-200,20},{-160,60}}),
+    annotation (Placement(transformation(extent={{-200,0},{-160,40}}),
     iconTransformation(extent={{-140,10},{-100,50}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uHea
     "Heating enable signal"
-    annotation (Placement(transformation(extent={{-200,60},{-160,100}}),
-    iconTransformation(extent={{-140,50},{-100,90}})));
+    annotation (Placement(transformation(extent={{-200,40},{-160,80}}),
+    iconTransformation(extent={{-140,40},{-100,80}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TConWatEnt(
     final unit="K",
     displayUnit="degC")
@@ -77,29 +77,40 @@ model Chiller
     final k=TConWatEntMin)
     "Minimum value of condenser water entering temperature"
     annotation (Placement(transformation(extent={{-10,-70},{10,-50}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaChi
+    "Chiller compressor enable signal" annotation (Placement(transformation(
+          extent={{-200,80},{-160,120}}), iconTransformation(extent={{-140,70},
+            {-100,110}})));
+  Buildings.Controls.OBC.CDL.Logical.And heaOrCoo1
+    "Heating or cooling enabled"
+    annotation (Placement(transformation(extent={{-80,50},{-60,70}})));
 equation
   connect(TEvaWatEnt,conValEva.u_m)
     annotation (Line(points={{-180,-20},{60,-20},{60,-12}},color={0,0,127}));
   connect(TConWatEnt,conValCon.u_m)
     annotation (Line(points={{-180,-80},{60,-80},{60,-72}},color={0,0,127}));
-  connect(heaOrCoo.y,yChi)
-    annotation (Line(points={{-98,60},{180,60}},color={255,0,255}));
   connect(uHea,heaOrCoo.u1)
-    annotation (Line(points={{-180,80},{-140,80},{-140,60},{-122,60}},color={255,0,255}));
+    annotation (Line(points={{-180,60},{-122,60}},                    color={255,0,255}));
   connect(uCoo,heaOrCoo.u2)
-    annotation (Line(points={{-180,40},{-140,40},{-140,52},{-122,52}},color={255,0,255}));
+    annotation (Line(points={{-180,20},{-140,20},{-140,52},{-122,52}},color={255,0,255}));
   connect(maxTEvaWatEnt.y,conValEva.u_s)
     annotation (Line(points={{12,0},{48,0}},color={0,0,127}));
   connect(minTConWatEnt.y,conValCon.u_s)
     annotation (Line(points={{12,-60},{48,-60}},color={0,0,127}));
   connect(conValEva.y,yValEva)
     annotation (Line(points={{72,0},{180,0}},color={0,0,127}));
-  connect(heaOrCoo.y,conValEva.uEna)
-    annotation (Line(points={{-98,60},{-40,60},{-40,-16},{56,-16},{56,-12}},color={255,0,255}));
-  connect(heaOrCoo.y,conValCon.uEna)
-    annotation (Line(points={{-98,60},{-40,60},{-40,-76},{56,-76},{56,-72}},color={255,0,255}));
   connect(conValCon.y,yValCon)
     annotation (Line(points={{72,-60},{180,-60}},color={0,0,127}));
+  connect(heaOrCoo.y, heaOrCoo1.u2) annotation (Line(points={{-98,60},{-90,60},
+          {-90,52},{-82,52}}, color={255,0,255}));
+  connect(uEnaChi, heaOrCoo1.u1) annotation (Line(points={{-180,100},{-86,100},
+          {-86,60},{-82,60}}, color={255,0,255}));
+  connect(heaOrCoo1.y, yChi)
+    annotation (Line(points={{-58,60},{180,60}}, color={255,0,255}));
+  connect(heaOrCoo1.y, conValEva.uEna) annotation (Line(points={{-58,60},{40,60},
+          {40,-16},{56,-16},{56,-12}}, color={255,0,255}));
+  connect(heaOrCoo1.y, conValCon.uEna) annotation (Line(points={{-58,60},{40,60},
+          {40,-76},{56,-76},{56,-72}}, color={255,0,255}));
   annotation (
     Icon(
       coordinateSystem(

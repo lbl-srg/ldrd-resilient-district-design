@@ -7,11 +7,11 @@ partial block PartialSupervisory
     annotation (Evaluate=true);
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uHea
     "Heating enable signal"
-    annotation (Placement(transformation(extent={{-160,80},{-120,120}}),
+    annotation (Placement(transformation(extent={{-160,60},{-120,100}}),
     iconTransformation(extent={{-140,70},{-100,110}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uCoo
     "Cooling enable signal"
-    annotation (Placement(transformation(extent={{-160,40},{-120,80}}),
+    annotation (Placement(transformation(extent={{-160,30},{-120,70}}),
     iconTransformation(extent={{-140,50},{-100,90}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TChiWatSupPreSet(
     final unit="K",
@@ -73,18 +73,17 @@ partial block PartialSupervisory
     annotation (Placement(transformation(extent={{120,40},{160,80}}),
     iconTransformation(extent={{100,50},{140,90}})));
   Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uHeaHol(
-    trueHoldDuration=900)
-    "Hold heating enable signal"
-    annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
+    trueHoldDuration=900) "Hold heating enable signal"
+    annotation (Placement(transformation(extent={{-110,70},{-90,90}})));
   Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uCooHol(
     trueHoldDuration=900)
     "Hold cooling enable signal"
-    annotation (Placement(transformation(extent={{-110,50},{-90,70}})));
+    annotation (Placement(transformation(extent={{-110,40},{-90,60}})));
 equation
   connect(uHea,uHeaHol.u)
-    annotation (Line(points={{-140,100},{-112,100}},color={255,0,255}));
+    annotation (Line(points={{-140,80},{-112,80}},  color={255,0,255}));
   connect(uCoo,uCooHol.u)
-    annotation (Line(points={{-140,60},{-112,60}},color={255,0,255}));
+    annotation (Line(points={{-140,50},{-112,50}},color={255,0,255}));
   annotation (
     Icon(
       coordinateSystem(

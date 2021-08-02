@@ -54,6 +54,12 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     y_reset=1)
     "Controller for CHWST reset"
     annotation (Placement(transformation(extent={{-210,-130},{-190,-110}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaChi
+    "Chiller compressor enable signal" annotation (Placement(transformation(
+          extent={{-340,100},{-300,140}}), iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={-120,60})));
 equation
   connect(opeValMax.y, conResHeaWat.u_s)
     annotation (Line(points={{-268,-80},{-260,-80},{-260,-60},{-212,-60}}, color={0,0,127}));
@@ -77,6 +83,8 @@ equation
   connect(enaHeaCoo[2].y, conResChiWat.trigger) annotation (Line(points={{-80,
           -162},{-80,-180},{-182,-180},{-182,-144},{-206,-144},{-206,-132}},
         color={255,0,255}));
+  connect(uEnaChi, ets.uEnaChi) annotation (Line(points={{-320,120},{-50,120},{
+          -50,-72},{-34,-72}}, color={255,0,255}));
   annotation (Line(
       points={{-1,100},{0.1,100},{0.1,71.4}},
       color={255,204,51},

@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model LDRDFreeFloating "Example of parallel connection"
+model ParallelSpawnFreeFloating "Example of parallel connection"
   extends BaseClasses.PartialParallelSpawn(
     final facMulTim={1, 10},
     final facMulSpa=10,
@@ -62,8 +62,8 @@ equation
           {-220,-106},{-220,-46},{-212,-46}}, color={0,0,127}));
   connect(masFloBorFie.y, minFlo.u1) annotation (Line(points={{-238,-40},{-220,-40},
           {-220,-34},{-212,-34}}, color={0,0,127}));
-  connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-188,-40},{-180,
-          -40},{-180,-68}}, color={0,0,127}));
+  connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-188,-40},{-200,
+          -40},{-200,-132}},color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
@@ -88,4 +88,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end LDRDFreeFloating;
+end ParallelSpawnFreeFloating;

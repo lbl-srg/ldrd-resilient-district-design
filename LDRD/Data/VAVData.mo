@@ -69,8 +69,8 @@ record VAVData "Sizing parameters for VAV system"
     annotation(Dialog(group="Pressure drops"));
   final parameter Modelica.SIunits.PressureDifference dpTot(
     min=0, displayUnit="Pa")=
-    dpEcoDam + dpEcoFix + dpFil + dpAirCooCoi + dpAirHeaCoi + dpDucSup + max(dpAirBox) + dpDucRet
-    "Total design pressure drop"
+    200 + dpEcoDam + dpEcoFix + dpFil + dpAirCooCoi + dpAirHeaCoi + dpDucSup + max(dpAirBox) + dpDucRet
+    "Total design pressure drop (with 200 Pa for non fully open economizer damper)"
     annotation(Dialog(group="Pressure drops"));
 
   parameter Modelica.SIunits.Volume VRoo[numVAV](each start=1500)

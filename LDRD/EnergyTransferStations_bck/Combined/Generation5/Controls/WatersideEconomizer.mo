@@ -101,10 +101,10 @@ model WatersideEconomizer "District heat exchanger controller"
     "Cooling enable signal"
     annotation (Placement(transformation(extent={{-220,140},{-180,180}}),
     iconTransformation(extent={{-140,60},{-100,100}})));
-  Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nu=4)
+  Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nin=4)
     "Enable if cooling enabled and temperature criterion verified"
     annotation (Placement(transformation(extent={{0,-50},{20,-30}})));
-  Buildings.Controls.OBC.CDL.Logical.MultiOr or1(nu=3)
+  Buildings.Controls.OBC.CDL.Logical.MultiOr or1(nin=3)
     "Cooling disabled or temperature criterion verified"
     annotation (Placement(transformation(extent={{0,-110},{20,-90}})));
   Buildings.Controls.OBC.CDL.Logical.Not not2 "Cooling disabled"
@@ -276,7 +276,7 @@ When the system is enabled
 </p>
 <ul>
 <li>
-the primary side is controlled so that the primary flow rate 
+the primary side is controlled so that the primary flow rate
 varies linearly with the secondary flow rate,
 </li>
 <li>
@@ -290,9 +290,9 @@ When the system is disabled
 <li>
 if the \"cooling enabled\" input signal is <code>true</code> and
 the evaporator isolation valve is closed,
-the primary pump (resp. valve) is operated at its minimum speed 
-(resp. opening), otherwise it is switched off (resp. fully closed): 
-this is needed to yield a representative measurement of the 
+the primary pump (resp. valve) is operated at its minimum speed
+(resp. opening), otherwise it is switched off (resp. fully closed):
+this is needed to yield a representative measurement of the
 service water entering temperature,
 </li>
 <li>

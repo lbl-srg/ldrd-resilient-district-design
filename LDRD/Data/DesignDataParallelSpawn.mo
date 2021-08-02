@@ -1,5 +1,6 @@
 within LDRD.Data;
-record DesignDataSpawn "Record with design data for parallel network with Spawn models"
+record DesignDataParallelSpawn
+  "Record with design data for parallel network with Spawn models"
   extends Modelica.Icons.Record;
   parameter Integer nBui = 3
     "Number of served buildings"
@@ -55,4 +56,4 @@ record DesignDataSpawn "Record with design data for parallel network with Spawn 
 This record contains parameter declarations used in example models of DHC systems.
 </p>
 </html>"));
-end DesignDataSpawn;
+end DesignDataParallelSpawn;

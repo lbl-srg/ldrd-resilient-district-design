@@ -1,0 +1,15 @@
+CT with wet bulb
+
+Control logic 
+Enable with similar logic as WSE: based on predicted leaving water temperature that must be lower (with margin) than entering and higher than minimum leaving temperature. 
+When enabled, modulate fan speed between minimum when entering water temperature equals TLvgMin + dTEna, and maximum when entering water temperature equals TEntMax. 
+Disable if leaving temperature higher (with margin) than entering or lower than TLvgMin. 
+
+
+TemperatureDifference
+TLvgMin
+9 + 273.15
+TemperatureDifference
+TEntMax
+12 + 273.15
+

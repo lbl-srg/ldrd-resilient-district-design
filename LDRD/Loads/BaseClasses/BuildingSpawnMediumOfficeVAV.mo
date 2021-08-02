@@ -35,7 +35,7 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"
     "Name of the IDF file";
   parameter String weaName=
-    "modelica://LDRD/Resources/WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
+    "modelica://LDRD/Resources/WeatherData/USA_IL_Chicago-OHare.Intl.AP.725300_modified.mos"
     "Name of the weather file";
   parameter String gaiCnvName=
     "modelica://LDRD/Resources/HeatGains/cnv.csv"

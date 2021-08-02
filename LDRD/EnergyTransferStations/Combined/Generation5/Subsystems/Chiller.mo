@@ -48,17 +48,17 @@ model Chiller
   // IO CONNECTORS
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uHea
     "Heating enable signal"
-    annotation (Placement(transformation(extent={{-240,168},{-200,208}}),
+    annotation (Placement(transformation(extent={{-240,140},{-200,180}}),
     iconTransformation(extent={{-140,20},{-100,60}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uCoo
     "Cooling enable signal"
-    annotation (Placement(transformation(extent={{-240,148},{-200,188}}),
+    annotation (Placement(transformation(extent={{-240,120},{-200,160}}),
     iconTransformation(extent={{-140,0},{-100,40}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TChiWatSupSet(
     final unit="K",
     displayUnit="degC")
     "Chilled water supply temperature set point (may be reset down)"
-    annotation (Placement(transformation(extent={{-240,120},{-200,160}}),
+    annotation (Placement(transformation(extent={{-240,80},{-200,120}}),
     iconTransformation(extent={{-140,-40},{-100,0}})));
   Modelica.Fluid.Interfaces.FluidPort_a port_aChiWat(
     redeclare final package Medium=Medium,
@@ -234,6 +234,10 @@ model Chiller
     final k=dat.mEva_flow_nominal)
     "Scale to nominal mass flow rate"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=-90,origin={-100,-22})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaChi
+    "Chiller compressor enable signal" annotation (Placement(transformation(
+          extent={{-240,160},{-200,200}}), iconTransformation(extent={{-140,70},
+            {-100,110}})));
 protected
   final parameter Medium.ThermodynamicState sta_default=Medium.setState_pTX(
     T=Medium.T_default,
@@ -253,19 +257,21 @@ equation
   connect(splEva.port_3,valEva.port_3)
     annotation (Line(points={{-140,-70},{-140,-80},{120,-80},{120,-70}},color={0,127,255}));
   connect(con.yValEva,valEva.y)
-    annotation (Line(points={{-48,136},{-32,136},{-32,120},{160,120},{160,-40},{120,-40},{120,-48}},color={0,0,127}));
+    annotation (Line(points={{-48,137},{-32,137},{-32,120},{160,120},{160,-40},
+          {120,-40},{120,-48}},                                                                     color={0,0,127}));
   connect(con.yValCon,valCon.y)
-    annotation (Line(points={{-48,132},{-44,132},{-44,90},{-160,90},{-160,40},{-140,40},{-140,48}},color={0,0,127}));
+    annotation (Line(points={{-48,133},{-44,133},{-44,90},{-160,90},{-160,40},{
+          -140,40},{-140,48}},                                                                     color={0,0,127}));
   connect(con.yChi,chi.on)
-    annotation (Line(points={{-48,148},{-36,148},{-36,3},{-12,3}},color={255,0,255}));
+    annotation (Line(points={{-48,146},{-36,146},{-36,3},{-12,3}},color={255,0,255}));
   connect(uHea,con.uHea)
-    annotation (Line(points={{-220,188},{-180,188},{-180,148},{-72,148}},color={255,0,255}));
+    annotation (Line(points={{-220,160},{-180,160},{-180,146},{-72,146}},color={255,0,255}));
   connect(uCoo,con.uCoo)
-    annotation (Line(points={{-220,168},{-186,168},{-186,146},{-72,146}},color={255,0,255}));
+    annotation (Line(points={{-220,140},{-180,140},{-180,143},{-72,143}},color={255,0,255}));
   connect(senTConEnt.T,con.TConWatEnt)
-    annotation (Line(points={{-31,40},{-78,40},{-78,136},{-72,136}},color={0,0,127}));
+    annotation (Line(points={{-31,40},{-78,40},{-78,133},{-72,133}},color={0,0,127}));
   connect(senTEvaEnt.T,con.TEvaWatEnt)
-    annotation (Line(points={{9,-40},{-80,-40},{-80,138},{-72,138}},color={0,0,127}));
+    annotation (Line(points={{9,-40},{-80,-40},{-80,137},{-72,137}},color={0,0,127}));
   connect(splConMix.port_2,port_bHeaWat)
     annotation (Line(points={{130,60},{140,60},{140,100},{-180,100},{-180,60},{-200,60}},color={0,127,255}));
   connect(splEva.port_2,port_bChiWat)
@@ -299,7 +305,7 @@ equation
   connect(pumCon.P,add2.u1)
     annotation (Line(points={{-89,69},{-60,69},{-60,-134},{158,-134}},color={0,0,127}));
   connect(con.yChi,booToRea.u)
-    annotation (Line(points={{-48,148},{-36,148},{-36,180},{-58,180}},color={255,0,255}));
+    annotation (Line(points={{-48,146},{-36,146},{-36,180},{-58,180}},color={255,0,255}));
   connect(booToRea.y,gai2.u)
     annotation (Line(points={{-82,180},{-120,180},{-120,0},{-100,0},{-100,-10}},color={0,0,127}));
   connect(gai2.y,pumEva.m_flow_in)
@@ -309,7 +315,9 @@ equation
   connect(booToRea.y,gai1.u)
     annotation (Line(points={{-82,180},{-100,180},{-100,126}},color={0,0,127}));
   connect(TChiWatSupSet,chi.TSet)
-    annotation (Line(points={{-220,140},{-188,140},{-188,-3},{-12,-3}},color={0,0,127}));
+    annotation (Line(points={{-220,100},{-188,100},{-188,-3},{-12,-3}},color={0,0,127}));
+  connect(uEnaChi, con.uEnaChi) annotation (Line(points={{-220,180},{-160,180},
+          {-160,149},{-72,149}}, color={255,0,255}));
   annotation (
     defaultComponentName="chi",
     Icon(

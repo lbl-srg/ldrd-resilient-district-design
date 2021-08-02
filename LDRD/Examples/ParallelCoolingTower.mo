@@ -1,13 +1,11 @@
 within LDRD.Examples;
-model LDRDCoolingTower
+model ParallelCoolingTower
   "Example of parallel connection with constant district water mass flow rate"
-  extends BaseClasses.PartialParallelSpawn(
-    final facMulTim={1, 10},
-    final facMulSpa=10,
+  extends BaseClasses.PartialParallel(
+    final facMulTim={1, 10, 10},
     redeclare
-      Loads.BuildingTimeSeriesWithETS bui[nBui-1](final filNam=filNam),
+      Loads.BuildingTimeSeriesWithETS bui[nBui](final filNam=filNam),
     datDes(
-      idxBuiSpa=3,
       dp_length_nominal=250,
       dpPumDisSet=dpPumDisSet),
     dis(show_entFlo=true),
@@ -20,13 +18,14 @@ model LDRDCoolingTower
   assuming 50% authority for the control valve.
   */
   parameter Modelica.SIunits.PressureDifference dpPumDisSet=
-    2 * (max(buiSpa.ets.dp1Hex_nominal, buiSpa.ets.dp1WSE_nominal) +
+    2 * (max(bui[nBui].ets.dp1Hex_nominal, bui[nBui].ets.dp1WSE_nominal) +
     datDes.dp_length_nominal * datDes.lCon[nBui])
     "Differential pressure set point at remote location";
 
-  parameter String filNam[nBui-1]={
+  parameter String filNam[nBui]={
     "modelica://LDRD/Resources/Loads/RefBldgHospitalNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",
-    "modelica://LDRD/Resources/Loads/RefBldgMidriseApartmentNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos"}
+    "modelica://LDRD/Resources/Loads/RefBldgMidriseApartmentNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",
+    "modelica://LDRD/Resources/Loads/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos"}
     "Library paths of the files with thermal loads as time series";
 
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant dpDisSet(
@@ -36,7 +35,8 @@ model LDRDCoolingTower
   Buildings.Controls.OBC.CDL.Continuous.PID conPumDis(
     k=0.01,
     Ti=600,
-    r=datDes.dpPumDisSet) "Distribution pump controller"
+    r=datDes.dpPumDisSet)
+    "Distribution pump controller"
     annotation (Placement(transformation(extent={{30,-70},{50,-50}})));
   Buildings.Fluid.FixedResistances.PressureDrop bypEnd(
     redeclare final package Medium = Medium,
@@ -45,19 +45,14 @@ model LDRDCoolingTower
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant masFloBorFie(final k=
-        pumSto.m_flow_nominal) "Borefield nominal flow rate"
-    annotation (Placement(transformation(extent={{-290,-70},{-270,-50}})));
-  Buildings.Controls.OBC.CDL.Continuous.Min minFlo
-    "Minimum between main flow and borefield nominal flow"
-    annotation (Placement(transformation(extent={{-240,-70},{-220,-50}})));
-  CentralPlants.CoolingTower cooTow(
+  CentralPlants.CoolingTowers cooTow(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPla_flow_nominal) "Cooling tower"
+    final m_flow_nominal=datDes.mPla_flow_nominal)
+    "Cooling tower"
     annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
-        origin={-160,0})));
+        origin={-160,-20})));
   Modelica.Blocks.Continuous.Integrator ESto(initType=Modelica.Blocks.Types.Init.InitialState)
     "Stored energy"
     annotation (Placement(transformation(extent={{200,-70},{220,-50}})));
@@ -67,6 +62,12 @@ model LDRDCoolingTower
   Modelica.Blocks.Continuous.Integrator EFanPla(initType=Modelica.Blocks.Types.Init.InitialState)
     "Plant fan electric energy"
     annotation (Placement(transformation(extent={{200,90},{220,110}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant masFloBorFie(final k=
+        pumSto.m_flow_nominal) "Borefield nominal flow rate"
+    annotation (Placement(transformation(extent={{-300,-190},{-280,-170}})));
+  Buildings.Controls.OBC.CDL.Continuous.Min min1
+    "Minimum between main flow and borefield nominal flow"
+    annotation (Placement(transformation(extent={{-260,-150},{-240,-170}})));
 equation
   connect(dis.dp, conPumDis.u_m) annotation (Line(points={{22,143},{40,143},{40,
           -40},{20,-40},{20,-80},{40,-80},{40,-72}}, color={0,0,127}));
@@ -78,43 +79,42 @@ equation
     annotation (Line(points={{20,140},{50,140}}, color={0,0,127}));
   connect(bypEnd.port_b, dis.port_aDisRet) annotation (Line(points={{70,140},{80,
           140},{80,134},{20,134}}, color={0,127,255}));
-  connect(mDisWat_flow.m_flow, minFlo.u2) annotation (Line(points={{0,-109},{0,
-          -106},{-250,-106},{-250,-66},{-242,-66}},
-                                              color={0,0,127}));
-  connect(masFloBorFie.y, minFlo.u1) annotation (Line(points={{-268,-60},{-260,
-          -60},{-260,-54},{-242,-54}},
-                                  color={0,0,127}));
-  connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-218,-60},{-180,
-          -60},{-180,-68}}, color={0,0,127}));
-  connect(TDisWatBorLvg.T, cooTow.TWatEnt) annotation (Line(points={{-91,-40},{
-          -173.333,-40},{-173.333,-22.6667}},
-                                     color={0,0,127}));
-  connect(conPla.port_bCon, cooTow.port_aSerAmb) annotation (Line(points={{-90,-10},
-          {-110,-10},{-110,-30},{-162.667,-30},{-162.667,-20}}, color={0,127,255}));
-  connect(cooTow.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
-          -162.667,20},{-162.667,26},{-162.667,30},{-110,30},{-110,-4},{-90,-4}},
-                                                                 color={0,127,255}));
   connect(TDisWatSup.T, conVio.u[4]) annotation (Line(points={{-91,20},{-100,20},
           {-100,38.6667},{298,38.6667},{298,40}}, color={0,0,127}));
-  connect(TDisWatSup.T, cooTow.TWatLvg) annotation (Line(points={{-91,20},{-100,
-          20},{-100,-38},{-170,-38},{-170,-22.6667},{-169.333,-22.6667}}, color=
-         {0,0,127}));
-  connect(cooTow.weaBus, buiSpa.weaBus) annotation (Line(
-      points={{-177.733,0.0666667},{-200,0.0666667},{-200,200},{50,200},{50,170}},
-      color={255,204,51},
-      thickness=0.5));
 
   connect(mDisWat_flow.m_flow, cooTow.m_flow) annotation (Line(points={{0,-109},
-          {0,-106},{-250,-106},{-250,-40},{-178,-40},{-178,-22.6667},{-177.333,
-          -22.6667}}, color={0,0,127}));
+          {0,-104},{-177.333,-104},{-177.333,-42.6667}},
+                      color={0,0,127}));
   connect(conSto.dH_flow, ESto.u) annotation (Line(points={{-87,-78},{180,-78},
           {180,-60},{198,-60}}, color={215,215,215}));
-  connect(cooTow.PPum, EPumPla.u) annotation (Line(points={{-170.667,22.6667},{
+  connect(cooTow.PPum, EPumPla.u) annotation (Line(points={{-170.667,2.66667},{
           -170.667,60},{198,60}}, color={215,215,215}));
-  connect(cooTow.PFan, EFanPla.u) annotation (Line(points={{-173.333,22.6667},{
+  connect(cooTow.PFan, EFanPla.u) annotation (Line(points={{-173.333,2.66667},{
           -173.333,100},{198,100}}, color={215,215,215}));
   connect(EPumPla.y, EPum.u[4]) annotation (Line(points={{221,60},{240,60},{240,
           120},{258,120}}, color={0,0,127}));
+  connect(min1.y, pumSto.m_flow_in) annotation (Line(points={{-238,-160},{-200,
+          -160},{-200,-132}}, color={0,0,127}));
+  connect(weaDat.weaBus, cooTow.weaBus) annotation (Line(
+      points={{-320,0},{-200,0},{-200,-19.9333},{-177.733,-19.9333}},
+      color={255,204,51},
+      thickness=0.5));
+  connect(cooTow.m_flowBorFieMin, min1.u2) annotation (Line(points={{-149.333,
+          2.66667},{-149.333,10},{-280,10},{-280,-154},{-262,-154}}, color={0,0,
+          127}));
+  connect(masFloBorFie.y, min1.u1) annotation (Line(points={{-278,-180},{-270,
+          -180},{-270,-166},{-262,-166}}, color={0,0,127}));
+  connect(conPla.port_bCon, cooTow.port_aSerAmb) annotation (Line(points={{-90,
+          -10},{-120,-10},{-120,-60},{-162.667,-60},{-162.667,-40}}, color={0,
+          127,255}));
+  connect(cooTow.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
+          -162.667,0},{-162.667,20},{-120,20},{-120,-4},{-90,-4}}, color={0,127,
+          255}));
+  connect(TDisWatBorLvg.T, cooTow.TWatEnt) annotation (Line(points={{-91,-40},{
+          -102,-40},{-102,-52},{-173.333,-52},{-173.333,-42.6667}}, color={0,0,
+          127}));
+  connect(TDisWatSup.T, cooTow.TWatLvg) annotation (Line(points={{-91,20},{-100,
+          20},{-100,-48},{-169.333,-48},{-169.333,-42.6667}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
@@ -139,4 +139,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end LDRDCoolingTower;
+end ParallelCoolingTower;

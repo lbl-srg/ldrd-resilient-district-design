@@ -63,6 +63,24 @@ model Supervisory
     final THeaWatSupSetMin=THeaWatSupSetMin)
     "Supply temperature reset"
     annotation (Placement(transformation(extent={{-70,10},{-50,30}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaChi
+    "Chiller compressor enable signal" annotation (Placement(transformation(
+          extent={{-160,90},{-120,130}}), iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=-90,
+        origin={-80,120})));
+  Buildings.Controls.OBC.CDL.Logical.And uHeaEnaChi
+    "Heating and chiller compressor enabled" annotation (Placement(
+        transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=-90,
+        origin={-20,64})));
+  Buildings.Controls.OBC.CDL.Logical.And uCooEnaChi
+    "Cooling and chiller compressor enabled" annotation (Placement(
+        transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=-90,
+        origin={-40,-10})));
 equation
   connect(conHot.yAmb,max1.u1)
     annotation (Line(points={{22,34},{40,34},{40,6},{48,6}},color={0,0,127}));
@@ -73,7 +91,8 @@ equation
   connect(resTSup.THeaWatSupSet,conHot.TSet)
     annotation (Line(points={{-48,20},{-30,20},{-30,34.2},{-2,34.2}},color={0,0,127}));
   connect(THeaWatTop,conHot.TTop)
-    annotation (Line(points={{-140,0},{-26,0},{-26,30},{-2,30}},color={0,0,127}));
+    annotation (Line(points={{-140,0},{-80,0},{-80,4},{-26,4},{-26,30},{-2,30}},
+                                                                color={0,0,127}));
   connect(max1.y,yAmb)
     annotation (Line(points={{72,0},{90,0},{90,-20},{140,-20}},color={0,0,127}));
   connect(TChiWatBot,conCol.TBot)
@@ -90,20 +109,30 @@ equation
     annotation (Line(points={{22,-36},{100,-36},{100,-80},{140,-80}},color={0,0,127}));
   connect(TChiWatSupPreSet,conCol.TSet)
     annotation (Line(points={{-140,-40},{-44,-40},{-44,-36.2},{-2,-36.2}},color={0,0,127}));
-  connect(uHeaHol.y,conHot.uHeaCoo)
-    annotation (Line(points={{-88,100},{-20,100},{-20,38},{-2,38}},color={255,0,255}));
-  connect(uCooHol.y,conCol.uHeaCoo)
-    annotation (Line(points={{-88,60},{-40,60},{-40,-24},{-2,-24}},color={255,0,255}));
   connect(uHeaHol.y,resTSup.uHea)
-    annotation (Line(points={{-88,100},{-80,100},{-80,26},{-72,26}},color={255,0,255}));
+    annotation (Line(points={{-88,80},{-80,80},{-80,26},{-72,26}},  color={255,0,255}));
   connect(uHeaHol.y,yHea)
-    annotation (Line(points={{-88,100},{140,100}},color={255,0,255}));
+    annotation (Line(points={{-88,80},{26,80},{26,100},{140,100}},
+                                                  color={255,0,255}));
   connect(uCooHol.y,yCoo)
-    annotation (Line(points={{-88,60},{140,60}},color={255,0,255}));
+    annotation (Line(points={{-88,50},{26,50},{26,60},{140,60}},
+                                                color={255,0,255}));
   connect(yValIsoCon_actual,conHot.yValIsoCon_actual)
     annotation (Line(points={{-140,-80},{-22,-80},{-22,26},{-2,26}},color={0,0,127}));
   connect(yValIsoEva_actual,conHot.yValIsoEva_actual)
     annotation (Line(points={{-140,-100},{-18,-100},{-18,22},{-2,22}},color={0,0,127}));
+  connect(uCooHol.y, uCooEnaChi.u1)
+    annotation (Line(points={{-88,50},{-40,50},{-40,2}}, color={255,0,255}));
+  connect(uCooEnaChi.y, conCol.uHeaCoo) annotation (Line(points={{-40,-22},{-40,
+          -24},{-2,-24}}, color={255,0,255}));
+  connect(uEnaChi, uHeaEnaChi.u2) annotation (Line(points={{-140,110},{-28,110},
+          {-28,76}}, color={255,0,255}));
+  connect(uEnaChi, uCooEnaChi.u2) annotation (Line(points={{-140,110},{-48,110},
+          {-48,2}}, color={255,0,255}));
+  connect(uHeaHol.y, uHeaEnaChi.u1)
+    annotation (Line(points={{-88,80},{-20,80},{-20,76}}, color={255,0,255}));
+  connect(uHeaEnaChi.y, conHot.uHeaCoo)
+    annotation (Line(points={{-20,52},{-20,38},{-2,38}}, color={255,0,255}));
   annotation (
     Icon(
       coordinateSystem(

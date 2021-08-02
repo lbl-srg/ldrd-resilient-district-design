@@ -1,6 +1,8 @@
 BugAutosize
-DebugBuilding
-DebugBuildingWithETS
-LDRDFreeFloating
-LDRDCoolingTower
+BuildingSpawn
+BuildingSpawnWithETS
+ParallelCoolingTower
+ParallelCoolingTowerIntegrated
+ParallelSpawnCoolingTower
+ParallelSpawnFreeFloating
 BaseClasses
