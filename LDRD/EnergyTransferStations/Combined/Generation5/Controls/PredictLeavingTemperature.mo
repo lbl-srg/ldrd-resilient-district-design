@@ -16,8 +16,7 @@ model PredictLeavingTemperature
       iconTransformation(extent={{-140,-70},{-100,-30}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput T2WatLvg(
     final unit="K",
-    displayUnit="degC")
-    "Heat exchanger secondary water leaving temperature"
+    displayUnit="degC") "Heat exchanger secondary water leaving temperature"
     annotation (Placement(transformation(extent={{100,-20},{140,20}}),
         iconTransformation(extent={{100,-20},{140,20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput m2_flow(

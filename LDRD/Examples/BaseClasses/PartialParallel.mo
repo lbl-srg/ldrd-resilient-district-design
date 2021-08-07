@@ -19,15 +19,15 @@ partial model PartialParallel "Partial model for parallel network"
     "Number of buildings connected to DHC system"
     annotation (Evaluate=true);
 
-  inner parameter Data.DesignDataParallel datDes(
-    final mCon_flow_nominal=bui.mSerWat_flow_nominal)
-    "Design data" annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
+  inner parameter Data.DesignData datDes(final mCon_flow_nominal=bui.mSerWat_flow_nominal)
+    "Design data"
+    annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
-  ThermalStorages.BoreField
-    borFie(redeclare final package Medium = Medium)
+  replaceable ThermalStorages.BoreField_500_180 borFie
+    constrainedby ThermalStorages.BoreField_500_180(
+      redeclare each final package Medium =Medium)
     "Bore field"
-    annotation (
-      Placement(transformation(
+    annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-230,-80})));
@@ -128,7 +128,7 @@ partial model PartialParallel "Partial model for parallel network"
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-80,-40})));
-  replaceable Loads.BaseClasses.PartialBuildingWithETS bui[nBui - 1]
+  replaceable Loads.BuildingTimeSeriesWithETS bui[nBui]
     constrainedby Loads.BaseClasses.PartialBuildingWithETS(
       bui(final facMul=facMulTim),
       redeclare each final package MediumBui = Medium,
@@ -136,11 +136,6 @@ partial model PartialParallel "Partial model for parallel network"
       each final allowFlowReversalBui=allowFlowReversalBui,
       each final allowFlowReversalSer=allowFlowReversalSer) "Building and ETS"
     annotation (Placement(transformation(extent={{-10,170},{10,190}})));
-  Buildings.Experimental.DHC.Loads.BaseClasses.ConstraintViolation conVio(
-    uMin=datDes.TLooMin,
-    uMax=datDes.TLooMax,
-    nu=3) "Check if loop temperatures are within given range"
-    annotation (Placement(transformation(extent={{300,30},{320,50}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum PPumETS(
     final nin=nBui)
     "ETS pump power"
@@ -207,6 +202,11 @@ partial model PartialParallel "Partial model for parallel network"
     computeWetBulbTemperature=true)
     "Weather data reader"
     annotation (Placement(transformation(extent={{-340,-10},{-320,10}})));
+  Buildings.Controls.OBC.CDL.Logical.Sources.TimeTable uEnaChi[nBui](
+    each table=[0,1; 17020800,0; 17625600,1],
+    each period=31622400.0)
+    "Enable chiller compressor"
+    annotation (Placement(transformation(extent={{-340,170},{-320,190}})));
 initial equation
   for i in 1:nBui loop
     Modelica.Utilities.Streams.print(
@@ -217,11 +217,14 @@ initial equation
     "Nominal mass flow rate in end of line: " +
     String(dis.mEnd_flow_nominal));
 equation
+    connect(borFie.port_a, pumSto.port_b)
+      annotation (Line(points={{-240,-80},{-260,-80},{-260,-120},{-210,-120}},
+                                                       color={0,127,255}));
+    connect(borFie.port_b,TCooEnt. port_a)
+      annotation (Line(points={{-220,-80},{-210,-80}}, color={0,127,255}));
   connect(bou.ports[1], pumDis.port_a)
     annotation (Line(points={{102,-20},{80,-20},{80,-50}}, color={0,127,255}));
-  connect(borFie.port_a, pumSto.port_b)
-    annotation (Line(points={{-240,-80},{-260,-80},{-260,-120},{-210,-120}},
-                                                     color={0,127,255}));
+
   connect(conSto.port_bCon, pumSto.port_a) annotation (Line(points={{-90,-90},{
           -100,-90},{-100,-120},{-190,-120}},                       color={0,
           127,255}));
@@ -242,13 +245,6 @@ equation
           20,180},{20,160},{12,160},{12,150}}, color={0,127,255}));
   connect(dis.ports_bCon, bui.port_aSerAmb) annotation (Line(points={{-12,150},
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
-  connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},
-          {-100,38.6667},{298,38.6667}}, color={0,0,127}));
-  connect(TDisWatRet.T, conVio.u[2]) annotation (Line(points={{69,0},{60,0},{60,
-          40},{298,40}}, color={0,0,127}));
-  connect(TDisWatBorLvg.T, conVio.u[3]) annotation (Line(points={{-91,-40},{
-          -102,-40},{-102,41.3333},{298,41.3333}},
-                                              color={0,0,127}));
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
   connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
@@ -272,10 +268,7 @@ equation
           {80,-120},{10,-120}}, color={0,127,255}));
   connect(mDisWat_flow.port_b, conSto.port_aDis) annotation (Line(points={{-10,
           -120},{-80,-120},{-80,-100}}, color={0,127,255}));
-  connect(conPla.dH_flow, EPla.u)
-    annotation (Line(points={{-87,2},{-87,10},{198,10}}, color={0,0,127}));
-  connect(borFie.port_b,TCooEnt. port_a)
-    annotation (Line(points={{-220,-80},{-210,-80}}, color={0,127,255}));
+
   connect(TCooEnt.port_b, conCoo.port_aDis)
     annotation (Line(points={{-190,-80},{-160,-80}}, color={0,127,255}));
   connect(conCoo.port_bDis, TCooLvg.port_a)
@@ -286,6 +279,8 @@ equation
           {118,200}}, color={0,0,127}));
   connect(bui.PCoo, PChi.u) annotation (Line(points={{12,187},{60,187},{60,160},
           {118,160}}, color={0,0,127}));
+  connect(uEnaChi.y[1], bui.uEnaChi) annotation (Line(points={{-318,180},{-40,180},
+          {-40,186},{-12,186}}, color={255,0,255}));
   annotation (Diagram(
     coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}}),
         graphics={Text(

@@ -1,8 +1,12 @@
 BugAutosize
 BuildingSpawn
 BuildingSpawnWithETS
-ParallelCoolingTower
-ParallelCoolingTowerIntegrated
-ParallelSpawnCoolingTower
+BuildingSpawnWithETS_UA
+CoolingCoilSizing
+ParallelCoolingTowers
+ParallelCoolingTowers_1250_180
+ParallelCoolingTowersIntegrated
+ParallelCoolingTowersIntegratedApproach
+ParallelSpawnCoolingTowers
 ParallelSpawnFreeFloating
 BaseClasses

@@ -47,6 +47,8 @@ model ParallelSpawnFreeFloating "Example of parallel connection"
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
     annotation (Placement(transformation(extent={{-210,-50},{-190,-30}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(final k=0)
+    annotation (Placement(transformation(extent={{160,0},{180,20}})));
 equation
   connect(dis.dp, conPumDis.u_m) annotation (Line(points={{22,143},{40,143},{40,
           -40},{20,-40},{20,-80},{40,-80},{40,-72}}, color={0,0,127}));
@@ -64,6 +66,8 @@ equation
           {-220,-34},{-212,-34}}, color={0,0,127}));
   connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-188,-40},{-200,
           -40},{-200,-132}},color={0,0,127}));
+  connect(zer.y, EPla.u) annotation (Line(points={{182,10},{192,10},{192,10},{
+          198,10}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),

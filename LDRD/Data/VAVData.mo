@@ -83,7 +83,7 @@ record VAVData "Sizing parameters for VAV system"
   parameter Modelica.SIunits.MassFlowRate mAirRet_flow_nominal[numRet]
     "Design mass flow rate of each return air inlet"
     annotation(Dialog(group="System level air flow parameters"));
-  parameter Real divAirFlo(min=0, max=1) = 0.7
+  parameter Real divAirFlo(min=0) = 0.7
     "Air flow rate diversity factor"
     annotation(Dialog(group="System level air flow parameters"));
   final parameter Modelica.SIunits.MassFlowRate m_flow_nominal=
@@ -163,7 +163,7 @@ record VAVData "Sizing parameters for VAV system"
     annotation(Dialog(group="Ventilation"));
 
   parameter Modelica.SIunits.HeatFlowRate QCooCoi_flow=
-    1.3 * QSenCooCoi_flow
+    1.27 * QSenCooCoi_flow
     "Capacity (total)"
     annotation(Dialog(group="Cooling coil design parameters"));
   parameter Modelica.SIunits.HeatFlowRate QSenCooCoi_flow=

@@ -13,13 +13,14 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
       QChiWat_flow_nominal=QCoo_flow_nominal,
       QHeaWat_flow_nominal=QHea_flow_nominal));
 
-  inner replaceable Data.VAVDataMediumOffice datVAV(TLiqEntCooCoi=
-        TChiWatSup_nominal, TLiqEntHeaCoi=THeaWatSup_nominal)
+  inner replaceable Data.VAVDataMediumOffice datVAV(
+    TLiqEntCooCoi=TChiWatSup_nominal,
+    TLiqEntHeaCoi=THeaWatSup_nominal)
     constrainedby LDRD.Data.VAVData(
       have_WSE=ets.have_WSE,
       dp2WSE_nominal=if ets.have_WSE then ets.dp2WSE_nominal else 0)
     "VAV system parameters"
-    annotation (Placement(transformation(extent={{-40,180},{-20,202}})));
+    annotation (Placement(transformation(extent={{-44,180},{-24,202}})));
 
   parameter String idfName=
     "modelica://LDRD/Resources/EnergyPlus/RefBldgMediumOfficeNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.idf"

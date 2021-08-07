@@ -25,7 +25,7 @@ model CoolingTowers "Cooling tower"
   parameter Modelica.SIunits.TemperatureDifference dTApp_nominal = 4
     "Approach"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.TemperatureDifference TRan_nominal(displayUnit="K")=
+  parameter Modelica.SIunits.TemperatureDifference dTRan_nominal=
      4
     "Design range temperature (water in - water out)"
     annotation (Dialog(group="Nominal condition"));
@@ -34,9 +34,9 @@ model CoolingTowers "Cooling tower"
     final m_flow_nominal=m_flow_nominal,
     final dp_nominal=dp_nominal,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-    TAirInWB_nominal=298.65,
+    TAirInWB_nominal=285.15,
     final TApp_nominal=dTApp_nominal,
-    final TRan_nominal=TRan_nominal,
+    final TRan_nominal=dTRan_nominal,
     fraPFan_nominal=130,
     yMin=0.1)
     "Cooling tower"
@@ -62,6 +62,7 @@ model CoolingTowers "Cooling tower"
   replaceable Controls.CoolingTowers con(
     final m_flow_nominal=m_flow_nominal,
     final dTApp_nominal=dTApp_nominal,
+    final fraFreCon=yorkCalc.fraFreCon,
     final TLvgMin=TLvgMin,
     final TEntMax=TEntMax) "Controller"
     annotation (Placement(transformation(extent={{-70,80},{-50,100}})));

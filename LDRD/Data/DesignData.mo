@@ -1,6 +1,5 @@
 within LDRD.Data;
-record DesignDataParallel
-  "Record with design data for parallel network"
+record DesignData "Record with design data"
   extends Modelica.Icons.Record;
   parameter Integer nBui = 3
     "Number of served buildings"
@@ -49,4 +48,4 @@ record DesignDataParallel
 This record contains parameter declarations used in example models of DHC systems.
 </p>
 </html>"));
-end DesignDataParallel;
+end DesignData;

@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model ParallelCoolingTowerIntegrated
+model ParallelCoolingTowersIntegrated
   "Example of parallel connection with constant district water mass flow rate"
   extends BaseClasses.PartialParallel(
     final facMulTim={1, 10, 10},
@@ -11,7 +11,6 @@ model ParallelCoolingTowerIntegrated
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true),
-    conVio(nu=4),
     EPum(nin=4));
   /*
   Differential pressure set point takes valve + HX nominal pressure drop,
@@ -48,8 +47,7 @@ model ParallelCoolingTowerIntegrated
   CentralPlants.CoolingTowers cooTow(
     redeclare final package Medium = Medium,
     redeclare LDRD.CentralPlants.Controls.CoolingTowersIntegrated con,
-    final m_flow_nominal=datDes.mPla_flow_nominal)
-    "Cooling tower"
+    final m_flow_nominal=datDes.mPla_flow_nominal) "Cooling towers"
     annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
@@ -80,8 +78,6 @@ equation
     annotation (Line(points={{20,140},{50,140}}, color={0,0,127}));
   connect(bypEnd.port_b, dis.port_aDisRet) annotation (Line(points={{70,140},{80,
           140},{80,134},{20,134}}, color={0,127,255}));
-  connect(TDisWatSup.T, conVio.u[4]) annotation (Line(points={{-91,20},{-100,20},
-          {-100,38.6667},{298,38.6667},{298,40}}, color={0,0,127}));
 
   connect(mDisWat_flow.m_flow, cooTow.m_flow) annotation (Line(points={{0,-109},
           {0,-104},{-177.333,-104},{-177.333,-42.6667}},
@@ -115,6 +111,8 @@ equation
                                                             color={0,0,127}));
   connect(masFloBorFie.y, min1.u1) annotation (Line(points={{-278,-180},{-270,-180},
           {-270,-166},{-262,-166}}, color={0,0,127}));
+  connect(conCoo.dH_flow, EPla.u) annotation (Line(points={{-138,-73},{-130,-73},
+          {-130,10},{198,10}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
@@ -139,4 +137,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end ParallelCoolingTowerIntegrated;
+end ParallelCoolingTowersIntegrated;

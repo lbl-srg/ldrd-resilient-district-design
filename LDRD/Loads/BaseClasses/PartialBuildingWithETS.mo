@@ -22,7 +22,7 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
       final datChi=datChi,
       T_a1WSE_nominal=281.15,
       T_b1WSE_nominal=286.15,
-      T_a2WSE_nominal=291.15,
+      T_a2WSE_nominal=288.15,
       T_b2WSE_nominal=283.15));
   final parameter Modelica.SIunits.MassFlowRate mCon_flow_nominal(min=0)=
     abs(QChiWat_flow_nominal)*(1+1/datChi.COP_nominal)/5/4186

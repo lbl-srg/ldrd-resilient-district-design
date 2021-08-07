@@ -231,9 +231,10 @@ equation
   connect(VAVBox.QHea_flow, mulSum.u[2:16])
     annotation (Line(points={{624,34},{644,34},{644,278.125},{768,278.125}}, color={0,0,127}));
   connect(cooCoiHeaFlo.y, QCoo_flow) annotation (Line(points={{741,240},{820,240}}, color={0,0,127}));
-  connect(conTSup.yHea, valHea.y) annotation (Line(points={{52,-214},{56,-214},{56,-100},{68,-100}}, color={0,0,127}));
+  connect(conTSup.yHea, valHea.y) annotation (Line(points={{52,-214},{56,-214},
+          {56,-80},{68,-80}},                                                                        color={0,0,127}));
   connect(conTSup.yCoo, valCoo.y)
-    annotation (Line(points={{52,-226},{160,-226},{160,-100},{168,-100}}, color={0,0,127}));
+    annotation (Line(points={{52,-226},{160,-226},{160,-80},{168,-80}},   color={0,0,127}));
   connect(conVAV.yVal, valReh.y) annotation (Line(points={{481,65},{540,65},{540,40}}, color={0,0,127}));
   connect(conEco.yOA, damExh.y) annotation (Line(points={{-58.6667,152},{-40,
           152},{-40,2}},                                                                    color={0,0,127}));

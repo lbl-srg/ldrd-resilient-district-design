@@ -25,8 +25,7 @@ model BuildingSpawnWithETS
         rotation=180,
         origin={70,0})));
   Buildings.Controls.OBC.CDL.Logical.Sources.TimeTable uEnaChi(table=[0,1;
-        17020800,0; 17625600,1], period=31622400.0)
-    "Enable chiller compressor"
+        17020800,0; 17625600,1], period=31622400.0) "Enable chiller compressor"
     annotation (Placement(transformation(extent={{-80,30},{-60,50}})));
 equation
   connect(bou3.ports[1], bui.port_aSerAmb) annotation (Line(points={{-60,-4.44089e-16},{-30,0}}, color={0,127,255}));

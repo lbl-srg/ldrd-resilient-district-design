@@ -189,22 +189,24 @@ partial model PartialOpenLoop
     "Heating coil"
     annotation (Placement(transformation(extent={{110,-36},{90,-56}})));
 
-  Buildings.Fluid.HeatExchangers.WetCoilEffectivenessNTU cooCoi(
-    show_T=true,
-    redeclare package Medium1 = MediumW,
-    redeclare package Medium2 = MediumA,
-    final use_Q_flow_nominal = true,
-    final Q_flow_nominal=datVAV.QCooCoi_flow,
-    final m1_flow_nominal=datVAV.mLiqCooCoi_flow,
-    final m2_flow_nominal=datVAV.mAirCooCoi_flow,
-    final dp1_nominal=0,
-    final dp2_nominal=0,
-    final T_a1_nominal=datVAV.TLiqEntCooCoi,
-    final T_a2_nominal=datVAV.TAirEntCooCoi,
-    final w_a2_nominal=datVAV.wAirEntCooCoi,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    allowFlowReversal1=false,
-    final allowFlowReversal2=allowFlowReversal) "Cooling coil"
+  replaceable Buildings.Fluid.HeatExchangers.WetCoilEffectivenessNTU cooCoi(
+    use_Q_flow_nominal=true,
+    Q_flow_nominal=datVAV.QCooCoi_flow,
+    T_a1_nominal=datVAV.TLiqEntCooCoi,
+    T_a2_nominal=datVAV.TAirEntCooCoi,
+    w_a2_nominal=datVAV.wAirEntCooCoi)
+    constrainedby Buildings.Fluid.HeatExchangers.WetCoilEffectivenessNTU(
+      show_T=true,
+      redeclare package Medium1 = MediumW,
+      redeclare package Medium2 = MediumA,
+      final m1_flow_nominal=datVAV.mLiqCooCoi_flow,
+      final m2_flow_nominal=datVAV.mAirCooCoi_flow,
+      final dp1_nominal=0,
+      final dp2_nominal=0,
+      energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
+      allowFlowReversal1=false,
+      final allowFlowReversal2=allowFlowReversal)
+    "Cooling coil"
     annotation (Placement(transformation(extent={{210,-36},{190,-56}})));
 
   Buildings.Fluid.FixedResistances.PressureDrop dpRetDuc(
@@ -318,7 +320,8 @@ partial model PartialOpenLoop
     each portFlowDirection_2=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
         Modelica.Fluid.Types.PortFlowDirection.Leaving,
     each portFlowDirection_3=if allowFlowReversal then Modelica.Fluid.Types.PortFlowDirection.Bidirectional else
-        Modelica.Fluid.Types.PortFlowDirection.Leaving) "Splitter for supply air (index 1 closest to AHU)"
+        Modelica.Fluid.Types.PortFlowDirection.Leaving)
+    "Splitter for supply air (index 1 closest to AHU)"
     annotation (Placement(transformation(extent={{590,-30},{610,-50}})));
   Buildings.BoundaryConditions.WeatherData.Bus weaBus
     "Weather Data Bus" annotation (Placement(transformation(extent={{-330,
@@ -364,7 +367,7 @@ partial model PartialOpenLoop
         transformation(
         extent={{10,-10},{-10,10}},
         rotation=90,
-        origin={80,-100})));
+        origin={80,-80})));
   Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valCoo(
     redeclare final package Medium = MediumW,
     final m_flow_nominal=datVAV.mLiqCooCoi_flow,
@@ -374,7 +377,7 @@ partial model PartialOpenLoop
         transformation(
         extent={{10,-10},{-10,10}},
         rotation=90,
-        origin={180,-100})));
+        origin={180,-80})));
   Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valReh[numVAV](
     redeclare each final package Medium = MediumW,
     final m_flow_nominal=datVAV.mLiqRehCoi_flow,
@@ -537,23 +540,27 @@ equation
   connect(dpRetDuc.port_a, splRetRoo[1].port_2)
     annotation (Line(points={{480,140},{700,140},{700,0},{690,0}}, color={0,127,255}));
   connect(heaCoi.port_a1, port_coiHeaSup) annotation (Line(points={{110,-52},{120,-52},{120,-400}}, color={0,127,255}));
-  connect(cooCoi.port_a1, port_coiCooSup) annotation (Line(points={{210,-52},{220,-52},{220,-400}}, color={0,127,255}));
   connect(VAVBox.port_aHotWat, port_coiRehSup)
     annotation (Line(points={{580,40},{560,40},{560,-400}}, color={0,127,255}));
-  connect(heaCoi.port_b1, valHea.port_a) annotation (Line(points={{90,-52},{80,-52},{80,-90}}, color={0,127,255}));
-  connect(valHea.port_b, port_coiHeaRet) annotation (Line(points={{80,-110},{80,-400}}, color={0,127,255}));
-  connect(cooCoi.port_b1, valCoo.port_a) annotation (Line(points={{190,-52},{180,-52},{180,-90}}, color={0,127,255}));
-  connect(valCoo.port_b, port_coiCooRet) annotation (Line(points={{180,-110},{180,-400}}, color={0,127,255}));
+  connect(heaCoi.port_b1, valHea.port_a) annotation (Line(points={{90,-52},{80,-52},
+          {80,-70}},                                                                           color={0,127,255}));
+  connect(valHea.port_b, port_coiHeaRet) annotation (Line(points={{80,-90},{80,-400}},  color={0,127,255}));
+  connect(cooCoi.port_b1, valCoo.port_a) annotation (Line(points={{190,-52},{180,
+          -52},{180,-70}},                                                                        color={0,127,255}));
+  connect(valCoo.port_b, port_coiCooRet) annotation (Line(points={{180,-90},{180,
+          -400}},                                                                         color={0,127,255}));
   connect(VAVBox.port_bHotWat, valReh.port_a) annotation (Line(points={{580,28},{550,28}}, color={0,127,255}));
   connect(valReh.port_b, port_coiRehRet) annotation (Line(points={{530,28},{520,28},{520,-400}}, color={0,127,255}));
   connect(maxHea.y, yValHeaMax_actual) annotation (Line(points={{782,160},{820,160}}, color={0,0,127}));
   connect(maxCoo.y, yValCooMax_actual) annotation (Line(points={{782,120},{820,120}}, color={0,0,127}));
   connect(valHea.y_actual, maxHea.u[1])
-    annotation (Line(points={{73,-105},{73,-120},{740,-120},{740,160},{758,160}}, color={0,0,127}));
+    annotation (Line(points={{73,-85},{73,-100},{736,-100},{736,160},{758,160}},  color={0,0,127}));
   connect(valCoo.y_actual, maxCoo.u[1])
-    annotation (Line(points={{173,-105},{173,-116},{736,-116},{736,120},{758,120}}, color={0,0,127}));
+    annotation (Line(points={{173,-85},{173,-98},{740,-98},{740,120},{758,120}},    color={0,0,127}));
   connect(senSupFlo.port_b, dpSupDuc.port_a) annotation (Line(points={{420,-40},{460,-40}}, color={0,127,255}));
   connect(dpSupDuc.port_b, splSupRoo[1].port_1) annotation (Line(points={{480,-40},{590,-40}}, color={0,127,255}));
+  connect(cooCoi.port_a1, port_coiCooSup) annotation (Line(points={{210,-52},{220,
+          -52},{220,-400}}, color={0,127,255}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-400,-400},{800,300}})),
                                  Documentation(info="<html>
 <p>

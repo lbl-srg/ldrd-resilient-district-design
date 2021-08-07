@@ -1,5 +1,5 @@
 within LDRD.Examples;
-model ParallelSpawnCoolingTower
+model ParallelSpawnCoolingTowers
   "Example of parallel connection with constant district water mass flow rate"
   extends BaseClasses.PartialParallelSpawn(
     final facMulTim={1, 10},
@@ -13,7 +13,6 @@ model ParallelSpawnCoolingTower
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true),
-    conVio(nu=4),
     EPum(nin=4));
   /*
   Differential pressure set point takes valve + HX nominal pressure drop,
@@ -51,8 +50,10 @@ model ParallelSpawnCoolingTower
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
     annotation (Placement(transformation(extent={{-280,-140},{-260,-160}})));
-  CentralPlants.CoolingTowers cooTow(redeclare final package Medium = Medium,
-      final m_flow_nominal=datDes.mPla_flow_nominal) "Cooling tower"
+  CentralPlants.CoolingTowers cooTow(
+    redeclare final package Medium = Medium,
+    final m_flow_nominal=datDes.mPla_flow_nominal)
+    "Cooling towers"
     annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
@@ -94,8 +95,6 @@ equation
   connect(cooTow.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
           -162.667,20},{-162.667,26},{-162.667,30},{-110,30},{-110,-4},{-90,-4}},
                                                                  color={0,127,255}));
-  connect(TDisWatSup.T, conVio.u[4]) annotation (Line(points={{-91,20},{-100,20},
-          {-100,38.6667},{298,38.6667},{298,40}}, color={0,0,127}));
   connect(TDisWatSup.T, cooTow.TWatLvg) annotation (Line(points={{-91,20},{-100,
           20},{-100,-38},{-170,-38},{-170,-22.6667},{-169.333,-22.6667}}, color=
          {0,0,127}));
@@ -115,6 +114,8 @@ equation
           -173.333,100},{198,100}}, color={215,215,215}));
   connect(EPumPla.y, EPum.u[4]) annotation (Line(points={{221,60},{240,60},{240,
           120},{258,120}}, color={0,0,127}));
+  connect(conPla.dH_flow, EPla.u)
+    annotation (Line(points={{-87,2},{-87,10},{198,10}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
@@ -139,4 +140,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end ParallelSpawnCoolingTower;
+end ParallelSpawnCoolingTowers;
