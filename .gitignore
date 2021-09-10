@@ -2,4 +2,10 @@ eplus_out
 *.xml
 *.so
 *.csv
+*.aux
+*.bbl
+*.blg
+*.log
+*.gz
+*.spl
 debug*mos
