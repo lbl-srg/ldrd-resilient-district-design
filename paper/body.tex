@@ -51,7 +51,7 @@ Among the main drawbacks, the following must be mentioned.
 
 \subsection{Energy Transfer Station} \label{sec:ets}
 
-The concept behind the energy transfer station (ETS) was first investigated on a mixed-use development project with distributed geothermal borefields \cite{Sidewalk} \todo{Credits to Integral?}. It relies on heat recovery chillers\footnote{Heat recovery chillers are typically built with scroll or screw compressors and are capable of operating at a high condenser leaving temperature. The operating limit observed across various manufacturers lies around 63°C. That makes that equipment suitable for both heating hot water (with a $COP$ )and domestic hot water production.} and a load balancing control logic that uses the ambient sources (such as the ground through a local geothermal heat exchanger or the service water through the interface heat exchanger) to drop the excess heat or the excess cold depending on the current operating conditions.
+The concept behind the energy transfer station (ETS) was first investigated on a mixed-use development project with distributed geothermal borefields \cite{Sidewalk} \todo{Credits to Integral?}. It relies on heat recovery chillers\footnote{Heat recovery chillers are typically built with scroll or screw compressors that are capable of operating at a high condenser leaving temperature. The operating limit observed across various manufacturers lies around 63°C. That makes that equipment suitable for both heating hot water and domestic hot water production.} and a load balancing control logic that uses the ambient sources (such as the ground through a local geothermal heat exchanger or the service water through the interface heat exchanger) to drop the excess heat or the excess cold depending on the current operating conditions.
 
 The system schematic is presented figure~\ref{fig:schematic}, which also includes the design conditions considered for sizing the different pieces of equipment.
 We will now summarize the main operating principles. For further details, the reader may refer to the documentation of the model \href{https://simulationresearch.lbl.gov/modelica/releases/v8.0.0/help/Buildings\_Experimental\_DHC\_EnergyTransferStations\_Combined\_Generation5.html#Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield}{\lstinline|Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield|} distributed within the Modelica Buildings Library.
@@ -83,7 +83,7 @@ We will now summarize the main operating principles. For further details, the re
     \item The condenser and evaporator pumps are enabled if there is a cooling or a heating demand. When enabled, the pumps are operated at constant speed, and the condenser (resp. evaporator) mixing valve is modulated with a PI loop controlling the minimum (resp. maximum) inlet temperature. The chiller is enabled when the pumps are proven on. It is controlled based on the chilled water supply temperature set point yielded by the supervisory controller.
 \end{itemize}
 
-\begin{figure*}[h!]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/ChillerBorefield.pdf}
 \caption{Schematic of the energy transfer station.}
@@ -184,14 +184,14 @@ Discuss impact on peak and average power and lost hours of operation
 
 Building HVAC System
 
-\begin{figure*}[h!]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/CoilSizing.pdf}
 \caption{Sensitivity to the cooling coil sizing.}
-\label{fig:fan}
+\label{fig:coil}
 \end{figure*}
 
-\begin{figure*}[h!]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/FanSizing.pdf}
 \caption{Sensitivity to the fan sizing coefficient.}
@@ -200,26 +200,26 @@ Building HVAC System
 
 District Central Systems
 
-\begin{figure*}[h!]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/GeoSizing.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - District water supply temperature.}
-\label{fig:fan}
+\label{fig:geo_sizing}
 \end{figure*}
 
-\begin{figure*}[h!]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/GeoSizingE.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - Energy transferred from the district loop through the borefield ($ESto.y$) and through the cooling towers ($EPla.y$).}
-\label{fig:fan}
+\label{fig:geo_cooling}
 \end{figure*}
 
 
-\begin{figure*}[h!]
+\begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/GeoBestCaseT.pdf}
 \caption{Illustration of the cooling towers effect on the case with 1250 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
-\label{fig:fan}
+\label{fig:coolingeffect}
 \end{figure*}
 
 

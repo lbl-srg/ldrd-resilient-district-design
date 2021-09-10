@@ -5,7 +5,10 @@ eplus_out
 *.aux
 *.bbl
 *.blg
-*.log
+*.fdb_latexmk
+*.fls
 *.gz
+*.log
+*.out
 *.spl
 debug*mos
