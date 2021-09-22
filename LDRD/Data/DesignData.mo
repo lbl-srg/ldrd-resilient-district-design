@@ -6,7 +6,7 @@ record DesignData "Record with design data"
     annotation(Evaluate=true);
 
   parameter Real facDiv = 0.9
-    "Load diversity factor (typically heating is limitingand higher than 0.9)";
+    "Load diversity factor (typically heating is limiting and higher than 0.9)";
 
   parameter Modelica.SIunits.MassFlowRate mPumDis_flow_nominal = facDiv *
     sum(mCon_flow_nominal)

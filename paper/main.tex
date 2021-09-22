@@ -24,7 +24,7 @@
 %% $Id: elsarticle-template-num.tex 190 2020-11-23 11:12:32Z rishi $
 %%
 %%
-\documentclass[preprint,3p,11pt]{elsarticle}
+\documentclass[preprint,3p,11pt,authoryear]{elsarticle}
 % \documentclass[preprint,5p,times,twocolumn]{elsarticle}
 
 %% Use the option review to obtain double line spacing
@@ -52,7 +52,26 @@
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{changepage}
 \usepackage{amsmath}
+\makeatletter
+\newenvironment{shiftedflalign}{%
+    \start@align\tw@\st@rredfalse\m@ne%
+    \hskip\parindent
+}{%
+    \endalign
+}
+\newenvironment{shiftedflalign*}{%
+    \start@align\tw@\st@rredtrue\m@ne
+    \hskip\parindent
+}{%
+    \endalign
+}
+\newenvironment{avec}
+{\begin{adjustwidth}{\parindent}{} % open the minipage
+	%\setlength{\parskip}{1ex}%
+}{\end{adjustwidth}}
+\makeatother
 \usepackage{mathrsfs}
 \usepackage{threeparttable}
 % \usepackage{unicode-math}
@@ -110,7 +129,7 @@
 \input body.tex
 
 %% Bibliography
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{elsarticle-harv}
 \bibliography{references}
 
 \end{document}

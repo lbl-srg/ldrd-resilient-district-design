@@ -4,10 +4,10 @@
 Novel district heating and cooling (DHC) systems allow sharing large geothermal resources between buildings by operating a central water loop near ground temperature, coupled to distributed vapor-compression machines that lift the temperature up or down to what the building’s heating or cooling system requires.
 Originally designed to capture heat from low-temperature heat sources more efficiently, those systems also provide opportunities for compressor-less cooling.
 
-Using high-fidelity models of buildings, district energy, building-side HVAC and control systems, we are assessing how to improve resilience of buildings during heat waves and power outages, during which we switch the system from normal operation to resilience mode.
+Using high-fidelity models of buildings, district energy, building-side HVAC and control systems, we are assessing how to improve resilience of buildings during heat waves and power outages, during which we switch the system from normal operation to a resilience mode at low power.
 
-The sensitivity of the overall system performance in a resilience mode is investigated with regards to the district network topology, the configuration of the primary systems (integration of a waterside economizer, auxiliary cooling), the sizing parameters (cooling coil, fans, geothermal borefield) and the control principles. Furthermore, the best system configuration to maximize the flexibility and adaptability of the energy system will be investigated. This will ensure that future changes in use and/or technical innovations can be accommodated cost-effectively.
-Ultimately, the positive externality of a design optimized for resilience is evaluated under standard operating conditions to illustrate to what extent the increased first cost at the building level is balanced by a lower average heat rejection from the compressors that yields sizing margins of the central systems, or how the design for low-power resilient conditioning also contributes to reducing the HVAC energy demand over the year at the district scale.
+The sensitivity of the overall system performance in the resilience mode is investigated with regards to the district network topology, the configuration of the primary systems (integration of a waterside economizer, auxiliary cooling), the sizing parameters (cooling coil, fans, geothermal borefield) and the control principles.
+Furthermore, the positive externality of a design optimized for resilience is evaluated under standard operating conditions to illustrate to what extent the increased first cost at the building level is balanced by a lower average heat rejection from the compressors that yields sizing margins of the central systems, or how the design for low-power resilient conditioning also contributes to reducing the HVAC energy demand over the year at the district scale.
 
 \subsection{Questions Raised} \label{sec:questions}
 
@@ -29,7 +29,7 @@ Flexible framework with replaceable components that allow switching easily the b
 
 \subsection{Design Concept} \label{sec:concept}
 
-The system under investigation is a combined heating and cooling system for district applications with distributed heat recovery chillers. The main network distributes water near ground temperature, typically between $9$°C and $16$°C. A large central geothermal borefield is used for seasonal heat storage while cooling towers cater for the annual load imbalance where the heat rejection demand often dominates in mixed-use applications.
+The system under investigation is a combined heating and cooling system for cold district networks with distributed heat recovery chillers. The main network distributes water near ground temperature, typically between $9$°C and $16$°C. A large central geothermal borefield is used for seasonal heat storage while cooling towers cater for the annual load imbalance where the heat rejection demand often dominates in mixed-use applications.
 The potential benefits of such design are numerous.
 
 \begin{enumerate}
@@ -41,6 +41,8 @@ The potential benefits of such design are numerous.
     \item Compressor-less cooling opportunities.
 
     \item Resilience in case of equipment failure.
+
+    \item The low temperature in the main network allows using uninsulated pipes made of polymeric materials, reducing first costs and potentially increasing the heat storage capacity through the thermal coupling with the ground.
 
 \end{enumerate}
 
@@ -118,11 +120,47 @@ We noticed that it is important to reset the controller output so that the desig
 
 The speed of the main distribution pump is modulated with a PI controller tracking a constant pressure differential set point at a remote location. A bypass line is modeled and is sized to recirculate $5\%$ of the design flow rate at the pressure differential set point.
 
-The pump is sized considering a load coincidence factor of $90\%$ representative of heating design conditions.
+The pump is sized considering no load diversity as the actual diversity observed on the cooling load data (see §\ref{sec:buildings}) is close to $100\%$.
 
 \subsubsection{Geothermal Borefield}
 
-Sizing rationale: seasonal storage system, target temperature range of the loop, load balanced over the year through auxiliary cooling system.
+The initial sizing of the borefield is performed based on the method described in \cite{Cline2020}.
+The total borehole length $L$ is given by Equation~\ref{eq:sizing}.
+
+\begin{align}
+    \label{eq:sizing}
+    L &= \frac{\dot{Q}_a R_{10y} + \dot{Q}_m R_{1m} + \dot{Q}_h \left( R_b + F_{sc} R_{6h} \right)}{\left( T_{Ent} + T_{Lvg} \right) / 2 - \left( T_g + T_p \right)}
+\end{align}
+
+with
+
+\begin{avec}
+    $\dot{Q}_a$ (W): Net annual average heat transfer to the ground, counted positively for heat rejection to the ground%
+    \footnote{This is the opposite convention as the one used in \cite{Cline2020}, and Equation~\ref{eq:sizing} is adjusted accordingly.}\\
+    $R_{10y}$ (m2.K/W): Effective thermal resistance of the ground computed with a 10-year heat pulse \\
+    $\dot{Q}_m$ (W): Net monthly average heat transfer to the ground\\
+    $R_{1m}$ (m.K/W): Effective thermal resistance of the ground computed with a 1-month heat pulse \\
+    $\dot{Q}_h$ (W): Net 6-hour average heat transfer to the ground\\
+    $R_b$ (m.K/W): Borehole overall thermal resistance \\
+    $F_{sc} = 0.04$ (-): Correction factor for short-circuit heat losses between the upward and downward flowing legs\\
+    $R_{6h}$ (m.K/W): Effective thermal resistance of the ground computed with a 6-hour heat pulse \\
+    $T_g$ (C): Undisturbed temperature of the ground \\
+    $T_p$ (C): Ground temperature penalty \\
+    $T_{Ent}$ (C): Temperature of the liquid entering the borefield \\
+    $T_{Lvg}$ (C): Temperature of the liquid leaving the borefield \\
+\end{avec}
+
+The effective resistances of the ground are given by the cylindrical heat source formulation from \cite{Carslaw1947} considering a borehole diameter of $150$~mm, a soil conductivity, specific heat capacity, and density of $2.3$~W/m.K, $1000$~J/kg.K, and $2600$~kg/m3, respectively.
+This gives: $R_{10y} = 0.17, R_{1m} = 0.15, R_{6h} = 0.08$~m.K/W.
+The overall resistance of the borehole is computed based on the method from \cite{Cline2020} considering a double-U tube configuration of DN40 DR 11 HDPE pipes and a grout material with a conductivity of $2.0$~W/m.K. This gives: $Rb = 0.06$~m.K/W.
+The hourly load data used for sizing are generated as described in §\ref{sec:buildings}, considering a chiller efficiency of $COP_{Cooling} = 7.0$ in cooling mode (with a condenser entering temperature of $18$°C and an evaporator leaving temperature of $7$°C) and $COP_{Heating} = 4.8$ in heating mode (with an evaporator entering temperature of $7$°C and a condenser leaving temperature of $45$°C).
+The central geothermal borefield is designed with a target ground equilibrium temperature of $T_g+ T_p = 12.0$°C, starting from an undisturbed ground temperature of $T_g = 10$°C.
+This gives the following required number of boreholes considering a borehole depth of $180$~m.
+
+\begin{align}
+    \label{eq:sizing}
+    L &= \frac{\dot{Q}_a R_{10y} + \dot{Q}_m R_{1m} + \dot{Q}_h \left( R_b + F_{sc} R_{6h} \right)}{\left( T_{Ent} + T_{Lvg} \right) / 2 - \left( T_g + T_p \right)}
+\end{align}
 
 
 \subsubsection{Cooling Towers}
@@ -161,17 +199,15 @@ In addition, the simulation model is simplified due to the ideal model of the fl
 
 The original building models are taken from the \href{https://www.energy.gov/eere/buildings/commercial-reference-buildings}{US DOE commercial reference buildings database} and represent new constructions (year 2004) of a medium office, a mid-rise apartment, and a hospital in Chicago IL, USA.
 The study focuses on the office building type where resilience metrics are computed based on proxy variables for thermal comfort. The other building types are included to model the load diversity of a typical mixed-use development project.
-A multiplier factor of $10$ is applied to the medium office and mid-rise apartment types to represent a cluster of similar buildings.
+A multiplier factor of $10$ is applied to the office and apartment types to represent a cluster of similar buildings.
 The building models are used in two different ways.
 
-First, simulating those models with EnergyPlus provides heating and cooling load data%
-\footnote{The domestic hot water (DHW) loads are not considered in this study.}
-(computed as the heating and cooling coil total heat flow rates) which are used to size the systems.
-The resulting building loads are presented Figure~\ref{fig:loads}, the total peak cooling and heating loads are $3.5$ and $3.2$~MW, respectively, and the annual energy is $8.9$ and $5.8$~GWh/y, for a total conditionned floor area of $103590$~m2.
-For the mid-rise apartment and hospital types, the corresponding time series are then used as inputs to the model of the DHC system.
+First, simulating those models with EnergyPlus provides heating and cooling load data---the domestic hot water (DHW) loads are not considered in this study---which are used to size the systems.
+The resulting building loads are presented Figure~\ref{fig:loads}, the total peak cooling and heating loads are $3.5$ and $3.2$~MW, respectively, and the annual energy is $8.9$ and $5.8$~GWh/y, for a total conditionned floor area of $103,590$~m2.
+For the apartment and hospital types, the corresponding time series are then directly used as inputs to the model of the DHC system.
 Here, the boundary of the Modelica model is the load side of the ETS component where the building loads are converted into a mass flow rate and temperature variation with an interface component approximating the emission/flow rate characteristic of the building HVAC system.
 
-Second, for the medium office type, the EnergyPlus input data file is consumed to generate an FMU for Model Exchange that can be coupled to a Modelica model through the Spawn of EnergyPlus toolchain \cite{Wetter2020}. Here, the boundary of the Modelica model is expanded and encompasses the building HVAC system as well as the air volume of the rooms, while the building envelope is modeled with EnergyPlus.
+Second, for the office type, the EnergyPlus input data file is consumed to generate an FMU for Model Exchange that can be coupled to a Modelica model using the Spawn of EnergyPlus toolchain \cite{Wetter2020}. Here, the boundary of the Modelica model encompasses the building HVAC system as well as the air volume of the rooms, while the building envelope is modeled with EnergyPlus.
 The building HVAC system is a variable air volume (VAV) system with hot water reheat.
 The system components are sized based on the peak loads computed with EnergyPlus (with a cooling load diversity factor of $0.7$) and the requirements from \cite{ASHRAE62.1} for ventilation parameters and from \cite{ASHRAE90.1} for other limiting operating conditions.
 The control sequence is adapted from \cite{ASHRAE2006}.
@@ -187,7 +223,8 @@ The main features of the implementation are described in \cite{Wetter2022}, and 
 \subsubsection{Weather Data} \label{sec:weather}
 
 The weather data for annual simulation is the TMY3 weather file for Chicago IL, USA.
-A so-called "resilience design day" is generated based on the most severe conditions in July from that TMY3 weather file (which happen to be more conservative than a design day generated based on the method proposed in \cite{ASHRAE2017} Chapter 14 considering the annual $0.4\%$ design dry-bulb temperature and the mean coincident wet-bulb temperature). During the resilience design day the dry-bulb temperature range is $[23.3, 35.0]$~(C), the wet-bulb temperature range is $[22.5, 26.9]$~(C), and the global horizontal irradiance peaks at $931$~W/m2.
+A so-called "resilience design day" is generated based on the most severe conditions in July from that TMY3 weather file, which happen to be more conservative than a design day generated based on the method proposed in \cite{ASHRAE2017} Chapter 14 considering the annual $0.4\%$ design dry-bulb temperature and the mean coincident wet-bulb temperature.
+During the resilience design day the dry-bulb temperature range is $[23.3, 35.0]$~(C), the wet-bulb temperature range is $[22.5, 26.9]$~(C), and the global horizontal irradiance peaks at $931$~W/m2.
 The resilience design day is repeated $7$ times during the month of July to generate a "resilience design week" over which the comfort analysis is performed.
 
 \subsubsection{Internal Heat Gains} \label{sec:gains}
