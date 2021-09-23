@@ -5,7 +5,8 @@ partial model PartialOpenLoop
   package MediumA = Buildings.Media.Air "Medium model for air";
   package MediumW = Buildings.Media.Water "Medium model for water";
 
-  outer replaceable Data.VAVData datVAV;
+  outer replaceable Data.VAVData datVAV
+    annotation (Placement(transformation(extent={{160,260},{180,280}})));
 
   final parameter Integer numVAV(min=2, start=5) = datVAV.numVAV
     "Number of served VAV boxes"
@@ -399,6 +400,7 @@ partial model PartialOpenLoop
     final allowFlowReversal=allowFlowReversal,
     final dp_nominal=datVAV.dpDucSup) "Duct pressure drop"
     annotation (Placement(transformation(extent={{460,-50},{480,-30}})));
+
 protected
   constant Modelica.SIunits.SpecificHeatCapacity cpAir=
     Buildings.Utilities.Psychrometrics.Constants.cpAir

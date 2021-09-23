@@ -34,7 +34,7 @@ The potential benefits of such design are numerous.
 
 \begin{enumerate}
 
-    \item The compressor lift optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa. The impact on the chiller or heater efficiency is around $2$\%/K as shown by a simple Carnot efficiency calculation ($COP_{Hea} = \eta_{Car, 0} \frac{T_{Con}}{T_{Con}-T{Eva}}$), and corroborated by manufacturer catalog data.
+    \item The compressor lift optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa. The impact on the chiller or heater efficiency is around $2$\%/K as shown by a simple Carnot efficiency calculation, and corroborated by manufacturer catalog data.
 
     \item Heat recovery is possible over the whole network, not only between buildings as described before, but because of the ultra-low temperature network, virtually with any source of low-quality heat, such as condenser water used from process cooling or even sewage water as low as 15°C.
 
@@ -56,7 +56,7 @@ Among the main drawbacks, the following must be mentioned.
 
 \subsection{Energy Transfer Station} \label{sec:ets}
 
-The concept behind the energy transfer station (ETS) was first investigated on a mixed-use development project with distributed geothermal borefields \cite{WetterHu2019}.
+The concept behind the energy transfer station (ETS) was first investigated on a mixed-use development project with distributed geothermal borefields \citep{WetterHu2019}.
 It relies on heat recovery chillers%
 \footnote{Heat recovery chillers are typically built with scroll or screw compressors that are capable of operating at a high condenser leaving temperature (the operating limit observed across various manufacturers lies around 63°C). That makes that equipment suitable for both heating hot water and domestic hot water production. The drawback is that the compressor is operated at a high lift which is detrimental to the efficiency. A potentially more efficient design is proposed in \cite{Cline2020} where at least two separate units are used and the source-side circuits are connected together with the ambient source (a geothermal borefield in that case), resulting in cascading thermodynamic cycles when the plant operates in simultaneous heating and cooling mode.}
 and a load balancing control logic that uses the ambient sources (such as the ground through a local geothermal heat exchanger or the service water through the interface heat exchanger) to drop the excess heat or the excess cold depending on the current operating conditions.
@@ -87,10 +87,10 @@ We will now summarize the main operating principles. For further details, the re
 
     This was preferred to a control based on the temperature due to the variation of the temperature difference between the secondary and primary side when switching between heat rejection (with large temperature difference) and cold rejection (with small temperature difference, as used for sizing). This required gain scheduling and turned out difficult to tune. However, the simpler logic based on the heat or cold rejection demand brings additional requirements regarding hydronic balancing, see §\ref{sec:balancing}.
 
-    \item The optional waterside economizer is enabled if there is a cooling demand, and the evaporator isolation valve is closed (i.e., the system is not in cold rejection mode), and the predicted leaving water temperature is lower than the entering water temperature (with additional timers to avoid short cycling). The system is disabled if any of the previous conditions is not met, except that the actual leaving water temperature is used instead of the predicted value.
+    \item The optional waterside economizer (WSE) is enabled if there is a cooling demand, and the evaporator isolation valve is closed (i.e., the system is not in cold rejection mode), and the predicted leaving water temperature is lower than the entering water temperature (with additional timers to avoid short cycling). The system is disabled if any of the previous conditions is not met, except that the actual leaving water temperature is used instead of the predicted value.
     When the system is enabled the bypass valve on the secondary side is fully closed and the primary side is controlled so that the primary flow rate varies linearly with the secondary flow rate.
 
-    The waterside is integrated sidestream (on the secondary side) where the CHW temperature is the warmest to maximize the rate of heat transfer at given mass flow rates. However, it is not integrated into the condenser loop because the economizer operates mainly in the shoulder or cold season (with lower cooling loads allowing CHW supply temperature reset and lower service water temperature) when heating loads require a high condenser temperature (higher than the CHW return temperature).
+    The waterside economizer is integrated sidestream (on the secondary side) where the CHW temperature is the warmest to maximize the rate of heat transfer at given mass flow rates. However, it is not integrated into the condenser loop because the economizer operates mainly in the shoulder or cold season (with lower cooling loads allowing CHW supply temperature reset and lower service water temperature) when heating loads require a high condenser temperature (higher than the CHW return temperature).
 
     \item The condenser and evaporator pumps are enabled if there is a cooling or a heating demand (see §\ref{sec:demand}). When enabled, the pumps are operated at constant speed, and the condenser (resp. evaporator) mixing valve is modulated with a PI loop controlling the minimum (resp. maximum) inlet temperature. The chiller is enabled when the pumps are proven on. It is controlled based on the chilled water supply temperature set point yielded by the supervisory controller.
 \end{itemize}
@@ -116,6 +116,18 @@ We noticed that it is important to reset the controller output so that the desig
 
 \subsection{Central Systems}
 
+\subsection{Loop Temperature Range} \label{sec:LoopRange}
+
+The target range for the supply temperature in the main loop is set at $[9, 16]$°C given the constraints on
+
+\begin{itemize}
+    \item the minimum temperature of the fluid leaving the evaporator, which is typically around $3$°C for water without glycol,
+    \item the maximum CHW supply temperature in WSE mode compatible with radiant cooling, which is set at $18$°C,
+    \item the chilled water delta-T, which is set at $4$~K,
+    \item the heat exchanger approach, which are taken equal to $2$~K for both the district heat exchanger and the waterside economizer.
+\end{itemize}
+
+
 \subsubsection{Hydronic Distribution}
 
 The speed of the main distribution pump is modulated with a PI controller tracking a constant pressure differential set point at a remote location. A bypass line is modeled and is sized to recirculate $5\%$ of the design flow rate at the pressure differential set point.
@@ -135,8 +147,8 @@ The total borehole length $L$ is given by Equation~\ref{eq:sizing}.
 with
 
 \begin{avec}
-    $\dot{Q}_a$ (W): Net annual average heat transfer to the ground, counted positively for heat rejection to the ground%
-    \footnote{This is the opposite convention as the one used in \cite{Cline2020}, and Equation~\ref{eq:sizing} is adjusted accordingly.}\\
+    $\dot{Q}_y$ (W): Net annual average heat transfer to the ground, counted positively for heat rejection to the ground%
+    \footnote{This is the opposite convention as the one used in \cite{Cline2020}, and Equation~\ref{eq:sizing} is rearranged accordingly.}\\
     $R_{10y}$ (m2.K/W): Effective thermal resistance of the ground computed with a 10-year heat pulse \\
     $\dot{Q}_m$ (W): Net monthly average heat transfer to the ground\\
     $R_{1m}$ (m.K/W): Effective thermal resistance of the ground computed with a 1-month heat pulse \\
@@ -152,20 +164,37 @@ with
 
 The effective resistances of the ground are given by the cylindrical heat source formulation from \cite{Carslaw1947} considering a borehole diameter of $150$~mm, a soil conductivity, specific heat capacity, and density of $2.3$~W/m.K, $1000$~J/kg.K, and $2600$~kg/m3, respectively.
 This gives: $R_{10y} = 0.17, R_{1m} = 0.15, R_{6h} = 0.08$~m.K/W.
-The overall resistance of the borehole is computed based on the method from \cite{Cline2020} considering a double-U tube configuration of DN40 DR 11 HDPE pipes and a grout material with a conductivity of $2.0$~W/m.K. This gives: $Rb = 0.06$~m.K/W.
-The hourly load data used for sizing are generated as described in §\ref{sec:buildings}, considering a chiller efficiency of $COP_{Cooling} = 7.0$ in cooling mode (with a condenser entering temperature of $18$°C and an evaporator leaving temperature of $7$°C) and $COP_{Heating} = 4.8$ in heating mode (with an evaporator entering temperature of $7$°C and a condenser leaving temperature of $45$°C).
-The central geothermal borefield is designed with a target ground equilibrium temperature of $T_g+ T_p = 12.0$°C, starting from an undisturbed ground temperature of $T_g = 10$°C.
-This gives the following required number of boreholes considering a borehole depth of $180$~m.
+The overall resistance of the borehole is computed based on the method from \cite{Cline2020} considering DN40 DR11 HDPE pipes in a double-U configuration and a grout material with a conductivity of $2.0$~W/m.K. This gives: $Rb = 0.06$~m.K/W.
+The hourly load data used for sizing are generated as described in §\ref{sec:buildings}, considering a chiller efficiency of $COP_{Cooling} = 7.0$ in cooling mode (with a condenser entering temperature of $18$°C and an evaporator leaving temperature of $7$°C) and $COP_{Heating} = 4.8$ in heating mode (with an evaporator entering temperature of $7$°C and a condenser leaving temperature of $50$°C). This gives the heat flow rate transferred to the main network as presented in Figure~\ref{fig:qtoground}.
+Starting from an undisturbed ground temperature of $T_g = 10$°C, the dominating heat rejection will enable reaching an equilibrium temperature of $T_g + T_p = 12.0$°C, which lies roughly in the middle of the target loop temperature range of $[9, 16]$~(C).
+From there the auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis, so $Q_y = 0$ is considered to size the borefield.
+This gives the following number of boreholes considering a borehole depth of $180$~m.
 
-\begin{align}
-    \label{eq:sizing}
-    L &= \frac{\dot{Q}_a R_{10y} + \dot{Q}_m R_{1m} + \dot{Q}_h \left( R_b + F_{sc} R_{6h} \right)}{\left( T_{Ent} + T_{Lvg} \right) / 2 - \left( T_g + T_p \right)}
-\end{align}
+\begin{align*}
+n_{Heating} &= 705\\
+n_{Cooling} &= 1426
+\end{align*}
 
 
-\subsubsection{Cooling Towers}
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{../python_scripts/figures/QToGround.pdf}
+    \caption{Hourly heat flow rate transferred to the main network (computed from EnergyPlus load data, see §\ref{sec:buildings}).}
+    \label{fig:qtoground}
+\end{figure*}
 
-Discuss sizing and why cooling towers are preferred to dry coolers although they operate mainly in shoulder season at lower humidity ratios (approach of dry coolers is typically higher than 8 K, as opposed to 4 K possible with cooling towers). Is it acceptable to have open towers with regard to the water cleanliness?
+
+\subsubsection{Auxiliary Cooling System}
+
+The auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis.
+Therefore, a whole-year simulation of the coupled system is needed for a proper sizing, which will significantly depends on the controls.
+
+Open cooling towers offer the best approach ($4$~K to the wet bulb) but require an intermediary heat exchanger to prevent an elevated oxygen concentration in the district loop. They can be operated even at low ambient temperature, under freezing conditions.
+Closed loop dry coolers typically have a dry bulb approach higher than $5$~K but can be directly connected to the district loop. To avoid the addition of glycol, the dry coolers shall be enabled only if the ambient temperature is above $0$°C.
+Both of those air-cooled fluid coolers will typically be off at peak cooling load considering the target loop temperature range of $[9, 16]$~(C).
+They will be primarily used during the shoulder seasons to discharge the heat from the ground surrounding the borefield.
+Therefore, the benefits of an evaporative system are reduced and dry coolers are considered.
+
 
 \subsection{Modeling Hydronic Systems} \label{sec:balancing}
 
@@ -215,7 +244,7 @@ The main features of the implementation are described in \cite{Wetter2022}, and 
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=.7\linewidth]{figures/LoadsSum.pdf}
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/LoadsSum.pdf}
     \caption{Building loads computed with EnergyPlus, integrated over the year, including the multiplier factors used to represent clusters of similar buildings (DHW loads are presented for reference but are not considered in this study).}
     \label{fig:loads}
 \end{figure*}
@@ -244,14 +273,14 @@ Building HVAC System
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/CoilSizing.pdf}
+\includegraphics[width=\linewidth]{../python_scripts/figures/CoilSizing.pdf}
 \caption{Sensitivity to the cooling coil sizing.}
 \label{fig:coil}
 \end{figure*}
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/FanSizing.pdf}
+\includegraphics[width=\linewidth]{../python_scripts/figures/FanSizing.pdf}
 \caption{Sensitivity to the fan sizing coefficient.}
 \label{fig:fan}
 \end{figure*}
@@ -260,14 +289,14 @@ District Central Systems
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/GeoSizing.pdf}
+\includegraphics[width=\linewidth]{../python_scripts/figures/GeoSizing.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - District water supply temperature.}
 \label{fig:geo_sizing}
 \end{figure*}
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/GeoSizingE.pdf}
+\includegraphics[width=\linewidth]{../python_scripts/figures/GeoSizingE.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - Energy transferred from the district loop through the borefield ($ESto.y$) and through the cooling towers ($EPla.y$).}
 \label{fig:geo_cooling}
 \end{figure*}
@@ -275,7 +304,7 @@ District Central Systems
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/GeoBestCaseT.pdf}
+\includegraphics[width=\linewidth]{../python_scripts/figures/GeoBestCaseT.pdf}
 \caption{Illustration of the cooling towers effect on the case with 1250 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
 \label{fig:coolingeffect}
 \end{figure*}
