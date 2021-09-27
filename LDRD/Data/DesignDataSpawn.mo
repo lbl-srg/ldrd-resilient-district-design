@@ -13,7 +13,7 @@ record DesignDataSpawn "Record with design data for Spawn models"
     annotation (Evaluate=true);
 
   parameter Real facDiv = 0.9
-    "Load diversity factor (typically heating is limitingand higher than 0.9)";
+    "Load diversity factor (typically heating is limiting and higher than 0.9)";
 
   parameter Modelica.SIunits.MassFlowRate mPumDis_flow_nominal = facDiv *
     sum(mCon_flow_nominal)
@@ -28,10 +28,7 @@ record DesignDataSpawn "Record with design data for Spawn models"
   parameter Modelica.SIunits.MassFlowRate mEnd_flow_nominal=
     0.05 * mPumDis_flow_nominal
     "Nominal mass flow rate in the end of the distribution line";
-  parameter Modelica.SIunits.Temperature TLooMin = 273.15 + 6
-    "Minimum loop temperature";
-  parameter Modelica.SIunits.Temperature TLooMax = 273.15 + 17
-    "Maximum loop temperature";
+
   parameter Real dp_length_nominal(final unit="Pa/m") = 250
     "Pressure drop per pipe length at nominal flow rate";
   parameter Modelica.SIunits.Length lDis[nBui] = fill(200, nBui)

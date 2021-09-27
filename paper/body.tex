@@ -61,7 +61,7 @@ It relies on heat recovery chillers%
 \footnote{Heat recovery chillers are typically built with scroll or screw compressors that are capable of operating at a high condenser leaving temperature (the operating limit observed across various manufacturers lies around 63°C). That makes that equipment suitable for both heating hot water and domestic hot water production. The drawback is that the compressor is operated at a high lift which is detrimental to the efficiency. A potentially more efficient design is proposed in \cite{Cline2020} where at least two separate units are used and the source-side circuits are connected together with the ambient source (a geothermal borefield in that case), resulting in cascading thermodynamic cycles when the plant operates in simultaneous heating and cooling mode.}
 and a load balancing control logic that uses the ambient sources (such as the ground through a local geothermal heat exchanger or the service water through the interface heat exchanger) to drop the excess heat or the excess cold depending on the current operating conditions.
 
-The system schematic is presented figure~\ref{fig:schematic}, which also includes the design conditions considered for sizing the different pieces of equipment.
+The system schematic is presented Figure~\ref{fig:schematic}, which also includes the design conditions considered for sizing the different components.
 We will now summarize the main operating principles. For further details, the reader may refer to the documentation of the model \href{https://simulationresearch.lbl.gov/modelica/releases/v8.0.0/help/Buildings\_Experimental\_DHC\_EnergyTransferStations\_Combined\_Generation5.html#Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield}{\lstinline|Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield|} distributed within the Modelica Buildings Library.
 
 \begin{itemize}
@@ -116,28 +116,33 @@ We noticed that it is important to reset the controller output so that the desig
 
 \subsection{Central Systems}
 
-\subsection{Loop Temperature Range} \label{sec:LoopRange}
+\subsection{Loop Temperature Range} \label{sec:loop_range}
 
 The target range for the supply temperature in the main loop is set at $[9, 16]$°C given the constraints on
 
 \begin{itemize}
-    \item the minimum temperature of the fluid leaving the evaporator, which is typically around $3$°C for water without glycol,
+    \item the minimum temperature of the fluid leaving the evaporator, which is typically around $3$°C for water without glycol, and the chilled water delta-T, which is set at $4$~K for both the primary and secondary circuits,
     \item the maximum CHW supply temperature in WSE mode compatible with radiant cooling, which is set at $18$°C,
-    \item the chilled water delta-T, which is set at $4$~K,
-    \item the heat exchanger approach, which are taken equal to $2$~K for both the district heat exchanger and the waterside economizer.
+    \item the heat exchanger approach, which is taken equal to $2$~K for both the district heat exchanger and the waterside economizer.
 \end{itemize}
 
 
-\subsubsection{Hydronic Distribution}
+\subsubsection{Hydronic Distribution} \label{sec:distrib}
 
 The speed of the main distribution pump is modulated with a PI controller tracking a constant pressure differential set point at a remote location. A bypass line is modeled and is sized to recirculate $5\%$ of the design flow rate at the pressure differential set point.
 
 The pump is sized considering no load diversity as the actual diversity observed on the cooling load data (see §\ref{sec:buildings}) is close to $100\%$.
 
-\subsubsection{Geothermal Borefield}
+\subsubsection{Geothermal Borefield} \label{sec:geo}
 
-The initial sizing of the borefield is performed based on the method described in \cite{Cline2020}.
-The total borehole length $L$ is given by Equation~\ref{eq:sizing}.
+In this paragraph we describe the main characteristics of the ground heat exchanger and provide a first assessment of the number of boreholes that a conventional sizing method would require, for both the heating and cooling requirements.
+A sensitivity study will then explore the sizing range in-between those two numbers.
+
+The main question we shall answer is to what extent the size of the borefield can be reduced---adopting a hybrid system design---while still providing enough capacity to maintain the loop supply temperature under an acceptable limit during an extreme week.
+
+...or what is the temperature overshoot of the district loop during the hottest month where air-cooled fluid coolers only provide marginal cooling, see temperature statistics in Chicago.
+
+\cite{Kavanaugh2014} propose a sizing method where the total borehole length $L$~(m) is given by Equation~\ref{eq:sizing}.
 
 \begin{align}
     \label{eq:sizing}
@@ -148,7 +153,7 @@ with
 
 \begin{avec}
     $\dot{Q}_y$ (W): Net annual average heat transfer to the ground, counted positively for heat rejection to the ground%
-    \footnote{This is the opposite convention as the one used in \cite{Cline2020}, and Equation~\ref{eq:sizing} is rearranged accordingly.}\\
+    \footnote{This is the opposite convention as the one used in \cite{Kavanaugh2014}, and Equation~\ref{eq:sizing} is rearranged accordingly.}\\
     $R_{10y}$ (m2.K/W): Effective thermal resistance of the ground computed with a 10-year heat pulse \\
     $\dot{Q}_m$ (W): Net monthly average heat transfer to the ground\\
     $R_{1m}$ (m.K/W): Effective thermal resistance of the ground computed with a 1-month heat pulse \\
@@ -162,16 +167,17 @@ with
     $T_{Lvg}$ (C): Temperature of the liquid leaving the borefield \\
 \end{avec}
 
-The effective resistances of the ground are given by the cylindrical heat source formulation from \cite{Carslaw1947} considering a borehole diameter of $150$~mm, a soil conductivity, specific heat capacity, and density of $2.3$~W/m.K, $1000$~J/kg.K, and $2600$~kg/m3, respectively.
+The effective resistances of the ground are computed according to the cylindrical heat source formulation from \cite{Carslaw1947} considering a borehole diameter of $150$~mm, a soil conductivity, specific heat capacity, and density of $2.3$~W/m.K, $1000$~J/kg.K, and $2600$~kg/m3, respectively.
 This gives: $R_{10y} = 0.17, R_{1m} = 0.15, R_{6h} = 0.08$~m.K/W.
-The overall resistance of the borehole is computed based on the method from \cite{Cline2020} considering DN40 DR11 HDPE pipes in a double-U configuration and a grout material with a conductivity of $2.0$~W/m.K. This gives: $Rb = 0.06$~m.K/W.
-The hourly load data used for sizing are generated as described in §\ref{sec:buildings}, considering a chiller efficiency of $COP_{Cooling} = 7.0$ in cooling mode (with a condenser entering temperature of $18$°C and an evaporator leaving temperature of $7$°C) and $COP_{Heating} = 4.8$ in heating mode (with an evaporator entering temperature of $7$°C and a condenser leaving temperature of $50$°C). This gives the heat flow rate transferred to the main network as presented in Figure~\ref{fig:qtoground}.
-Starting from an undisturbed ground temperature of $T_g = 10$°C, the dominating heat rejection will enable reaching an equilibrium temperature of $T_g + T_p = 12.0$°C, which lies roughly in the middle of the target loop temperature range of $[9, 16]$~(C).
-From there the auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis, so $Q_y = 0$ is considered to size the borefield.
+The overall resistance of the borehole is computed based on the method from \cite{Kavanaugh2014} considering DN40 DR11 HDPE pipes in a double-U configuration and a grout material with a conductivity of $2.0$~W/m.K. This gives: $Rb = 0.06$~m.K/W.
+The hourly load data used for sizing are generated as described in §\ref{sec:buildings}, considering a chiller efficiency of $COP_{Cooling} = 7.0$ in cooling mode (with a condenser entering temperature of $18$°C and an evaporator leaving temperature of $7$°C) and $COP_{Heating} = 4.0$ in heating mode (with an evaporator entering temperature of $7$°C and a condenser leaving temperature of $50$°C). This gives the heat flow rate transferred to the main network as presented in Figure~\ref{fig:q_to_ground}.
+
+The sizing rationale is then as follows. Starting from an undisturbed ground temperature of $T_g = 10$°C, the dominating heat rejection will enable reaching an equilibrium temperature of $T_g + T_p = 12.0$°C, which lies roughly in the middle of the target loop temperature range of $[9, 16]$~(C).
+From there the auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis, so $Q_y = 0$ is considered to size the borefield. The effect of the auxiliary cooling system on $\dot{Q}_m$ and $\dot{Q}_h$, i.e., near cooling design conditions, is neglected as explained in §\ref{sec:aux_cooling}.
 This gives the following number of boreholes considering a borehole depth of $180$~m.
 
 \begin{align*}
-n_{Heating} &= 705\\
+n_{Heating} &= 705 \\
 n_{Cooling} &= 1426
 \end{align*}
 
@@ -180,32 +186,37 @@ n_{Cooling} &= 1426
     \centering
     \includegraphics[width=\linewidth]{../python_scripts/figures/QToGround.pdf}
     \caption{Hourly heat flow rate transferred to the main network (computed from EnergyPlus load data, see §\ref{sec:buildings}).}
-    \label{fig:qtoground}
+    \label{fig:q_to_ground}
 \end{figure*}
 
 
-\subsubsection{Auxiliary Cooling System}
+\subsubsection{Auxiliary Cooling System} \label{sec:aux_cooling}
 
 The auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis.
-Therefore, a whole-year simulation of the coupled system is needed for a proper sizing, which will significantly depends on the controls.
+Therefore, a whole-year simulation of the coupled system is needed for a proper sizing, which significantly depends on the controls.
 
-Open cooling towers offer the best approach ($4$~K to the wet bulb) but require an intermediary heat exchanger to prevent an elevated oxygen concentration in the district loop. They can be operated even at low ambient temperature, under freezing conditions.
 Closed loop dry coolers typically have a dry bulb approach higher than $5$~K but can be directly connected to the district loop. To avoid the addition of glycol, the dry coolers shall be enabled only if the ambient temperature is above $0$°C.
+Open cooling towers offer a better approach ($4$~K to the wet bulb) but require an intermediary heat exchanger to prevent an elevated oxygen concentration in the district loop. They can be operated even at low ambient temperature, under freezing conditions.
 Both of those air-cooled fluid coolers will typically be off at peak cooling load considering the target loop temperature range of $[9, 16]$~(C).
-They will be primarily used during the shoulder seasons to discharge the heat from the ground surrounding the borefield.
+They will be primarily used during the shoulder seasons to cool down the ground surrounding the borefield.
 Therefore, the benefits of an evaporative system are reduced and dry coolers are considered.
+
+The control sequence is as follows. The system is enabled based on a similar logic as the one implemented for the waterside economizer, see §\ref{sec:ets}:
+a predicted leaving water temperature is computed at maximum and minimum fan speed, and  the system is enabled if the temperature at maximum fan speed is lower than the entering temperature (considering a $1$~K margin), and if the temperature at minimum fan speed is higher than the minimum supply temperature set point, and if the ambient temperature is above $0$°C.
+When enabled, the fan speed is modulated between its minimum when the entering water temperature equals to the minimum supply temperature set point (considering a $1$~K margin) and its maximum when the entering water temperature equals to the target equilibrium temperature of $12$°C, see §\ref{sec:geo}.
+The system is disabled if the actual leaving water temperature is higher than the entering water temperature, or if it is lower than the minimum supply temperature set point.
 
 
 \subsection{Modeling Hydronic Systems} \label{sec:balancing}
 
-When integrating the ETS into the whole DHC system model, significant effects of hydronic imbalance were first observed, with the remote ETSs being starved and unable to meet the supply temperature set points, and the ETSs closer to the pump operating at higher flow rates than design.
+When integrating the ETS model into the whole DHC system model, significant effects of hydronic imbalance were first observed, with the remote ETSs being starved and unable to meet the supply temperature set point, and the ETSs closer to the pump operating at higher flow rates than design.
 In addition, convergence issues of the Newton solver appeared, mainly related to the waterside economizer operation.
 
 The first effect was certainly expected using a pressure-driven model of the hydronic system, with no specific care for balancing the connected units. However, and as in real systems, that effect was not expected to disturb the operation to the extent that was observed. Indeed, a controller---controlling for instance a supply temperature or a temperature difference---should limit the primary flow rate under the design values (provided that the primary fluid temperature remains close to the design value). In addition, the heat emission characteristic is supposed to limit the impact of flow shortage, with $50\%$ of the design mass flow rate still providing about $90\%$ of the design heat flow rate for a heat exchanger with $10$ K primary temperature range at design. The only disturbing effects that were expected, and indeed observed, pertain to the low valve authority of the primary control valves that causes control issues, and to the pump speed which is often maxed-out due to the inability to maintain the pressure drop at the remote ETS.
 
 The reason why the ETSs close to the pump often operate at a higher flow rate than design is related to the control based on the heat or cold rejection demand (see §\ref{sec:ets}) that first opens the primary control valve (up to its full opening), then resets down the CHW supply temperature. So the ETSs that are exposed to a higher pressure drop than the design value use the excess flow rate instead of resetting the supply temperature to increase the temperature difference (or rate of heat transfer) with the primary side of the heat exchanger.
 
-Regarding the numerical issues that were encountered we must acknowledge the challenges that remain when modeling closed loop hydronic systems (typically with feedback of a remote diffenrential pressure sensor or of the valve positions to control the main distribution pump).
+Regarding the numerical issues that were encountered we must acknowledge the challenges that remain when modeling closed loop hydronic systems (typically with feedback of a remote differential pressure sensor or of the valve positions to control the main distribution pump).
 There has been extensive work that was already carried out to formulate actuator models limiting the size of the DAE systems and exhibiting the proper smoothness required by Newton solvers \cite{Jorissen2015}.
 Namely, each actuator model of the Modelica Buildings Library offers the option to solve either for the mass flow rate or for the pressure drop, which breaks the algebraic loop created when two actuators are in parallel or in series, respectively. In addition they provide the option for an additional state variable (mimicking the actuator motion delay) which is another means to avoid an algebraic loop.
 In our case, those two modeling features did not solve the convergence issues.
@@ -218,6 +229,7 @@ Using that valve model to modulate the service water flow rate offers  key benef
     \item The system is dynamically balanced. The primary flow rate can only marginally exceed the design value. Furthermore, this holds true for any operating point, and any location in the distribution network. To the contrary, balancing valves that are commissioned at design conditions may lead to low pressure differences at the boundaries of the control valves close to the distribution pump in the case of closed loop control based on a remote pressure drop sensor and with low demand on the remote valves.
     \item The controllability is optimal. The relationship between the control signal (varying between $0$ and $1$) and the mass flow rate (varying between close to $0$ and close to the design value) is indeed close to linear. To the contrary, with standard control valves, a potentially large range of flow rate variation (spanning beyond the design value) may be mapped to a limited range of variation of the control signal (depending on the valve authority), leading to tedious controller tuning or control instabilities.
 \end{enumerate}
+
 In addition, the simulation model is simplified due to the ideal model of the flow rate control loop, for instance when modeling a waterside economizer where the primary valve position is actuated so that the primary mass flow rate equals the chilled water mass flow rate. This eliminates the need for a controller (and for tuning), while reducing the number of state variables and therefore the time to solution, especially for such control loops with fast pressure-driven dynamics.
 
 \section{Application to Resilient Operation Mode} \label{sec:application}
@@ -232,7 +244,7 @@ A multiplier factor of $10$ is applied to the office and apartment types to repr
 The building models are used in two different ways.
 
 First, simulating those models with EnergyPlus provides heating and cooling load data---the domestic hot water (DHW) loads are not considered in this study---which are used to size the systems.
-The resulting building loads are presented Figure~\ref{fig:loads}, the total peak cooling and heating loads are $3.5$ and $3.2$~MW, respectively, and the annual energy is $8.9$ and $5.8$~GWh/y, for a total conditionned floor area of $103,590$~m2.
+The resulting building loads are presented Figure~\ref{fig:loads}, the total peak cooling and heating loads are $3.5$ and $3.2$~MW, respectively, and the annual energy is $8.9$ and $5.8$~GWh/y, for a total conditioned floor area of $103,590$~m2.
 For the apartment and hospital types, the corresponding time series are then directly used as inputs to the model of the DHC system.
 Here, the boundary of the Modelica model is the load side of the ETS component where the building loads are converted into a mass flow rate and temperature variation with an interface component approximating the emission/flow rate characteristic of the building HVAC system.
 

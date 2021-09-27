@@ -21,10 +21,7 @@ record DesignData "Record with design data"
   parameter Modelica.SIunits.MassFlowRate mEnd_flow_nominal=
     0.05 * mPumDis_flow_nominal
     "Nominal mass flow rate in the end of the distribution line";
-  parameter Modelica.SIunits.Temperature TLooMin = 273.15 + 6
-    "Minimum loop temperature";
-  parameter Modelica.SIunits.Temperature TLooMax = 273.15 + 17
-    "Maximum loop temperature";
+
   parameter Real dp_length_nominal(final unit="Pa/m") = 250
     "Pressure drop per pipe length at nominal flow rate";
   parameter Modelica.SIunits.Length lDis[nBui] = fill(200, nBui)
