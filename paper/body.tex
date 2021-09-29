@@ -9,10 +9,6 @@ Using high-fidelity models of buildings, district energy, building-side HVAC and
 The sensitivity of the overall system performance in the resilience mode is investigated with regards to the district network topology, the configuration of the primary systems (integration of a waterside economizer, auxiliary cooling), the sizing parameters (cooling coil, fans, geothermal borefield) and the control principles.
 Furthermore, the positive externality of a design optimized for resilience is evaluated under standard operating conditions to illustrate to what extent the increased first cost at the building level is balanced by a lower average heat rejection from the compressors that yields sizing margins of the central systems, or how the design for low-power resilient conditioning also contributes to reducing the HVAC energy demand over the year at the district scale.
 
-\subsection{Questions Raised} \label{sec:questions}
-
-With the idea to deploy that DHC technology to existing buildings: are compressor-free cooling opportunities accessible to typical air-based systems (as opposed to radiant cooling systems)? With which implication on equipment sizing?
-
 
 \section{Modeling Framework} \label{sec:modeling}
 
@@ -110,7 +106,9 @@ The heating and cooling demand signals are computed based on the maximum control
 If there is no demand, the secondary pump is disabled, and the supply temperature is reset to the least extreme value, allowing to operate the chiller at low lift.
 
 If there is a demand, the secondary pump is enabled and its speed is modulated with a PI controller tracking a differential pressure set point at the most remote unit%
-\footnote{Modern control sequences~\cite{Llp2019} use a cascade control and reset in sequence the differential pressure set point of the distribution pump (up, first) and the CHW supply temperature set point (down, last) when the number of requests yielded by the terminal units increases---giving the priority to maintaining a low compressor lift over a low pump speed.}%
+\footnote{Modern control sequences~\cite{Llp2019} use a cascade control and reset in sequence the differential pressure set point of the distribution pump (up, first) and the CHW supply temperature set point (down, last) when the number of requests yielded by the terminal units increases---giving the priority to maintaining a low compressor lift over a low pump speed---although this sequenced control is
+shown to be only slightly better than resetting CHW supply temperature alone.}%
+% The above assertion comes from https://www.taylor-engineering.com/wp-content/uploads/2020/04/ASHRAE_Journal_-_Optimizing_Design_Control_of_Chilled_Water_Plants_Part_5_Optimized_Control_Sequences.pdf %
 , and the supply temperature is reset with a PI controller tracking the maximum opening of the control valves of the terminal units to match $90\%$.
 We noticed that it is important to reset the controller output so that the design set point value is used when the demand signal switches to true. Otherwise there is a significant delay in satisfying the load, followed by a large overshoot, and the control loop is particularly hard to tune.
 
@@ -123,7 +121,7 @@ The target range for the supply temperature in the main loop is set at $[9, 16]$
 \begin{itemize}
     \item the minimum temperature of the fluid leaving the evaporator, which is typically around $3$°C for water without glycol, and the chilled water delta-T, which is set at $4$~K for both the primary and secondary circuits,
     \item the maximum CHW supply temperature in WSE mode compatible with radiant cooling, which is set at $18$°C,
-    \item the heat exchanger approach, which is taken equal to $2$~K for both the district heat exchanger and the waterside economizer.
+    \item the heat exchanger approach, which is taken equal to $2$~K at design conditions for both the district heat exchanger and the waterside economizer.
 \end{itemize}
 
 
@@ -135,12 +133,9 @@ The pump is sized considering no load diversity as the actual diversity observed
 
 \subsubsection{Geothermal Borefield} \label{sec:geo}
 
-In this paragraph we describe the main characteristics of the ground heat exchanger and provide a first assessment of the number of boreholes that a conventional sizing method would require, for both the heating and cooling requirements.
-A sensitivity study will then explore the sizing range in-between those two numbers.
-
+In this paragraph we describe the main characteristics of the ground heat exchanger while providing a first assessment of the number of boreholes based on a conventional sizing method, for both the heating and cooling requirements.
+The simulation study will then explore the sizing range in-between those two numbers.
 The main question we shall answer is to what extent the size of the borefield can be reduced---adopting a hybrid system design---while still providing enough capacity to maintain the loop supply temperature under an acceptable limit during an extreme week.
-
-...or what is the temperature overshoot of the district loop during the hottest month where air-cooled fluid coolers only provide marginal cooling, see temperature statistics in Chicago.
 
 \cite{Kavanaugh2014} propose a sizing method where the total borehole length $L$~(m) is given by Equation~\ref{eq:sizing}.
 
@@ -173,7 +168,7 @@ The overall resistance of the borehole is computed based on the method from \cit
 The hourly load data used for sizing are generated as described in §\ref{sec:buildings}, considering a chiller efficiency of $COP_{Cooling} = 7.0$ in cooling mode (with a condenser entering temperature of $18$°C and an evaporator leaving temperature of $7$°C) and $COP_{Heating} = 4.0$ in heating mode (with an evaporator entering temperature of $7$°C and a condenser leaving temperature of $50$°C). This gives the heat flow rate transferred to the main network as presented in Figure~\ref{fig:q_to_ground}.
 
 The sizing rationale is then as follows. Starting from an undisturbed ground temperature of $T_g = 10$°C, the dominating heat rejection will enable reaching an equilibrium temperature of $T_g + T_p = 12.0$°C, which lies roughly in the middle of the target loop temperature range of $[9, 16]$~(C).
-From there the auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis, so $Q_y = 0$ is considered to size the borefield. The effect of the auxiliary cooling system on $\dot{Q}_m$ and $\dot{Q}_h$, i.e., near cooling design conditions, is neglected as explained in §\ref{sec:aux_cooling}.
+From there, the auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis, so $Q_y = 0$ is considered to size the borefield. The effect of the auxiliary cooling system on $\dot{Q}_m$ and $\dot{Q}_h$, i.e., near cooling design conditions, is neglected as explained in §\ref{sec:aux_cooling}.
 This gives the following number of boreholes considering a borehole depth of $180$~m.
 
 \begin{align*}
@@ -192,19 +187,38 @@ n_{Cooling} &= 1426
 
 \subsubsection{Auxiliary Cooling System} \label{sec:aux_cooling}
 
-The auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis.
-Therefore, a whole-year simulation of the coupled system is needed for a proper sizing, which significantly depends on the controls.
+The selection of the auxiliary cooling system can be informed by the weather data statistics (Figure~\ref{fig:weather_stats}) and the contribution of the different heat pulses to the sizing of the borefield based on Equation~\ref{eq:sizing} (Figure~\ref{fig:contribution_to_L}).
 
-Closed loop dry coolers typically have a dry bulb approach higher than $5$~K but can be directly connected to the district loop. To avoid the addition of glycol, the dry coolers shall be enabled only if the ambient temperature is above $0$°C.
-Open cooling towers offer a better approach ($4$~K to the wet bulb) but require an intermediary heat exchanger to prevent an elevated oxygen concentration in the district loop. They can be operated even at low ambient temperature, under freezing conditions.
-Both of those air-cooled fluid coolers will typically be off at peak cooling load considering the target loop temperature range of $[9, 16]$~(C).
-They will be primarily used during the shoulder seasons to cool down the ground surrounding the borefield.
-Therefore, the benefits of an evaporative system are reduced and dry coolers are considered.
+If cooling towers or dry coolers%
+\footnote{
+Open cooling towers allow approaching the wet bulb temperature up to $2$-$4$~K but require an intermediary heat exchanger to prevent an elevated oxygen concentration in the district loop. They can be operated even at low ambient temperature, under freezing conditions.
 
-The control sequence is as follows. The system is enabled based on a similar logic as the one implemented for the waterside economizer, see §\ref{sec:ets}:
-a predicted leaving water temperature is computed at maximum and minimum fan speed, and  the system is enabled if the temperature at maximum fan speed is lower than the entering temperature (considering a $1$~K margin), and if the temperature at minimum fan speed is higher than the minimum supply temperature set point, and if the ambient temperature is above $0$°C.
+Dry coolers allow approaching the dry bulb temperature up to $3$-$4$~K and can be directly connected to the district loop. To avoid the addition of glycol, they shall be enabled only if the ambient temperature is above $0$°C.
+% Approach for dry coolers is typically 10K in standard CHW plant design but manufacturers mention an approach up to 3-4K, see https://www.thermaxglobal.com/process-cooling/dry-cooler/ or https://transtherm.co.uk/air-blast-cooler/?ppc_keyword=dry%20air%20cooler&gclid=CjwKCAjw-sqKBhBjEiwAVaQ9a8hpKvRaUDRn4dvGM_c3j2GpLvpW5MQ9KKyJ7JjJUALO8S-Jvv1W9RoCShAQAvD_BwE%
+}
+are used, they will mainly be off during the hottest months considering the target loop supply temperature of $16$°C.
+The auxiliary cooling system will be primarily used during the shoulder seasons to cool down the ground surrounding the borefield, and balance the heat transferred to the main loop on an annual basis.
+Considering the annual component from Figure~\ref{fig:contribution_to_L}, the impact on the size of the borefield is limited to about 10\%. Therefore, if the supply temperature must be kept under $16$°C to allow WSE cooling, the highest number of boreholes $n_{Cooling}$ is likely required. This will be verified by modeling auxiliary dry coolers (the benefits of an evaporative system are little in shoulder season operation) that are sized and controlled to balance the heat transferred to the main loop on an annual basis.
+Here, a whole-year simulation of the coupled system is needed for a proper sizing. The control sequence is as follows.
+The system is enabled based on a similar logic as the one implemented for the waterside economizer, see §\ref{sec:ets}: a predicted leaving water temperature is computed at maximum and minimum fan speed, and  the system is enabled if the temperature at maximum fan speed is lower than the entering temperature (considering a $1$~K margin), and if the temperature at minimum fan speed is higher than the minimum supply temperature set point, and if the ambient temperature is above $0$°C.
 When enabled, the fan speed is modulated between its minimum when the entering water temperature equals to the minimum supply temperature set point (considering a $1$~K margin) and its maximum when the entering water temperature equals to the target equilibrium temperature of $12$°C, see §\ref{sec:geo}.
 The system is disabled if the actual leaving water temperature is higher than the entering water temperature, or if it is lower than the minimum supply temperature set point.
+
+An alternative hybrid design option---although outside the scope of this study---relies on auxiliary chillers, that can effectively contribute to lowering the heat rejection demand during the hottest months. In that case, the borefield can likely be downsized to the lowest number of boreholes $n_{Heating}$. A simulation experiment would be needed to assess to what extent and with what control strategy such a configuration can provide compressor-less cooling capacity during an extreme week, i.e., keep the supply temperature of the loop under $16$°C during the whole week without enabling the chillers. This configuration is not exclusive from the previous one and dry coolers may be used as condenser water coolers, with a waterside economizer option to directly cool down the main loop at low ambient temperature.
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{../python_scripts/figures/ContributionL.pdf}
+    \caption{Contribution of the different heat pulses to the sizing of the borefield based on  Equation~\ref{eq:sizing} (including the yearly average not considered if compensated by an auxiliary cooling system).}
+    \label{fig:contribution_to_L}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{../python_scripts/figures/weather_stats.pdf}
+    \caption{Monthly box plots of the dry bulb and wet bulb temperature of a typical meteorological year (TMY3) in Chicago, IL.}
+    \label{fig:weather_stats}
+\end{figure*}
 
 
 \subsection{Modeling Hydronic Systems} \label{sec:balancing}
@@ -263,7 +277,7 @@ The main features of the implementation are described in \cite{Wetter2022}, and 
 
 \subsubsection{Weather Data} \label{sec:weather}
 
-The weather data for annual simulation is the TMY3 weather file for Chicago IL, USA.
+The weather data for annual simulation is a typical meteorological year (TMY3) for Chicago, IL, USA.
 A so-called "resilience design day" is generated based on the most severe conditions in July from that TMY3 weather file, which happen to be more conservative than a design day generated based on the method proposed in \cite{ASHRAE2017} Chapter 14 considering the annual $0.4\%$ design dry-bulb temperature and the mean coincident wet-bulb temperature.
 During the resilience design day the dry-bulb temperature range is $[23.3, 35.0]$~(C), the wet-bulb temperature range is $[22.5, 26.9]$~(C), and the global horizontal irradiance peaks at $931$~W/m2.
 The resilience design day is repeated $7$ times during the month of July to generate a "resilience design week" over which the comfort analysis is performed.
@@ -334,6 +348,8 @@ Waterside Economizer
 
 \section{Conclusion} \label{sec:concl}
 
+We considered an all-air system as it is the most widely used in the US and the least favorable for high-temperature cooling (as opposed to radiant cooling systems for instance).
+This help demonstrate how novel DHC technologies can be deployed to existing buildings and that compressor-less cooling opportunities are accessible to typical air-based systems, providing proper sizing adjustments.
 
 Future studies should investigate the benefits of source-side to source-side connection (indirect heat recovery at lower lift) as opposed to direct heat recovery at higher lift.
 
