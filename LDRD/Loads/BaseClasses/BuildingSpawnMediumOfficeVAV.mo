@@ -7,6 +7,7 @@ model BuildingSpawnMediumOfficeVAV "Spawn building model"
     final have_eleHea=false,
     final have_eleCoo=false,
     final have_pum=true,
+    final have_fan=true,
     final have_weaBus=true);
 
   outer replaceable Data.VAVData datVAV;

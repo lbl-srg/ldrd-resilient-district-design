@@ -1,5 +1,5 @@
 %% main text
-\section{Introduction} \label{sec:intro}
+\section{Abstract} \label{sec:abstract}
 
 Novel district heating and cooling (DHC) systems allow sharing large geothermal resources between buildings by operating a central water loop near ground temperature, coupled to distributed vapor-compression machines that lift the temperature up or down to what the building’s heating or cooling system requires.
 Originally designed to capture heat from low-temperature heat sources more efficiently, those systems also provide opportunities for compressor-less cooling.
@@ -8,6 +8,30 @@ Using high-fidelity models of buildings, district energy, building-side HVAC and
 
 The sensitivity of the overall system performance in the resilience mode is investigated with regards to the district network topology, the configuration of the primary systems (integration of a waterside economizer, auxiliary cooling), the sizing parameters (cooling coil, fans, geothermal borefield) and the control principles.
 Furthermore, the positive externality of a design optimized for resilience is evaluated under standard operating conditions to illustrate to what extent the increased first cost at the building level is balanced by a lower average heat rejection from the compressors that yields sizing margins of the central systems, or how the design for low-power resilient conditioning also contributes to reducing the HVAC energy demand over the year at the district scale.
+
+
+\section{Introduction} \label{sec:introduction}
+
+
+Questions raised:
+
+- How conventional sizing methods for geothermal systems help inform the design of novel DHC systems?
+- How model-based designed further contribute to system selection and sizing?
+- Are existing air-based system compatible with resilience requirements?
+
+Uniqueness
+
+- Stock of 5G DHC (Europe and France), nomenclature (and dispute)
+- Literature on novel DHC system design and efficiency, especially ETS design and operation
+- Resilience applications? Compressor less cooling mode
+
+Structure of the paper
+
+- The rest of this paper is organized as follows.
+- Modeling Framework
+- System Characteristics and Operating Principles
+- Simulation Experiment
+- Results and Discussion
 
 
 \section{Modeling Framework} \label{sec:modeling}
@@ -19,18 +43,18 @@ EnergyPlus for envelope and access to prototypical buildings and standard load p
 Sizing based on peak loads, ASHRAE 62.1 and 90.1
 
 Flexible framework with replaceable components that allow switching easily the building load models and testing system and control variants.
-
+Reference URBANopt paper
 
 \section{DHC System} \label{sec:dhc}
 
 \subsection{Design Concept} \label{sec:concept}
 
-The system under investigation is a combined heating and cooling system for cold district networks with distributed heat recovery chillers. The main network distributes water near ground temperature, typically between $9$°C and $16$°C. A large central geothermal borefield is used for seasonal heat storage while cooling towers cater for the annual load imbalance where the heat rejection demand often dominates in mixed-use applications.
+The system under investigation is a combined heating and cooling system for cold district networks with distributed heat recovery chillers. The main network distributes water near ground temperature, typically between $9$°C and $16$°C. A large central geothermal borefield is used for seasonal heat storage while auxiliary coolers cater for the annual load imbalance where the heat rejection demand often dominates in mixed-use applications.
 The potential benefits of such design are numerous.
 
 \begin{enumerate}
 
-    \item The compressor lift optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa. The impact on the chiller or heater efficiency is around $2$\%/K as shown by a simple Carnot efficiency calculation, and corroborated by manufacturer catalog data.
+    \item The compressor lift is optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa. The impact on the chiller or heater efficiency is around $2$\%/K as shown by a simple Carnot efficiency calculation, and corroborated by manufacturer catalog data.
 
     \item Heat recovery is possible over the whole network, not only between buildings as described before, but because of the ultra-low temperature network, virtually with any source of low-quality heat, such as condenser water used from process cooling or even sewage water as low as 15°C.
 
@@ -44,9 +68,9 @@ The potential benefits of such design are numerous.
 
 Among the main drawbacks, the following must be mentioned.
 \begin{enumerate}
-    \item Energy transfer station design and operation is more critical, strongly impacted by network topology
+    \item The design and operation of the energy transfer stations is more critical, and strongly impacted by the network topology. For instance, hydronic unbalances are likely to yield a  chiller trip out of high condenser pressure.
 
-    \item Maintenance costs. However servicing small screw chillers typically requires less specialized skills than large capacity chillers in central plants.
+    \item The maintenance costs may increase due to the distributed architecture, although servicing small screw chillers typically requires less specialized skills than large capacity chillers in central plants.
 \end{enumerate}
 
 
@@ -55,10 +79,10 @@ Among the main drawbacks, the following must be mentioned.
 The concept behind the energy transfer station (ETS) was first investigated on a mixed-use development project with distributed geothermal borefields \citep{WetterHu2019}.
 It relies on heat recovery chillers%
 \footnote{Heat recovery chillers are typically built with scroll or screw compressors that are capable of operating at a high condenser leaving temperature (the operating limit observed across various manufacturers lies around 63°C). That makes that equipment suitable for both heating hot water and domestic hot water production. The drawback is that the compressor is operated at a high lift which is detrimental to the efficiency. A potentially more efficient design is proposed in \cite{Cline2020} where at least two separate units are used and the source-side circuits are connected together with the ambient source (a geothermal borefield in that case), resulting in cascading thermodynamic cycles when the plant operates in simultaneous heating and cooling mode.}
-and a load balancing control logic that uses the ambient sources (such as the ground through a local geothermal heat exchanger or the service water through the interface heat exchanger) to drop the excess heat or the excess cold depending on the current operating conditions.
+and a load balancing control logic that uses the ambient source---such as the service water through the interface heat exchanger---to drop the excess heat or the excess cold depending on the current operating conditions.
 
 The system schematic is presented Figure~\ref{fig:schematic}, which also includes the design conditions considered for sizing the different components.
-We will now summarize the main operating principles. For further details, the reader may refer to the documentation of the model \href{https://simulationresearch.lbl.gov/modelica/releases/v8.0.0/help/Buildings\_Experimental\_DHC\_EnergyTransferStations\_Combined\_Generation5.html#Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield}{\lstinline|Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield|} distributed within the Modelica Buildings Library.
+We will now summarize the main operating principles. For further details, the reader may refer to the documentation of the model \lstinline|Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield| distributed within the Modelica Buildings Library (from the commit \href{https://github.com/lbl-srg/modelica-buildings/tree/4a6285f}{\lstinline|4a6285f|}).
 
 \begin{itemize}
     \item The supervisory controller ensures the load balancing between the condenser side and the evaporator side of the chiller.
@@ -114,7 +138,7 @@ We noticed that it is important to reset the controller output so that the desig
 
 \subsection{Central Systems}
 
-\subsection{Loop Temperature Range} \label{sec:loop_range}
+\subsubsection{Loop Temperature Range} \label{sec:loop_range}
 
 The target range for the supply temperature in the main loop is set at $[9, 16]$°C given the constraints on
 
@@ -125,11 +149,13 @@ The target range for the supply temperature in the main loop is set at $[9, 16]$
 \end{itemize}
 
 
-\subsubsection{Hydronic Distribution} \label{sec:distrib}
+\subsubsection{Hydronic Network} \label{sec:network}
 
+Uninsulated HDPE pipes are considered, with an hydraulic diameter computed based on a design pressure drop of $250$~Pa/m. A pipe length of $200$~m is considered between each building, as well as a $50$~m long service line.
+
+The main distribution pump is sized considering no load diversity as the actual diversity observed on the load data (see §\ref{sec:buildings}) is close to $100\%$.
 The speed of the main distribution pump is modulated with a PI controller tracking a constant pressure differential set point at a remote location. A bypass line is modeled and is sized to recirculate $5\%$ of the design flow rate at the pressure differential set point.
 
-The pump is sized considering no load diversity as the actual diversity observed on the cooling load data (see §\ref{sec:buildings}) is close to $100\%$.
 
 \subsubsection{Geothermal Borefield} \label{sec:geo}
 
@@ -187,7 +213,7 @@ n_{Cooling} &= 1426
 
 \subsubsection{Auxiliary Cooling System} \label{sec:aux_cooling}
 
-The selection of the auxiliary cooling system can be informed by the weather data statistics (Figure~\ref{fig:weather_stats}) and the contribution of the different heat pulses to the sizing of the borefield based on Equation~\ref{eq:sizing} (Figure~\ref{fig:contribution_to_L}).
+The selection of the auxiliary cooling system can be informed by the weather data statistics (see Figure~\ref{fig:weather_stats}) and the contribution of the different heat pulses to the sizing of the borefield based on Equation~\ref{eq:sizing} (see Figure~\ref{fig:contribution_to_L}).
 
 If cooling towers or dry coolers%
 \footnote{
@@ -246,7 +272,7 @@ Using that valve model to modulate the service water flow rate offers  key benef
 
 In addition, the simulation model is simplified due to the ideal model of the flow rate control loop, for instance when modeling a waterside economizer where the primary valve position is actuated so that the primary mass flow rate equals the chilled water mass flow rate. This eliminates the need for a controller (and for tuning), while reducing the number of state variables and therefore the time to solution, especially for such control loops with fast pressure-driven dynamics.
 
-\section{Application to Resilient Operation Mode} \label{sec:application}
+\section{Application to a Resilient Operating Mode} \label{sec:application}
 
 \subsection{Description of the Simulation Experiment} \label{sec:experiment}
 
@@ -275,39 +301,72 @@ The main features of the implementation are described in \cite{Wetter2022}, and 
     \label{fig:loads}
 \end{figure*}
 
-\subsubsection{Weather Data} \label{sec:weather}
+
+\subsubsection{Resilience Scenario and Metrics} \label{sec:resilience}
+
+\paragraph{Weather Data} \label{par:weather}
 
 The weather data for annual simulation is a typical meteorological year (TMY3) for Chicago, IL, USA.
 A so-called "resilience design day" is generated based on the most severe conditions in July from that TMY3 weather file, which happen to be more conservative than a design day generated based on the method proposed in \cite{ASHRAE2017} Chapter 14 considering the annual $0.4\%$ design dry-bulb temperature and the mean coincident wet-bulb temperature.
 During the resilience design day the dry-bulb temperature range is $[23.3, 35.0]$~(C), the wet-bulb temperature range is $[22.5, 26.9]$~(C), and the global horizontal irradiance peaks at $931$~W/m2.
 The resilience design day is repeated $7$ times during the month of July to generate a "resilience design week" over which the comfort analysis is performed.
 
-\subsubsection{Internal Heat Gains} \label{sec:gains}
+\paragraph{Internal Heat Gains} \label{par:heatgains}
 
+The nominal heat gains from the original EnergyPlus input data file are corrected to account for an adaptive scenario%
+\footnote{This assumption differs from \cite{Mathew2021} where only the loss of the HVAC system is considered without any concomitant reduction of internal heat gains.}
+during the extreme week where the office building operates on backup power. The nominal number of people and plug power is reduced by $30\%$, the nominal lighting power is reduced by $70\%$, and no heat gains from the elevators and domestic hot water system are considered.
+
+\paragraph{Resilience Metrics} \label{par:metrics}
+
+The key metrics and methodology to assess the resilience of the office building during the extreme week are taken from \cite{Mathew2021}.
+The number of degree-hours beyond a tolerability threshold ($30$°C) is first computed for each thermal zone%
+\footnote{For the sake of simplicity, we use here the operative temperature, as opposed to the standard effective temperature in \cite{Mathew2021}.}.
+The referenced study then considers that the zone cannot be occupied if that number exceeds $34$~K.h per day and if the temperature is still beyond tolerable. This contributes to increasing a so-called number of occupant hours lost (OHL) by the nominal number of people in the zone.
+This never happens in our case study, i.e., the number of OHL is always zero for all thermal zones.
+For that reason, our analysis is only based on the number of degree-hours above tolerable. In addition, we only consider typical operating hours from $7$am to $7$pm, from Monday to Friday.
 
 
 \subsection{Results} \label{sec:results}
 
-Discuss impact on peak and average power and lost hours of operation
+This section first presents the analysis of the indoor environmental quality that can be maintained during the extreme week considering the district loop target temperature range of $[9, 16]$~(C) and the sensitivity to various sizing parameters of the building HVAC system.
+We will then discuss the characteristics and sizing of the main DHC system components that are required to reach that temperature range.
 
-\subsubsection{Base Case} \label{sec:base}
+
+\subsubsection{Indoor Environmental Quality in a Compressor-Less Operating Mode} \label{sec:ieq}
+
+Switching off the chillers and relying only on WSE cooling during the extreme week with a service supply temperature of $16$°C does not yield any occupant hours lost in the office building.
+The evolution of the operative temperature is provided Figure~\ref{fig:top}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{../python_scripts/figures/CoilSizing.pdf}
+    \caption{Operative temperature in the limiting zone during the extreme week, and chiller, pump and fan power, WSE cooling compared to chiller cooling.}
+    \label{fig:top}
+\end{figure*}
+
+\notebox{%
+Compare WSE cooling to load (given by simulation with chillers on).
+
+Compare chiller, pump, fan power and energy use.}
 
 
-\subsubsection{Sensitivity Analysis} \label{sec:sensitivity}
-
-Building HVAC System
+\paragraph{Cooling Coil Sizing} \label{par:cooling_coil}
 
 \begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{../python_scripts/figures/CoilSizing.pdf}
-\caption{Sensitivity to the cooling coil sizing.}
+\caption{Sensitivity to the cooling coil sizing -- Boxplots of the number of degree-hour above tolerable for all thermal zones, per day of the week.}
 \label{fig:coil}
 \end{figure*}
+
+\paragraph{Fan Sizing} \label{par:fan}
+
 
 \begin{figure*}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{../python_scripts/figures/FanSizing.pdf}
-\caption{Sensitivity to the fan sizing coefficient.}
+\caption{Sensitivity to the fan sizing coefficient -- Boxplots of the number of degree-hour above tolerable for all thermal zones, per day of the week.}
 \label{fig:fan}
 \end{figure*}
 
