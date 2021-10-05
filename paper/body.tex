@@ -205,7 +205,7 @@ n_{Cooling} &= 1426
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=\linewidth]{../python_scripts/figures/QToGround.pdf}
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/QToGround.pdf}
     \caption{Hourly heat flow rate transferred to the main network (computed from EnergyPlus load data, see §\ref{sec:buildings}).}
     \label{fig:q_to_ground}
 \end{figure*}
@@ -234,15 +234,15 @@ An alternative hybrid design option---although outside the scope of this study--
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=\linewidth]{../python_scripts/figures/ContributionL.pdf}
+    \includegraphics[width=.6\linewidth]{../python_scripts/figures/ContributionL.pdf}
     \caption{Contribution of the different heat pulses to the sizing of the borefield based on  Equation~\ref{eq:sizing} (including the yearly average not considered if compensated by an auxiliary cooling system).}
     \label{fig:contribution_to_L}
 \end{figure*}
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=\linewidth]{../python_scripts/figures/weather_stats.pdf}
-    \caption{Monthly box plots of the dry bulb and wet bulb temperature of a typical meteorological year (TMY3) in Chicago, IL.}
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/weather_stats.pdf}
+    \caption{Monthly box plots of the hourly dry bulb and wet bulb temperature from a typical meteorological year (TMY3) in Chicago, IL.}
     \label{fig:weather_stats}
 \end{figure*}
 
@@ -319,69 +319,95 @@ during the extreme week where the office building operates on backup power. The 
 
 \paragraph{Resilience Metrics} \label{par:metrics}
 
-The key metrics and methodology to assess the resilience of the office building during the extreme week are taken from \cite{Mathew2021}.
+The key metrics and the methodology to gauge the resilience of the office building during the extreme week are taken from \cite{Mathew2021}.
 The number of degree-hours beyond a tolerability threshold ($30$°C) is first computed for each thermal zone%
 \footnote{For the sake of simplicity, we use here the operative temperature, as opposed to the standard effective temperature in \cite{Mathew2021}.}.
-The referenced study then considers that the zone cannot be occupied if that number exceeds $34$~K.h per day and if the temperature is still beyond tolerable. This contributes to increasing a so-called number of occupant hours lost (OHL) by the nominal number of people in the zone.
+The referenced study then considers that the zone cannot be occupied if that number exceeds $34$~K.h per day while the temperature is still beyond tolerable. This contributes to increasing a so-called number of occupant hours lost (OHL) by the nominal number of people in the zone.
 This never happens in our case study, i.e., the number of OHL is always zero for all thermal zones.
 For that reason, our analysis is only based on the number of degree-hours above tolerable. In addition, we only consider typical operating hours from $7$am to $7$pm, from Monday to Friday.
 
 
 \subsection{Results} \label{sec:results}
 
-This section first presents the analysis of the indoor environmental quality that can be maintained during the extreme week considering the district loop target temperature range of $[9, 16]$~(C) and the sensitivity to various sizing parameters of the building HVAC system.
+This section first presents the analysis of the indoor environmental quality (IEQ) that can be achieved during the extreme week considering the district loop target temperature range of $[9, 16]$~(C) and the sensitivity to various sizing parameters of the building HVAC system.
 We will then discuss the characteristics and sizing of the main DHC system components that are required to reach that temperature range.
 
 
 \subsubsection{Indoor Environmental Quality in a Compressor-Less Operating Mode} \label{sec:ieq}
 
-Switching off the chillers and relying only on WSE cooling during the extreme week with a service supply temperature of $16$°C does not yield any occupant hours lost in the office building.
-The evolution of the operative temperature is provided Figure~\ref{fig:top}
+Disabling the chillers and relying only on WSE cooling during the extreme week with a service supply temperature of $16$°C does not yield any occupant hours lost in the office building.
+The evolution of the operative temperature is provided Figure~\ref{fig:tope}, together with the power drawn by the fans, pumps and chillers, and the total cooling heat flow rate. The case with WSE cooling is compared with the base case with chiller cooling.
+The WSE mode yields a reduction of $XX\%$ in the total power at the peak, while still serving $XX\%$ of the load. This is achieved despite a high chiller COP of about $XX\%$ in the base case.
+The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} for each of the $15$ thermal zones. Without oversizing the cooling coil (i.e., with a sizing coefficient of $1.0$), the number of degree-hours is below $6$~K.h%
+\footnote{%
+\cite{Mathew2021} suggests a limit of $34$~K.h per day to decide that a zone cannot be occupied and to start incrementing the thermal OHL count.}
+in the limiting zone during the limiting day, while the median value remains equal to zero, meaning that a tolerable IEQ can be achieved in a low-power mode in the majority of the thermal zones.
 
 \begin{figure*}[!htbp]
     \centering
-    \includegraphics[width=\linewidth]{../python_scripts/figures/CoilSizing.pdf}
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/TOpe.pdf}
     \caption{Operative temperature in the limiting zone during the extreme week, and chiller, pump and fan power, WSE cooling compared to chiller cooling.}
-    \label{fig:top}
+    \label{fig:tope}
 \end{figure*}
-
-\notebox{%
-Compare WSE cooling to load (given by simulation with chillers on).
-
-Compare chiller, pump, fan power and energy use.}
 
 
 \paragraph{Cooling Coil Sizing} \label{par:cooling_coil}
 
+To be updated
+
+\notebox{%
+Compute nominal operating point of oversized coil: what is the impact on the CHW delta-T? Nominal flow rate and pressure drop?
+
+Assess number of rows
+
+TODO: run simulations with a nominal pressure drop increased by the sizing factor.
+}
+
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{../python_scripts/figures/CoilSizing.pdf}
-\caption{Sensitivity to the cooling coil sizing -- Boxplots of the number of degree-hour above tolerable for all thermal zones, per day of the week.}
+\includegraphics[width=.7\linewidth]{../python_scripts/figures/CoilSizing.pdf}
+\caption{Sensitivity to the cooling coil sizing -- Daily box plots of degree-hours above tolerable as distributed over all thermal zones.}
 \label{fig:coil}
 \end{figure*}
 
 \paragraph{Fan Sizing} \label{par:fan}
 
+Comment on the load diversity factor of $70\%$ used for sizing:
+$1.4 * 0.7 \approx 1$ and indeed all terminal boxes reach a coincident $100\%$ demand in WSE cooling mode.
+
+Note that the analysis is carried out with fixed design pressure drops, so it is rather an oversizing of the whole air system, namely the coil face area and the ducts.
+
+To be updated
+
+\notebox{%
+Compute nominal operating point of oversized coil: what is the impact on the CHW delta-T? Nominal flow rate and pressure drop?
+
+Assess number of rows: base case and oversized
+
+TODO: run simulations with a nominal pressure drop and mass flow unchanged for other equipment than fan.
+}
+
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{../python_scripts/figures/FanSizing.pdf}
-\caption{Sensitivity to the fan sizing coefficient -- Boxplots of the number of degree-hour above tolerable for all thermal zones, per day of the week.}
+\includegraphics[width=.7\linewidth]{../python_scripts/figures/FanSizing.pdf}
+\caption{Sensitivity to the fan sizing -- Daily box plots of degree-hours above tolerable as distributed over all thermal zones.}
 \label{fig:fan}
 \end{figure*}
 
-District Central Systems
+
+\subsubsection{Central Systems} \label{sec:dhc}
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{../python_scripts/figures/GeoSizing.pdf}
+\includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizing.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - District water supply temperature.}
 \label{fig:geo_sizing}
 \end{figure*}
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{../python_scripts/figures/GeoSizingE.pdf}
+\includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizingE.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - Energy transferred from the district loop through the borefield ($ESto.y$) and through the cooling towers ($EPla.y$).}
 \label{fig:geo_cooling}
 \end{figure*}
@@ -389,7 +415,7 @@ District Central Systems
 
 \begin{figure*}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{../python_scripts/figures/GeoBestCaseT.pdf}
+\includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoBestCaseT.pdf}
 \caption{Illustration of the cooling towers effect on the case with 1250 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
 \label{fig:coolingeffect}
 \end{figure*}
