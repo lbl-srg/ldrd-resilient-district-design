@@ -373,7 +373,7 @@ partial model PartialOpenLoop
     redeclare final package Medium = MediumW,
     final m_flow_nominal=datVAV.mLiqCooCoi_flow,
     final dpValve_nominal=datVAV.dpValCooCoi,
-    final dpFixed_nominal=datVAV.dpLiqCooCoi)
+    dpFixed_nominal=datVAV.dpLiqCooCoi)
     "Cooling coil valve" annotation (Placement(
         transformation(
         extent={{10,-10},{-10,10}},

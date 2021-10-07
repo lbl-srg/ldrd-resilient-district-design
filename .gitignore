@@ -1,7 +1,6 @@
 eplus_out
 *.xml
-*.so
-*.csv
+*.sos
 *.aux
 *.bbl
 *.blg
