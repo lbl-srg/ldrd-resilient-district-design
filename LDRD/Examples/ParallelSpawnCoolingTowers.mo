@@ -50,11 +50,9 @@ model ParallelSpawnCoolingTowers
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
     annotation (Placement(transformation(extent={{-280,-140},{-260,-160}})));
-  CentralPlants.CoolingTowers cooTow(
-    redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPla_flow_nominal)
-    "Cooling towers"
-    annotation (Placement(transformation(
+  CentralPlants.Coolers cooTow(redeclare final package Medium = Medium, final
+      m_flow_nominal=datDes.mPla_flow_nominal) "Cooling towers" annotation (
+      Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={-160,0})));

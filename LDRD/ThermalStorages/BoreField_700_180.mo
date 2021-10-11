@@ -1,5 +1,6 @@
 ﻿within LDRD.ThermalStorages;
-model BoreField_750_180 "Geothermal borefield model"
+model BoreField_700_180
+  "Geothermal borefield model (number of boreholes_individual length)"
   extends Buildings.Fluid.Geothermal.Borefields.TwoUTubes(
     final energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     final tLoaAgg(displayUnit="h") = 3600,
@@ -23,7 +24,7 @@ model BoreField_750_180 "Geothermal borefield model"
         mBor_flow_nominal=1.0,
         hBor=hBor,
         rBor=0.075,
-        nBor=750,
+        nBor=700,
         cooBor=cooBor,
         dBor=1,
         rTub=0.02,
@@ -69,7 +70,20 @@ equation
                                     color={0,0,127}));
   annotation (Documentation(info="<html>
 <p>
-This model represents a borefield composed of 350 boreholes,
+BUG in Dymola similar to the one reported at
+https://github.com/ibpsa/modelica-ibpsa/issues/950#issuecomment-397551333
+
+For more than ~500 boreholes, the following modification is needed in
+/opt/dymola-2022-x86_64/source/matrixop.h
+
+
+char simplestring[
+        200000
+];
+
+</p>
+<p>
+This model represents a borefield composed of nBor boreholes,
 with the following main assumptions.
 </p>
 <ul>
@@ -80,14 +94,14 @@ The soil is made of sandstone.
 The boreholes are filled with a bentonite grout.
 </li>
 <li>
-The boreholes have a height of 300 m and a diameter of 190 mm.
-They are discretized vertically in five segments.
+The boreholes have a height of hBor and a diameter of 2*rBor.
+They are discretized vertically in nSeg segments.
 </li>
 <li>
-A distance of 10 m between each borehole is considered.
+A distance of dxyBor between each borehole is considered.
 </li>
 <li>
-HDPE pipes with a diameter of 40 mm are considered, in a
+HDPE pipes with a diameter of 2*rTub are considered, in a
 double U-tube parallel configuration.
 </li>
 </ul>
@@ -103,4 +117,4 @@ Added documentation.
 </li>
 </ul>
 </html>"));
-end BoreField_750_180;
+end BoreField_700_180;

@@ -23,8 +23,8 @@ partial model PartialParallel "Partial model for parallel network"
     "Design data"
     annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
-  replaceable ThermalStorages.BoreField_500_180 borFie
-    constrainedby ThermalStorages.BoreField_500_180(
+  replaceable ThermalStorages.BoreField_700_180 borFie
+    constrainedby ThermalStorages.BoreField_700_180(
       redeclare each final package Medium =Medium)
     "Bore field"
     annotation (Placement(transformation(

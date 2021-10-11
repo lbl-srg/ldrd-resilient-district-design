@@ -29,7 +29,7 @@ partial model PartialParallelSpawn
         for i in 1:nBui}) "Design data"
     annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
-  replaceable ThermalStorages.BoreField_500_180 borFie(
+  replaceable ThermalStorages.BoreField_700_180 borFie(
     redeclare final package Medium = Medium)
     "Bore field" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},

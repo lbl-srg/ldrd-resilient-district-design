@@ -44,10 +44,10 @@ model ParallelCoolingTowers
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
-  CentralPlants.CoolingTowers cooTow(
+  CentralPlants.Coolers plaCoo(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPla_flow_nominal) "Cooling towers"
-    annotation (Placement(transformation(
+    final m_flow_nominal=datDes.mPla_flow_nominal)
+    "Cooling plant" annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={-160,-20})));
@@ -78,38 +78,38 @@ equation
   connect(bypEnd.port_b, dis.port_aDisRet) annotation (Line(points={{70,140},{80,
           140},{80,134},{20,134}}, color={0,127,255}));
 
-  connect(mDisWat_flow.m_flow, cooTow.m_flow) annotation (Line(points={{0,-109},
+  connect(mDisWat_flow.m_flow, plaCoo.m_flow) annotation (Line(points={{0,-109},
           {0,-104},{-177.333,-104},{-177.333,-42.6667}},
                       color={0,0,127}));
   connect(conSto.dH_flow, ESto.u) annotation (Line(points={{-87,-78},{180,-78},
           {180,-60},{198,-60}}, color={215,215,215}));
-  connect(cooTow.PPum, EPumPla.u) annotation (Line(points={{-170.667,2.66667},{
+  connect(plaCoo.PPum, EPumPla.u) annotation (Line(points={{-170.667,2.66667},{
           -170.667,60},{198,60}}, color={215,215,215}));
-  connect(cooTow.PFan, EFanPla.u) annotation (Line(points={{-173.333,2.66667},{
+  connect(plaCoo.PFan, EFanPla.u) annotation (Line(points={{-173.333,2.66667},{
           -173.333,100},{198,100}}, color={215,215,215}));
   connect(EPumPla.y, EPum.u[4]) annotation (Line(points={{221,60},{240,60},{240,
           120},{258,120}}, color={0,0,127}));
   connect(min1.y, pumSto.m_flow_in) annotation (Line(points={{-238,-160},{-200,
           -160},{-200,-132}}, color={0,0,127}));
-  connect(weaDat.weaBus, cooTow.weaBus) annotation (Line(
+  connect(weaDat.weaBus, plaCoo.weaBus) annotation (Line(
       points={{-320,0},{-200,0},{-200,-19.9333},{-177.733,-19.9333}},
       color={255,204,51},
       thickness=0.5));
-  connect(cooTow.m_flowBorFieMin, min1.u2) annotation (Line(points={{-149.333,
+  connect(plaCoo.m_flowBorFieMin, min1.u2) annotation (Line(points={{-149.333,
           2.66667},{-149.333,10},{-280,10},{-280,-154},{-262,-154}}, color={0,0,
           127}));
   connect(masFloBorFie.y, min1.u1) annotation (Line(points={{-278,-180},{-270,
           -180},{-270,-166},{-262,-166}}, color={0,0,127}));
-  connect(conPla.port_bCon, cooTow.port_aSerAmb) annotation (Line(points={{-90,-10},
+  connect(conPla.port_bCon, plaCoo.port_aSerAmb) annotation (Line(points={{-90,-10},
           {-120,-10},{-120,-60},{-162.667,-60},{-162.667,-40}},      color={0,
           127,255}));
-  connect(cooTow.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
+  connect(plaCoo.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
           -162.667,0},{-162.667,20},{-120,20},{-120,-4},{-90,-4}}, color={0,127,
           255}));
-  connect(TDisWatBorLvg.T, cooTow.TWatEnt) annotation (Line(points={{-91,-40},{
+  connect(TDisWatBorLvg.T, plaCoo.TWatEnt) annotation (Line(points={{-91,-40},{
           -102,-40},{-102,-52},{-173.333,-52},{-173.333,-42.6667}}, color={0,0,
           127}));
-  connect(TDisWatSup.T, cooTow.TWatLvg) annotation (Line(points={{-91,20},{-100,
+  connect(TDisWatSup.T, plaCoo.TWatLvg) annotation (Line(points={{-91,20},{-100,
           20},{-100,-48},{-169.333,-48},{-169.333,-42.6667}}, color={0,0,127}));
   connect(conPla.dH_flow, EPla.u)
     annotation (Line(points={{-87,2},{-87,10},{198,10}}, color={0,0,127}));
@@ -118,9 +118,10 @@ equation
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
       StopTime=63244800,
-      __Dymola_NumberOfIntervals=17520,
       Tolerance=1e-06,
-      __Dymola_Algorithm="Cvode"),
+      __Dymola_NumberOfIntervals=17520,
+      __Dymola_Algorithm="Cvode",
+      __Dymola_experimentSetupOutput(equidistant=true, events=false)),
     Documentation(revisions="<html>
 <ul>
 <li>

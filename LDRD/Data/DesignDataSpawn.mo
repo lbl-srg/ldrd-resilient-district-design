@@ -12,7 +12,7 @@ record DesignDataSpawn "Record with design data for Spawn models"
     "Indices of building models based on time series"
     annotation (Evaluate=true);
 
-  parameter Real facDiv = 0.9
+  parameter Real facDiv = 1.0
     "Load diversity factor (typically heating is limiting and higher than 0.9)";
 
   parameter Modelica.SIunits.MassFlowRate mPumDis_flow_nominal = facDiv *

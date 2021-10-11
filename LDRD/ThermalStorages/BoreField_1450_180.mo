@@ -1,5 +1,6 @@
 ﻿within LDRD.ThermalStorages;
-model BoreField_1250_180 "Geothermal borefield model"
+model BoreField_1450_180
+  "Geothermal borefield model (number of boreholes_individual length)"
   extends Buildings.Fluid.Geothermal.Borefields.TwoUTubes(
     final energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     final tLoaAgg(displayUnit="h") = 3600,
@@ -23,7 +24,7 @@ model BoreField_1250_180 "Geothermal borefield model"
         mBor_flow_nominal=1.0,
         hBor=hBor,
         rBor=0.075,
-        nBor=1250,
+        nBor=1450,
         cooBor=cooBor,
         dBor=1,
         rTub=0.02,
@@ -103,4 +104,4 @@ Added documentation.
 </li>
 </ul>
 </html>"));
-end BoreField_1250_180;
+end BoreField_1450_180;
