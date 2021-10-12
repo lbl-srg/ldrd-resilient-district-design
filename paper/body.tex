@@ -343,7 +343,11 @@ We will then discuss the characteristics and sizing of the main DHC system compo
 
 Disabling the chillers and relying only on WSE cooling during the extreme week with a service supply temperature of $16$°C does not yield any occupant hours lost in the office building.
 The evolution of the operative temperature is provided Figure~\ref{fig:tope}, together with the power drawn by the fans, pumps and chillers, and the total cooling heat flow rate. The case with WSE cooling is compared with the base case with chiller cooling.
-The WSE mode yields a reduction of $XX\%$ in the total power at the peak, while still serving $XX\%$ of the load. This is achieved despite a high chiller COP of about $XX\%$ in the base case.
+The WSE mode yields a reduction of about $60\%$ in the total power at the peak, while still meeting $70\%$ of the load.
+This is achieved despite a high chiller $COP$ close to $7$ in the base case.
+The significant fan power results from sizing the system air flow rate based on the peak loads and a design coil leaving air temperature of $13$°C, with a diversity factor of $70\%$. This leads to a design air flow rate of $44478$~m3/h, and an air change rate ranging from $3$ to $9$~h-1 among the conditioned zones. Downsizing the system air flow rate by means of a lower design coil leaving air temperature would be beneficial to the fan power but detrimental to the IEQ in the WSE cooling mode.
+During the operating hours the average building HVAC system $COP$ (accounting for the AHU fan, the primary and secondary pumps, and the chiller) is equal to $5.2$ in the case of chiller cooling and $7.3$ in the case of WSE cooling, i.e., an increase of $40\%$ in the system efficiency due the WSE mode.
+
 The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} for each of the $15$ thermal zones. Without oversizing the cooling coil (i.e., with a sizing coefficient of $1.0$), the number of degree-hours is below $6$~K.h%
 \footnote{%
 \cite{Mathew2021} suggests a limit of $34$~K.h per day to decide that a zone cannot be occupied and to start incrementing the thermal OHL count.}
@@ -359,15 +363,8 @@ in the limiting zone during the limiting day, while the median value remains equ
 
 \paragraph{Cooling Coil Sizing} \label{par:cooling_coil}
 
-To be updated
-
-\notebox{%
-Compute nominal operating point of oversized coil: what is the impact on the CHW delta-T? Nominal flow rate and pressure drop?
-
-Assess number of rows
-
-TODO: run simulations with a nominal pressure drop increased by the sizing factor.
-}
+A sensitivity analysis to the cooling coil capacity is carried out by applying a multiplier factor to the design $UA$-value of the coil model,  considering that the design pressure drop is increased by the same factor for both the air and the chilled water side. The CHW pump design flow rate is considered identical in all cases.
+With an oversizing by a factor $1.6$ the number of degree-hours above tolerable is divided by $2$ for the limiting zone, while the average power during the operating hours is increased by about $30\%$ and the total cooling heat flow rate is increased by less than $15\%$, which corresponds to a diminution in the system $COP$ from $7.3$ to $6.4$.
 
 \begin{figure*}[!htbp]
 \centering
@@ -382,16 +379,6 @@ Comment on the load diversity factor of $70\%$ used for sizing:
 $1.4 * 0.7 \approx 1$ and indeed all terminal boxes reach a coincident $100\%$ demand in WSE cooling mode.
 
 Note that the analysis is carried out with fixed design pressure drops, so it is rather an oversizing of the whole air system, namely the coil face area and the ducts.
-
-To be updated
-
-\notebox{%
-Compute nominal operating point of oversized coil: what is the impact on the CHW delta-T? Nominal flow rate and pressure drop?
-
-Assess number of rows: base case and oversized
-
-TODO: run simulations with a nominal pressure drop and mass flow unchanged for other equipment than fan.
-}
 
 
 \begin{figure*}[!htbp]

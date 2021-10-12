@@ -182,7 +182,7 @@ partial model PartialOpenLoop
     final m1_flow_nominal=datVAV.mLiqHeaCoi_flow,
     final m2_flow_nominal=datVAV.mAirHeaCoi_flow,
     final dp1_nominal=0,
-    final dp2_nominal=datVAV.dpFil + datVAV.dpAirCooCoi + datVAV.dpAirHeaCoi,
+    dp2_nominal=datVAV.dpFil + datVAV.dpAirCooCoi + datVAV.dpAirHeaCoi,
     allowFlowReversal1=false,
     final allowFlowReversal2=allowFlowReversal,
     final T_a1_nominal=datVAV.TLiqEntHeaCoi,
@@ -356,7 +356,8 @@ partial model PartialOpenLoop
     from_dp=true,
     riseTime=15,
     final dpDamper_nominal=datVAV.dpEcoDam,
-    final dpFixed_nominal=datVAV.dpEcoFix) "Outdoor air damper" annotation (Placement(transformation(extent={{-50,-50},{-30,-30}})));
+    final dpFixed_nominal=datVAV.dpEcoFix) "Outdoor air damper"
+    annotation (Placement(transformation(extent={{-50,-50},{-30,-30}})));
 
   Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valHea(
     redeclare final package Medium = MediumW,
