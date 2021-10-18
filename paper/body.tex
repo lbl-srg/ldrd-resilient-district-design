@@ -172,7 +172,7 @@ The main question we shall answer is to what extent the size of the borefield ca
 \cite{Kavanaugh2014} propose a sizing method where the total borehole length $L$~(m) is given by Equation~\ref{eq:sizing}.
 
 \begin{align}
-    \label{eq:sizing}
+    \label{eq:geo_sizing}
     L &= \frac{\dot{Q}_a R_{10y} + \dot{Q}_m R_{1m} + \dot{Q}_h \left( R_b + F_{sc} R_{6h} \right)}{\left( T_{Ent} + T_{Lvg} \right) / 2 - \left( T_g + T_p \right)}
 \end{align}
 
@@ -180,7 +180,7 @@ with
 
 \begin{avec}
     $\dot{Q}_y$ (W): Net annual average heat transfer to the ground, counted positively for heat rejection to the ground%
-    \footnote{This is the opposite convention as the one used in \cite{Kavanaugh2014}, and Equation~\ref{eq:sizing} is rearranged accordingly.}\\
+    \footnote{This is the opposite convention as the one used in \cite{Kavanaugh2014}, and Equation~\ref{eq:geo_sizing} is rearranged accordingly.}\\
     $R_{10y}$ (m2.K/W): Effective thermal resistance of the ground computed with a 10-year heat pulse \\
     $\dot{Q}_m$ (W): Net monthly average heat transfer to the ground\\
     $R_{1m}$ (m.K/W): Effective thermal resistance of the ground computed with a 1-month heat pulse \\
@@ -203,10 +203,11 @@ The sizing rationale is then as follows. Starting from an undisturbed ground tem
 From there, the auxiliary cooling system is designed to balance the heat transferred to the main loop on an annual basis, so $Q_y = 0$ is considered to size the borefield. The effect of the auxiliary cooling system on $\dot{Q}_m$ and $\dot{Q}_h$, i.e., near cooling design conditions, is neglected as explained in §\ref{sec:aux_cooling}.
 This gives the following number of boreholes considering a borehole depth of $180$~m.
 
-\begin{align*}
-n_{Heating} &= 705 \\
-n_{Cooling} &= 1426
-\end{align*}
+\begin{align}
+    \label{eq:geo_sizing_results}
+    n_{Heating} &= 705  \\
+    n_{Cooling} &= 1426 \nonumber
+\end{align}
 
 
 \begin{figure*}[!htbp]
@@ -219,7 +220,7 @@ n_{Cooling} &= 1426
 
 \subsubsection{Auxiliary Cooling System} \label{sec:aux_cooling}
 
-The selection of the auxiliary cooling system can be informed by the weather data statistics (see Figure~\ref{fig:weather_stats}) and the contribution of the different heat pulses to the sizing of the borefield based on Equation~\ref{eq:sizing} (see Figure~\ref{fig:contribution_to_L}).
+The selection of the auxiliary cooling system can be informed by the weather data statistics (see Figure~\ref{fig:weather_stats}) and the contribution of the different heat pulses to the sizing of the borefield based on Equation~\ref{eq:geo_sizing} (see Figure~\ref{fig:contribution_to_L}).
 
 If cooling towers or dry coolers%
 \footnote{
@@ -236,12 +237,13 @@ The system is enabled based on a similar logic as the one implemented for the wa
 When enabled, the fan speed is modulated between its minimum when the entering water temperature equals to the minimum supply temperature set point (considering a $1$~K margin) and its maximum when the entering water temperature equals to the target equilibrium temperature of $12$°C, see §\ref{sec:geo}.
 The system is disabled if the actual leaving water temperature is higher than the entering water temperature, or if it is lower than the minimum supply temperature set point.
 
-An alternative hybrid design option---although outside the scope of this study---relies on auxiliary chillers, that can effectively contribute to lowering the heat rejection demand during the hottest months. In that case, the borefield can likely be downsized to the lowest number of boreholes $n_{Heating}$. A simulation experiment would be needed to assess to what extent and with what control strategy such a configuration can provide compressor-less cooling capacity during an extreme week, i.e., keep the supply temperature of the loop under $16$°C during the whole week without enabling the chillers. This configuration is not exclusive from the previous one and dry coolers may be used as condenser water coolers, with a waterside economizer option to directly cool down the main loop at low ambient temperature.
+An alternative hybrid design option relies on auxiliary chillers, that can effectively contribute to lowering the heat rejection demand during the hottest months. In that case, the borefield can likely be downsized to the lowest number of boreholes $n_{Heating}$.
+An additional simulation experiment will be carried out to assess to what extent and with what control strategy such a configuration can provide compressor-less cooling capacity during an extreme week, i.e., keep the supply temperature of the loop under $16$°C during the whole week without enabling the chillers. This configuration is not exclusive from the previous one and dry coolers may be used as condenser water coolers, with a waterside economizer option to directly cool down the main loop at low ambient temperature.
 
 \begin{figure*}[!htbp]
     \centering
     \includegraphics[width=.6\linewidth]{../python_scripts/figures/ContributionL.pdf}
-    \caption{Contribution of the different heat pulses to the sizing of the borefield based on  Equation~\ref{eq:sizing} (including the yearly average not considered if compensated by an auxiliary cooling system).}
+    \caption{Contribution of the different heat pulses to the sizing of the borefield based on  Equation~\ref{eq:geo_sizing} (including the yearly average not considered if compensated by an auxiliary cooling system).}
     \label{fig:contribution_to_L}
 \end{figure*}
 
@@ -252,31 +254,6 @@ An alternative hybrid design option---although outside the scope of this study--
     \label{fig:weather_stats}
 \end{figure*}
 
-
-\subsection{Modeling Hydronic Systems} \label{sec:balancing}
-
-When integrating the ETS model into the whole DHC system model, significant effects of hydronic imbalance were first observed, with the remote ETSs being starved and unable to meet the supply temperature set point, and the ETSs closer to the pump operating at higher flow rates than design.
-In addition, convergence issues of the Newton solver appeared, mainly related to the waterside economizer operation.
-
-The first effect was certainly expected using a pressure-driven model of the hydronic system, with no specific care for balancing the connected units. However, and as in real systems, that effect was not expected to disturb the operation to the extent that was observed. Indeed, a controller---controlling for instance a supply temperature or a temperature difference---should limit the primary flow rate under the design values (provided that the primary fluid temperature remains close to the design value). In addition, the heat emission characteristic is supposed to limit the impact of flow shortage, with $50\%$ of the design mass flow rate still providing about $90\%$ of the design heat flow rate for a heat exchanger with $10$ K primary temperature range at design. The only disturbing effects that were expected, and indeed observed, pertain to the low valve authority of the primary control valves that causes control issues, and to the pump speed which is often maxed-out due to the inability to maintain the pressure drop at the remote ETS.
-
-The reason why the ETSs close to the pump often operate at a higher flow rate than design is related to the control based on the heat or cold rejection demand (see §\ref{sec:ets}) that first opens the primary control valve (up to its full opening), then resets down the CHW supply temperature. So the ETSs that are exposed to a higher pressure drop than the design value use the excess flow rate instead of resetting the supply temperature to increase the temperature difference (or rate of heat transfer) with the primary side of the heat exchanger.
-
-Regarding the numerical issues that were encountered we must acknowledge the challenges that remain when modeling closed loop hydronic systems (typically with feedback of a remote differential pressure sensor or of the valve positions to control the main distribution pump).
-There has been extensive work that was already carried out to formulate actuator models limiting the size of the DAE systems and exhibiting the proper smoothness required by Newton solvers \cite{Jorissen2015}.
-Namely, each actuator model of the Modelica Buildings Library offers the option to solve either for the mass flow rate or for the pressure drop, which breaks the algebraic loop created when two actuators are in parallel or in series, respectively. In addition they provide the option for an additional state variable (mimicking the actuator motion delay) which is another means to avoid an algebraic loop.
-In our case, those two modeling features did not solve the convergence issues.
-
-The resolution came from integrating a pressure independent control valve (PICV) into the ETS model to modulate the mass flow rate of the service water through the heat exchangers.
-To represent the various technologies of PICVs (dynamic balancing valve in series with a control valve, or built-in flow meter and controller) the model idealizes the physics by solving the simple equation $ \dot{m}_{Act} = u * \dot{m}_{Nom} $, where $u$ is the control signal and $\dot{m}_{Act}$ and $\dot{m}_{Nom}$ are the actual and design mass flow rate, respectively.
-The complexity of the model lies in the requirement to properly represent the valve limiting flow characteristics (leakage and full opening) and to compute a pressure drop and a mass flow rate that are continuously differentiable while transitioning between the two characteristics (which is a requirement to apply Newton solvers).
-Using that valve model to modulate the service water flow rate offers  key benefits, similar to the ones obtained by the use of PICVs in real hydronic systems.
-\begin{enumerate}
-    \item The system is dynamically balanced. The primary flow rate can only marginally exceed the design value. Furthermore, this holds true for any operating point, and any location in the distribution network. To the contrary, balancing valves that are commissioned at design conditions may lead to low pressure differences at the boundaries of the control valves close to the distribution pump in the case of closed loop control based on a remote pressure drop sensor and with low demand on the remote valves.
-    \item The controllability is optimal. The relationship between the control signal (varying between $0$ and $1$) and the mass flow rate (varying between close to $0$ and close to the design value) is indeed close to linear. To the contrary, with standard control valves, a potentially large range of flow rate variation (spanning beyond the design value) may be mapped to a limited range of variation of the control signal (depending on the valve authority), leading to tedious controller tuning or control instabilities.
-\end{enumerate}
-
-In addition, the simulation model is simplified due to the ideal model of the flow rate control loop, for instance when modeling a waterside economizer where the primary valve position is actuated so that the primary mass flow rate equals the chilled water mass flow rate. This eliminates the need for a controller (and for tuning), while reducing the number of state variables and therefore the time to solution, especially for such control loops with fast pressure-driven dynamics.
 
 \section{Application to a Resilient Operating Mode} \label{sec:application}
 
@@ -336,7 +313,7 @@ For that reason, our analysis is only based on the number of degree-hours above 
 \subsection{Results} \label{sec:results}
 
 This section first presents the analysis of the indoor environmental quality (IEQ) that can be achieved during the extreme week considering the district loop target temperature range of $[9, 16]$~(C) and the sensitivity to various sizing parameters of the building HVAC system.
-We will then discuss the characteristics and sizing of the main DHC system components that are required to reach that temperature range.
+We will then discuss the characteristics and sizing of the central components of the DHC system that are required to respect that temperature range.
 
 
 \subsubsection{Indoor Environmental Quality in a Compressor-Less Operating Mode} \label{sec:ieq}
@@ -348,23 +325,24 @@ This is achieved despite a high chiller $COP$ close to $7$ in the base case.
 The significant fan power results from sizing the system air flow rate based on the peak loads and a design coil leaving air temperature of $13$°C, with a diversity factor of $70\%$. This leads to a design air flow rate of $44478$~m3/h, and an air change rate ranging from $3$ to $9$~h-1 among the conditioned zones. Downsizing the system air flow rate by means of a lower design coil leaving air temperature would be beneficial to the fan power but detrimental to the IEQ in the WSE cooling mode.
 During the operating hours the average building HVAC system $COP$ (accounting for the AHU fan, the primary and secondary pumps, and the chiller) is equal to $5.2$ in the case of chiller cooling and $7.3$ in the case of WSE cooling, i.e., an increase of $40\%$ in the system efficiency due the WSE mode.
 
-The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} for each of the $15$ thermal zones. Without oversizing the cooling coil (i.e., with a sizing coefficient of $1.0$), the number of degree-hours is below $6$~K.h%
+The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} for each of the $15$ thermal zones. Without oversizing the cooling coil (i.e., with a sizing coefficient of $1.0$), the number of degree-hours is below $6$~K.h in the limiting zone during the limiting day%
 \footnote{%
-\cite{Mathew2021} suggests a limit of $34$~K.h per day to decide that a zone cannot be occupied and to start incrementing the thermal OHL count.}
-in the limiting zone during the limiting day, while the median value remains equal to zero, meaning that a tolerable IEQ can be achieved in a low-power mode in the majority of the thermal zones.
+\cite{Mathew2021} suggests a limit of $34$~K.h per day to decide that a zone cannot be occupied and to start incrementing the thermal OHL count.}, while the median value remains equal to zero, meaning that a tolerable IEQ can be achieved in a low-power mode in the majority of the thermal zones.
 
 \begin{figure*}[!htbp]
     \centering
     \includegraphics[width=.7\linewidth]{../python_scripts/figures/TOpe.pdf}
-    \caption{Operative temperature in the limiting zone during the extreme week, and chiller, pump and fan power, WSE cooling compared to chiller cooling.}
+    \caption{Operative temperature in the limiting zone; total power and cooling heat flow rate; chiller, pump and fan power -- WSE cooling compared to chiller cooling during the extreme week.}
     \label{fig:tope}
 \end{figure*}
 
 
 \paragraph{Cooling Coil Sizing} \label{par:cooling_coil}
 
-A sensitivity analysis to the cooling coil capacity is carried out by applying a multiplier factor to the design $UA$-value of the coil model,  considering that the design pressure drop is increased by the same factor for both the air and the chilled water side. The CHW pump design flow rate is considered identical in all cases.
-With an oversizing by a factor $1.6$ the number of degree-hours above tolerable is divided by $2$ for the limiting zone, while the average power during the operating hours is increased by about $30\%$ and the total cooling heat flow rate is increased by less than $15\%$, which corresponds to a diminution in the system $COP$ from $7.3$ to $6.4$.
+The sensitivity to the cooling coil capacity is analyzed by applying a multiplier factor to the design $UA$-value of the coil model,  considering that the design pressure drop is increased by the same factor for both the air and the chilled water side. The CHW pump design flow rate is considered identical in all cases.
+Our premise is that the integration into an existing system can be made without modifying the CHW distribution pump, provided that sizing margins are available on the pump head (which is typically the case).
+
+As illustrated in Figure~\ref{fig:coil}, oversizing the coil by a factor $1.6$ reduces the number of degree-hours above tolerable by a factor $2$ for the limiting zone, while the average power during the operating hours is increased by about $30\%$ and the total cooling heat flow rate is increased by less than $15\%$, which corresponds to a diminution in the system $COP$ from $7.3$ to $6.4$.
 
 \begin{figure*}[!htbp]
 \centering
@@ -375,10 +353,16 @@ With an oversizing by a factor $1.6$ the number of degree-hours above tolerable 
 
 \paragraph{Fan Sizing} \label{par:fan}
 
+The sensitivity to the fan sizing is analyzed by applying a multiplier factor $k$ to the nominal volume flow rate and $k^2$ to the nominal head of the fan. The flow resistance of the duct network and all other AHU components is  considered  identical  in  all  cases.
+Our premise is that the integration into an existing system can be made by only changing the AHU fan.
+
+As illustrated in Figure~\ref{fig:fan}, oversizing the fan has a limited impact on the number of degree-hours above tolerable. Beyond a $20\%$ oversizing factor, the impact is even detrimental. This is because the power drawn by the fan motor scales cubic with the sizing factor, and so does the dissipated heat flow rate. This leads to an increase in the supply air temperature that is no more compensated by the increased air flow rate.
+Comparing the base case (sizing factor equal to $1.0$) with the optimum case (sizing factor equal to $1.2$), the average power during the operating hours is increased by about $60\%$ while the total cooling heat flow rate is increased by less than $10\%$, which corresponds to a diminution in the system $COP$ from $7.3$ to $4.8$. The latter value indicates that the WSE cooling mode is then less efficient than the chiller cooling mode.
+
 Comment on the load diversity factor of $70\%$ used for sizing:
 $1.4 * 0.7 \approx 1$ and indeed all terminal boxes reach a coincident $100\%$ demand in WSE cooling mode.
 
-Note that the analysis is carried out with fixed design pressure drops, so it is rather an oversizing of the whole air system, namely the coil face area and the ducts.
+Add results fixed design pressure drops (oversizing of the whole air system, namely the coil face area and the ducts).
 
 
 \begin{figure*}[!htbp]
@@ -389,28 +373,51 @@ Note that the analysis is carried out with fixed design pressure drops, so it is
 \end{figure*}
 
 
-\subsubsection{Central Systems} \label{sec:dhc}
+\subsubsection{Central Components} \label{sec:dhc}
+
+\paragraph{Geothermal Borefield and Dry Coolers}
+
+The sensitivity to the size of the borefield is illustrated Figure~\ref{fig:geo_sizing_tsup} and Figure~\ref{fig:geo_sizing_energy} by plotting the supply temperature and the transferred energy as computed by simulating five years of operation for different numbers of boreholes within the range given by Equation~\ref{eq:geo_sizing_results}.
+Figure~\ref{fig:geo_sizing_energy} shows that the energy transferred to the ground is closed to balanced on an annual basis and that the five year horizon can be used to analyze the operation.
+We verify that the initial sizing based on Equation~\ref{eq:geo_sizing} is valid for that hybrid system with auxiliary dry coolers, and that the maximum number of boreholes is indeed required to maintain the supply temperature below $16$°C%
+\footnote{%
+The temperature variations below the limit of $9$°C are due to the timers used in the control sequence for the dry coolers and could be eliminated is needed.}.
+The corresponding sizing ratio is $75$~m/kW (total length of boreholes divided by the system capacity) which lies far outside the range of $[10, 30]$~(m/kW) observed on conventional systems \citep{Kavanaugh2014}. This is explained by the low temperature approach of about $6$~K that is required here for the ground heat exchanger, as opposed to the range of $[10, 25]$~(C) generally used for conventional geothermal systems without any requirement for compressor-less cooling.
+This yields a first cost of the geothermal system that is likely prohibitive and rather calls for exploring a hybrid design with the minimum number of boreholes and auxiliary chillers.
+
+
+\paragraph{Geothermal Borefield and Central Chiller Plant}
+
+considering that an auxiliary cooling system is still needed to balance the load on an annual basis.
+In the base case, dry coolers (capacity? approach?) are used for that intent. They are mainly operated in the shoulder seasons as illustrated Figure~\ref{fig:coolers_tsup}.
+
+Discuss central chillers
+
+
+The contribution of the dry coolers is illustrated Figure~\ref{fig:coolers_tsup}
+
+
 
 \begin{figure*}[!htbp]
 \centering
 \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizing.pdf}
 \caption{Sensitivity to the geothermal borefield sizing - District water supply temperature.}
-\label{fig:geo_sizing}
+\label{fig:geo_sizing_tsup}
 \end{figure*}
 
 \begin{figure*}[!htbp]
 \centering
 \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizingE.pdf}
-\caption{Sensitivity to the geothermal borefield sizing - Energy transferred from the district loop through the borefield ($ESto.y$) and through the cooling towers ($EPla.y$).}
-\label{fig:geo_cooling}
+\caption{Sensitivity to the geothermal borefield sizing - Energy transferred from the district loop through the borefield ($ESto.y$) and through the dry coolers ($EPla.y$).}
+\label{fig:geo_sizing_energy}
 \end{figure*}
 
 
 \begin{figure*}[!htbp]
 \centering
 \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoBestCaseT.pdf}
-\caption{Illustration of the cooling towers effect on the case with 1250 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
-\label{fig:coolingeffect}
+\caption{Illustration of the dry coolers operation on the case with 1450 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
+\label{fig:coolers_tsup}
 \end{figure*}
 
 
@@ -431,4 +438,40 @@ This help demonstrate how novel DHC technologies can be deployed to existing bui
 
 Future studies should investigate the benefits of source-side to source-side connection (indirect heat recovery at lower lift) as opposed to direct heat recovery at higher lift.
 
+
 \section{Acknowledgements} \label{sec:acknowledge}
+
+This work was supported by the Laboratory Directed Research and Development Program of Lawrence Berkeley National Laboratory under U.S. Department of Energy Contract No. DE-AC02-05CH11231.
+
+Most of the numerical models that this work relies on were developed in projects supported by the Advanced Manufacturing Office and the Building Technologies Office of the U.S. Department of Energy, under the same contract number.
+
+
+\pagebreak
+\begin{appendix}
+
+    \section{Modeling Hydronic Systems} \label{sec:balancing}
+
+When integrating the ETS model into the whole DHC system model, significant effects of hydronic imbalance were first observed, with the remote ETSs being starved and unable to meet the supply temperature set point, and the ETSs closer to the pump operating at higher flow rates than design.
+In addition, convergence issues of the Newton solver appeared, mainly related to the waterside economizer operation.
+
+The first effect was certainly expected using a pressure-driven model of the hydronic system, with no specific care for balancing the connected units. However, and as in real systems, that effect was not expected to disturb the operation to the extent that was observed. Indeed, a controller---controlling for instance a supply temperature or a temperature difference---should limit the primary flow rate under the design values (provided that the primary fluid temperature remains close to the design value). In addition, the heat emission characteristic is supposed to limit the impact of flow shortage, with $50\%$ of the design mass flow rate still providing about $90\%$ of the design heat flow rate for a heat exchanger with $10$ K primary temperature range at design. The only disturbing effects that were expected, and indeed observed, pertain to the low valve authority of the primary control valves that causes control issues, and to the pump speed which is often maxed-out due to the inability to maintain the pressure drop at the remote ETS.
+
+The reason why the ETSs close to the pump often operate at a higher flow rate than design is related to the control based on the heat or cold rejection demand (see §\ref{sec:ets}) that first opens the primary control valve (up to its full opening), then resets down the CHW supply temperature. So the ETSs that are exposed to a higher pressure drop than the design value use the excess flow rate instead of resetting the supply temperature to increase the temperature difference (or rate of heat transfer) with the primary side of the heat exchanger.
+
+Regarding the numerical issues that were encountered we must acknowledge the challenges that remain when modeling closed loop hydronic systems (typically with feedback of a remote differential pressure sensor or of the valve positions to control the main distribution pump).
+There has been extensive work that was already carried out to formulate actuator models limiting the size of the DAE systems and exhibiting the proper smoothness required by Newton solvers \cite{Jorissen2015}.
+Namely, each actuator model of the Modelica Buildings Library offers the option to solve either for the mass flow rate or for the pressure drop, which breaks the algebraic loop created when two actuators are in parallel or in series, respectively. In addition they provide the option for an additional state variable (mimicking the actuator motion delay) which is another means to avoid an algebraic loop.
+In our case, those two modeling features did not solve the convergence issues.
+
+The resolution came from integrating a pressure independent control valve (PICV) into the ETS model to modulate the mass flow rate of the service water through the heat exchangers.
+To represent the various technologies of PICVs (dynamic balancing valve in series with a control valve, or built-in flow meter and controller) the model idealizes the physics by solving the simple equation $ \dot{m}_{Act} = u * \dot{m}_{Nom} $, where $u$ is the control signal and $\dot{m}_{Act}$ and $\dot{m}_{Nom}$ are the actual and design mass flow rate, respectively.
+The complexity of the model lies in the requirement to properly represent the valve limiting flow characteristics (leakage and full opening) and to compute a pressure drop and a mass flow rate that are continuously differentiable while transitioning between the two characteristics (which is a requirement to apply Newton solvers).
+Using that valve model to modulate the service water flow rate offers  key benefits, similar to the ones obtained by the use of PICVs in real hydronic systems.
+\begin{enumerate}
+    \item The system is dynamically balanced. The primary flow rate can only marginally exceed the design value. Furthermore, this holds true for any operating point, and any location in the distribution network. To the contrary, balancing valves that are commissioned at design conditions may lead to low pressure differences at the boundaries of the control valves close to the distribution pump in the case of closed loop control based on a remote pressure drop sensor and with low demand on the remote valves.
+    \item The controllability is optimal. The relationship between the control signal (varying between $0$ and $1$) and the mass flow rate (varying between close to $0$ and close to the design value) is indeed close to linear. To the contrary, with standard control valves, a potentially large range of flow rate variation (spanning beyond the design value) may be mapped to a limited range of variation of the control signal (depending on the valve authority), leading to tedious controller tuning or control instabilities.
+\end{enumerate}
+
+In addition, the simulation model is simplified due to the ideal model of the flow rate control loop, for instance when modeling a waterside economizer where the primary valve position is actuated so that the primary mass flow rate equals the chilled water mass flow rate. This eliminates the need for a controller (and for tuning), while reducing the number of state variables and therefore the time to solution, especially for such control loops with fast pressure-driven dynamics.
+
+\end{appendix}

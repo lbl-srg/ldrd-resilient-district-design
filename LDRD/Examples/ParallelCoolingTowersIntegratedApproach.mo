@@ -1,6 +1,6 @@
 within LDRD.Examples;
 model ParallelCoolingTowersIntegratedApproach
-  "Example of parallel connection with constant district water mass flow rate"
+  "Parallel connection with central cooling towers integrated into borefield loop"
   extends BaseClasses.PartialParallel(
     final facMulTim={1, 10, 10},
     redeclare

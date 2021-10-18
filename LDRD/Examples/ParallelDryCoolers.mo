@@ -1,6 +1,6 @@
 within LDRD.Examples;
 model ParallelDryCoolers
-  "Example of parallel connection with constant district water mass flow rate"
+  "Parallel connection with central dry coolers"
   extends ParallelCoolingTowers(
     plaCoo(isCooTow=false));
   annotation (

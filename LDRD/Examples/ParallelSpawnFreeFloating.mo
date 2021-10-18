@@ -1,5 +1,6 @@
 within LDRD.Examples;
-model ParallelSpawnFreeFloating "Example of parallel connection"
+model ParallelSpawnFreeFloating
+  "Parallel connection with no central auxiliary cooling system"
   extends BaseClasses.PartialParallelSpawn(
     final facMulTim={1, 10},
     final facMulSpa=10,

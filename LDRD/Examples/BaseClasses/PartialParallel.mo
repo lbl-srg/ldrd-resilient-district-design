@@ -147,7 +147,7 @@ partial model PartialParallel "Partial model for parallel network"
   Buildings.Controls.OBC.CDL.Continuous.MultiSum EPum(nin=3) "Total pump electric energy"
     annotation (Placement(transformation(extent={{260,110},{280,130}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum PChi(
-    final nin=nBui)
+    nin=nBui)
     "Chiller power"
     annotation (Placement(transformation(extent={{120,150},{140,170}})));
   Modelica.Blocks.Continuous.Integrator EChi(initType=Modelica.Blocks.Types.Init.InitialState)
@@ -247,13 +247,13 @@ equation
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
-  connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
-          240,121.333},{258,121.333}},
+  connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{240,
+          121.333},{258,121.333}},
                                color={0,0,127}));
   connect(EPumDis.y,EPum. u[2]) annotation (Line(points={{221,-100},{242,-100},
           {242,120},{258,120}},color={0,0,127}));
-  connect(EPumSto.y,EPum. u[3]) annotation (Line(points={{221,-140},{244,-140},
-          {244,118.667},{258,118.667}},
+  connect(EPumSto.y,EPum. u[3]) annotation (Line(points={{221,-140},{244,-140},{
+          244,118.667},{258,118.667}},
                                    color={0,0,127}));
   connect(PChi.y, EChi.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
   connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,161},{298,161}}, color={0,0,127}));
@@ -277,7 +277,7 @@ equation
           {-100,-80},{-100,-84},{-90,-84}}, color={0,127,255}));
   connect(bui.PPum, PPumETS.u) annotation (Line(points={{12,183},{66,183},{66,200},
           {118,200}}, color={0,0,127}));
-  connect(bui.PCoo, PChi.u) annotation (Line(points={{12,187},{60,187},{60,160},
+  connect(bui.PCoo, PChi.u[1:nBui]) annotation (Line(points={{12,187},{60,187},{60,160},
           {118,160}}, color={0,0,127}));
   connect(uEnaChi.y[1], bui.uEnaChi) annotation (Line(points={{-318,180},{-40,180},
           {-40,186},{-12,186}}, color={255,0,255}));

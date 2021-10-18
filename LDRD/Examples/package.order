@@ -3,9 +3,11 @@ BuildingSpawn
 BuildingSpawnWithETS
 BuildingSpawnWithETSNoWSE
 BuildingSpawnWithETS_fan
+BuildingSpawnWithETS_m_flow
 BuildingSpawnWithETS_UA
 CoolingCoilSizing
 ParallelCoolingTowers
+ParallelChillers
 ParallelDryCoolers
 ParallelCoolingTowers_1450_180
 ParallelCoolingTowersIntegrated

@@ -1,6 +1,6 @@
 within LDRD.Examples;
 model ParallelSpawnCoolingTowers
-  "Example of parallel connection with constant district water mass flow rate"
+  "Parallel connection with central cooling towers"
   extends BaseClasses.PartialParallelSpawn(
     final facMulTim={1, 10},
     final facMulSpa=10,
