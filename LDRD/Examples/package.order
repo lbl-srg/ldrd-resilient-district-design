@@ -6,12 +6,14 @@ BuildingSpawnWithETS_fan
 BuildingSpawnWithETS_m_flow
 BuildingSpawnWithETS_UA
 CoolingCoilSizing
-ParallelCoolingTowers
 ParallelChillers
+ParallelCoolingTowers
 ParallelDryCoolers
 ParallelCoolingTowers_1450_180
 ParallelCoolingTowersIntegrated
 ParallelCoolingTowersIntegratedApproach
+ParallelSpawnChillers
 ParallelSpawnCoolingTowers
+ParallelSpawnDryCoolers
 ParallelSpawnFreeFloating
 BaseClasses

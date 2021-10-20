@@ -1,33 +1,54 @@
 %% main text
 \section{Abstract} \label{sec:abstract}
 
-Novel district heating and cooling (DHC) systems allow sharing large geothermal resources between buildings by operating a central water loop near ground temperature, coupled to distributed vapor-compression machines that lift the temperature up or down to what the building’s heating or cooling system requires.
+Novel district heating and cooling systems allow sharing large geothermal resources between buildings by operating a central water loop near ground temperature, coupled to distributed vapor-compression machines that lift the temperature up or down to what the building’s heating or cooling system requires.
 Originally designed to capture heat from low-temperature heat sources more efficiently, those systems also provide opportunities for compressor-less cooling.
 
 Using high-fidelity models of buildings, district energy, building-side HVAC and control systems, we are assessing how to improve resilience of buildings during heat waves and power outages, during which we switch the system from normal operation to a resilience mode at low power.
 
-The sensitivity of the overall system performance in the resilience mode is investigated with regards to the district network topology, the configuration of the primary systems (integration of a waterside economizer, auxiliary cooling), the sizing parameters (cooling coil, fans, geothermal borefield) and the control principles.
+The sensitivity of the overall system performance in the resilience mode is investigated with regards to the configuration of the primary systems (integration of a waterside economizer, auxiliary cooling), the sizing parameters (cooling coils, fans, geothermal borefield) and the control principles.
 Furthermore, the positive externality of a design optimized for resilience is evaluated under standard operating conditions to illustrate to what extent the increased first cost at the building level is balanced by a lower average heat rejection from the compressors that yields sizing margins of the central systems, or how the design for low-power resilient conditioning also contributes to reducing the HVAC energy demand over the year at the district scale.
+
 
 
 \section{Introduction} \label{sec:introduction}
 
+The system under investigation is a district heating and cooling (DHC) system for cold networks%
+\footnote{%
+Although the terminology of fifth generation DHC has been widely used to refer to those systems \citep{Buffa2019}, it is disputed in \citep{Sulzer2021} which advocates for a distinction in terms of configuration rather than generation, the configuration being called combined heating and cooling for use in cold networks, the generation remaining the fourth.
+Referring to a specific hydronic arrangement for that kind of system, \cite{Sommer2020} introduces the concept of reservoir network, which makes explicit another distinguishing feature, that is the low-temperature source that these networks allow connecting to---either waste heat from process applications, or environmental heat from geothermal plants, ground water and lakes.
+A similar terminology is used in France where the concept of ambient loop based on geothermal energy is used \citep{Afpg2020}.}
+with distributed heat recovery chillers.
+The main network distributes water near ground temperature, typically between $9$°C and $16$°C. A large central geothermal borefield is used for seasonal heat storage while auxiliary coolers cater for the annual load imbalance where the heat rejection demand often dominates in mixed-use applications.
 
-Questions raised:
+\cite{Buffa2019} shows a growing trend in the adoption of such novel DHC systems, with about $40$ systems in operation in Europe as of 2018.
+Additionally, \cite{Afpg2020} inventories $16$ systems in France as of 2020.
 
-- How conventional sizing methods for geothermal systems help inform the design of novel DHC systems?
-- How model-based designed further contribute to system selection and sizing?
-- Are existing air-based system compatible with resilience requirements?
+The potential benefits of such design are indeed numerous.
+The compressor lift is optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa.
+Heat recovery is possible over the whole network, not only between buildings as described before, but because of the ultra-low temperature network, virtually with any source of low-quality heat, such as condenser water used from process cooling or even sewage water as low as 15°C.
+Compressor-less cooling is achievable at a temperature level compatible with radiant cooling systems.
+The resilience of the connected buildings is improved in case of heat waves, as well chiller failure.
+The low temperature in the main network allows using uninsulated pipes made of polymeric materials, reducing first costs and potentially increasing the heat storage capacity through the thermal coupling with the ground.
 
-Uniqueness
+Among the main drawbacks, the following may be mentioned.
+The design and operation of the energy transfer stations is more critical, and strongly impacted by the network topology \citep{Wetter2019}. For instance, hydronic unbalances are likely to yield a chiller trip out of high condenser pressure.
+The maintenance costs may increase due to the distributed architecture, although servicing small screw chillers typically requires less specialized skills than large capacity chillers in central plants.
 
-- Stock of 5G DHC (Europe and France), nomenclature (and dispute)
-- Literature on novel DHC system design and efficiency, especially ETS design and operation
-- Resilience applications? Compressor less cooling mode
+Several articles \citep{Wetter2019}, \citep{Sommer2020} investigate the efficiency of those systems in configurations where the aggregated load profile is heating dominated and heat is harvested on a low temperature source.
+However, no articles could be found that explore the compressor-less cooling capabilities---which are often presented as a distinguishing feature of those systems---in cooling dominated load profiles---which are the most common cases in mixed-use developments or campus applications.
+We propose to address that matter and understand its implications on the main components of the system, in terms of equipment type, hydronic layout, controls and sizing.
 
-Structure of the paper
+We also propose a focus on the design principles of the energy transfer station (ETS).
+Indeed, with distributed architectures, the ETS becomes one of the critical components of the system.
+However, only a couple articles \citep{Buffa2020}, \citep{Wetter2019} address the corresponding design challenges, and none of them provides insight on a compressor-less cooling mode.
 
-- The rest of this paper is organized as follows.
+Regarding the design of the geothermal system, our goal is to illustrate to what extent conventional sizing methods used for ground-source heat pump systems \citep{Kavanaugh2014} can inform the design of a large-scale, hybrid and distributed system, where those methods fall short, and where a model-based design becomes necessary for equipment selection and sizing.
+
+Eventually, to help inform the design of a resilient urban energy infrastructure, we propose to investigate how the technology can be integrated with existing all-air systems, which are by far the most widely used in the US and the least favorable for high-temperature cooling (as opposed to radiant cooling systems).
+We thus aim to question how novel DHC technologies can be deployed to existing buildings and if compressor-less cooling opportunities are accessible to typical air-based systems.
+
+The rest of this paper is organized as follows.
 - Modeling Framework
 - System Characteristics and Operating Principles
 - Simulation Experiment
@@ -36,49 +57,24 @@ Structure of the paper
 
 \section{Modeling Framework} \label{sec:modeling}
 
-Modelica for controls and pressure-driven fluid flow (mention features from control sequences)
+All the numerical models used in this analysis are developed with the Modelica language \citep{MattssonElmqvist1997:1}.
+The large majority of them are distributed within the Modelica Buildings Library (MBL) version 8.0.0, an open-source model library that is based on the Modelica IBPSA Library \citep{Wetter2015} developed in IBPSA Project 1 \citep{Wetter2019b}.
+The use of that modeling framework can be readily motivated when enumerating the variables of interest for our analysis, namely the chiller, pump and fan power, that all depend strongly on the control principles such as resetting the chilled water (CHW) supply temperature or the duct static pressure, modulating the pump speed, with feedback from on a remote differential pressure sensor, or a control valve position, etc.
+Two built-in features of the MBL appear critical for that kind of system analysis: the ability
+to model controls in a physically realistic and efficient way, and the pressure-driven fluid flow
+modeling.
 
-Mention Variables of interest:
-Chiller power (ETS)
-Pump power (DHC main distribution, borefield, cooling towers, ETS, in-building distribution)
-Fan power (cooling towers, AHU)
-Room operative temperature -> Occupant hours lost (thermal OHL), Mathew 2021
+In addition, for the purpose of the indoor comfort analysis, we need access to a building room model that can be easily parameterized and coupled to a detailed HVAC system model, and that enables computing both the air and the indoor surfaces temperature.
 
-EnergyPlus for envelope and access to prototypical buildings and standard load profiles
 
-Sizing based on peak loads, ASHRAE 62.1 and 90.1
+The MBL comes with the Spawn of EnergyPlus components \citep{Wetter2020} that support seamless coupling of EnergyPlus envelope and access to prototypical buildings and standard load profiles
+
 
 Flexible framework with replaceable components that allow switching easily the building load models and testing system and control variants.
+
 Reference URBANopt paper
 
-\section{DHC System} \label{sec:dhc}
-
-\subsection{Design Concept} \label{sec:concept}
-
-The system under investigation is a combined heating and cooling system for cold district networks with distributed heat recovery chillers. The main network distributes water near ground temperature, typically between $9$°C and $16$°C. A large central geothermal borefield is used for seasonal heat storage while auxiliary coolers cater for the annual load imbalance where the heat rejection demand often dominates in mixed-use applications.
-The potential benefits of such design are numerous.
-
-\begin{enumerate}
-
-    \item The compressor lift is optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa. The impact on the chiller or heater efficiency is around $2$\%/K as shown by a simple Carnot efficiency calculation, and corroborated by manufacturer catalog data.
-
-    \item Heat recovery is possible over the whole network, not only between buildings as described before, but because of the ultra-low temperature network, virtually with any source of low-quality heat, such as condenser water used from process cooling or even sewage water as low as 15°C.
-
-    \item Compressor-less cooling opportunities.
-
-    \item Resilience in case of equipment failure.
-
-    \item The low temperature in the main network allows using uninsulated pipes made of polymeric materials, reducing first costs and potentially increasing the heat storage capacity through the thermal coupling with the ground.
-
-\end{enumerate}
-
-Among the main drawbacks, the following must be mentioned.
-\begin{enumerate}
-    \item The design and operation of the energy transfer stations is more critical, and strongly impacted by the network topology. For instance, hydronic unbalances are likely to yield a  chiller trip out of high condenser pressure.
-
-    \item The maintenance costs may increase due to the distributed architecture, although servicing small screw chillers typically requires less specialized skills than large capacity chillers in central plants.
-\end{enumerate}
-
+\section{Description of the Main Components of the DHC System} \label{sec:dhc}
 
 \subsection{Energy Transfer Station} \label{sec:ets}
 
@@ -169,7 +165,7 @@ In this paragraph we describe the main characteristics of the ground heat exchan
 The simulation study will then explore the sizing range in-between those two numbers.
 The main question we shall answer is to what extent the size of the borefield can be reduced---adopting a hybrid system design---while still providing enough capacity to maintain the loop supply temperature under an acceptable limit during an extreme week.
 
-\cite{Kavanaugh2014} propose a sizing method where the total borehole length $L$~(m) is given by Equation~\ref{eq:sizing}.
+\cite{Kavanaugh2014} propose a sizing method where the total borehole length $L$~(m) is given by Equation~\ref{eq:geo_sizing}.
 
 \begin{align}
     \label{eq:geo_sizing}
@@ -238,7 +234,7 @@ When enabled, the fan speed is modulated between its minimum when the entering w
 The system is disabled if the actual leaving water temperature is higher than the entering water temperature, or if it is lower than the minimum supply temperature set point.
 
 An alternative hybrid design option relies on auxiliary chillers, that can effectively contribute to lowering the heat rejection demand during the hottest months. In that case, the borefield can likely be downsized to the lowest number of boreholes $n_{Heating}$.
-An additional simulation experiment will be carried out to assess to what extent and with what control strategy such a configuration can provide compressor-less cooling capacity during an extreme week, i.e., keep the supply temperature of the loop under $16$°C during the whole week without enabling the chillers. This configuration is not exclusive from the previous one and dry coolers may be used as condenser water coolers, with a waterside economizer option to directly cool down the main loop at low ambient temperature.
+An additional simulation experiment will be carried out to assess to what extent and with what control strategy such a configuration can provide compressor-less cooling capacity during an extreme week, i.e., keep the supply temperature of the loop under $16$°C during the whole week without enabling the chillers. This configuration is not exclusive from the previous one, and dry coolers may be used as condenser water coolers, with a waterside economizer option to directly cool down the main loop at low ambient temperature.
 
 \begin{figure*}[!htbp]
     \centering
@@ -313,7 +309,7 @@ For that reason, our analysis is only based on the number of degree-hours above 
 \subsection{Results} \label{sec:results}
 
 This section first presents the analysis of the indoor environmental quality (IEQ) that can be achieved during the extreme week considering the district loop target temperature range of $[9, 16]$~(C) and the sensitivity to various sizing parameters of the building HVAC system.
-We will then discuss the characteristics and sizing of the central components of the DHC system that are required to respect that temperature range.
+We will then discuss the characteristics and sizing of the central components of the DHC system that are required to maintain the supply temperature within that temperature range.
 
 
 \subsubsection{Indoor Environmental Quality in a Compressor-Less Operating Mode} \label{sec:ieq}
@@ -322,10 +318,11 @@ Disabling the chillers and relying only on WSE cooling during the extreme week w
 The evolution of the operative temperature is provided Figure~\ref{fig:tope}, together with the power drawn by the fans, pumps and chillers, and the total cooling heat flow rate. The case with WSE cooling is compared with the base case with chiller cooling.
 The WSE mode yields a reduction of about $60\%$ in the total power at the peak, while still meeting $70\%$ of the load.
 This is achieved despite a high chiller $COP$ close to $7$ in the base case.
-The significant fan power results from sizing the system air flow rate based on the peak loads and a design coil leaving air temperature of $13$°C, with a diversity factor of $70\%$. This leads to a design air flow rate of $44478$~m3/h, and an air change rate ranging from $3$ to $9$~h-1 among the conditioned zones. Downsizing the system air flow rate by means of a lower design coil leaving air temperature would be beneficial to the fan power but detrimental to the IEQ in the WSE cooling mode.
+The significant fan power results from sizing the system air flow rate based on the peak loads and a design coil leaving air temperature of $13$°C, with a diversity factor of $70\%$. This leads to a design air flow rate of $44478$~m3/h, and an air change rate ranging from $3$ to $9$~h-1 among the conditioned zones. Downsizing the system air flow rate by means of a lower design coil leaving air temperature would be beneficial to the fan power but detrimental to the IEQ in the WSE cooling mode, where the cooling coil valve is fully open and the supply air temperature is free-floating.
 During the operating hours the average building HVAC system $COP$ (accounting for the AHU fan, the primary and secondary pumps, and the chiller) is equal to $5.2$ in the case of chiller cooling and $7.3$ in the case of WSE cooling, i.e., an increase of $40\%$ in the system efficiency due the WSE mode.
 
-The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} for each of the $15$ thermal zones. Without oversizing the cooling coil (i.e., with a sizing coefficient of $1.0$), the number of degree-hours is below $6$~K.h in the limiting zone during the limiting day%
+The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} for each of the $15$ thermal zones.
+Without oversizing the cooling coil (i.e., with a sizing coefficient of $1.0$), the number of degree-hours is below $6$~K.h in the limiting zone during the limiting day%
 \footnote{%
 \cite{Mathew2021} suggests a limit of $34$~K.h per day to decide that a zone cannot be occupied and to start incrementing the thermal OHL count.}, while the median value remains equal to zero, meaning that a tolerable IEQ can be achieved in a low-power mode in the majority of the thermal zones.
 
@@ -340,7 +337,7 @@ The number of degree-hours above tolerable is presented Figure~\ref{fig:coil} fo
 \paragraph{Cooling Coil Sizing} \label{par:cooling_coil}
 
 The sensitivity to the cooling coil capacity is analyzed by applying a multiplier factor to the design $UA$-value of the coil model,  considering that the design pressure drop is increased by the same factor for both the air and the chilled water side. The CHW pump design flow rate is considered identical in all cases.
-Our premise is that the integration into an existing system can be made without modifying the CHW distribution pump, provided that sizing margins are available on the pump head (which is typically the case).
+Our premise is that the integration into an existing system can be made without modifying the CHW distribution pump, provided that sizing margins are available on the pump operating point at maximum speed (which is typically the case).
 
 As illustrated in Figure~\ref{fig:coil}, oversizing the coil by a factor $1.6$ reduces the number of degree-hours above tolerable by a factor $2$ for the limiting zone, while the average power during the operating hours is increased by about $30\%$ and the total cooling heat flow rate is increased by less than $15\%$, which corresponds to a diminution in the system $COP$ from $7.3$ to $6.4$.
 
@@ -353,75 +350,91 @@ As illustrated in Figure~\ref{fig:coil}, oversizing the coil by a factor $1.6$ r
 
 \paragraph{Fan Sizing} \label{par:fan}
 
-The sensitivity to the fan sizing is analyzed by applying a multiplier factor $k$ to the nominal volume flow rate and $k^2$ to the nominal head of the fan. The flow resistance of the duct network and all other AHU components is  considered  identical  in  all  cases.
+The sensitivity to the fan sizing is analyzed by applying a multiplier factor $k$ to the nominal volume flow rate and $k^2$ to the nominal head of the fan. The flow resistance of the duct network and all other AHU components is considered identical in all cases.
 Our premise is that the integration into an existing system can be made by only changing the AHU fan.
 
 As illustrated in Figure~\ref{fig:fan}, oversizing the fan has a limited impact on the number of degree-hours above tolerable. Beyond a $20\%$ oversizing factor, the impact is even detrimental. This is because the power drawn by the fan motor scales cubic with the sizing factor, and so does the dissipated heat flow rate. This leads to an increase in the supply air temperature that is no more compensated by the increased air flow rate.
 Comparing the base case (sizing factor equal to $1.0$) with the optimum case (sizing factor equal to $1.2$), the average power during the operating hours is increased by about $60\%$ while the total cooling heat flow rate is increased by less than $10\%$, which corresponds to a diminution in the system $COP$ from $7.3$ to $4.8$. The latter value indicates that the WSE cooling mode is then less efficient than the chiller cooling mode.
 
-Comment on the load diversity factor of $70\%$ used for sizing:
-$1.4 * 0.7 \approx 1$ and indeed all terminal boxes reach a coincident $100\%$ demand in WSE cooling mode.
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/FanSizing.pdf}
+    \caption{Sensitivity to the fan sizing -- Daily box plots of degree-hours above tolerable as distributed over all thermal zones.}
+    \label{fig:fan}
+\end{figure*}
 
-Add results fixed design pressure drops (oversizing of the whole air system, namely the coil face area and the ducts).
-
+The conclusion is entirely different when oversizing the whole air system, with the duct network oversized to keep the same pressure drop per length at design flow rate. This if illustrated Figure~\ref{fig:system} where the sizing coefficient of $1.4$ corresponds to no load diversity accounted for when sizing the system (as opposed to a $70\%$ load diversity factor used in the base case). The degree hours above tolerable get canceled out for all thermal zones, with an average system $COP$ only reduced from $7.3$ to $6.8$.
 
 \begin{figure*}[!htbp]
-\centering
-\includegraphics[width=.7\linewidth]{../python_scripts/figures/FanSizing.pdf}
-\caption{Sensitivity to the fan sizing -- Daily box plots of degree-hours above tolerable as distributed over all thermal zones.}
-\label{fig:fan}
+    \centering
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/SystemSizing.pdf}
+    \caption{Sensitivity to the air system sizing -- Daily box plots of degree-hours above tolerable as distributed over all thermal zones.}
+    \label{fig:system}
 \end{figure*}
 
 
-\subsubsection{Central Components} \label{sec:dhc}
+
+
+
+\subsubsection{DHC Central Components} \label{sec:dhc}
 
 \paragraph{Geothermal Borefield and Dry Coolers}
 
 The sensitivity to the size of the borefield is illustrated Figure~\ref{fig:geo_sizing_tsup} and Figure~\ref{fig:geo_sizing_energy} by plotting the supply temperature and the transferred energy as computed by simulating five years of operation for different numbers of boreholes within the range given by Equation~\ref{eq:geo_sizing_results}.
 Figure~\ref{fig:geo_sizing_energy} shows that the energy transferred to the ground is closed to balanced on an annual basis and that the five year horizon can be used to analyze the operation.
-We verify that the initial sizing based on Equation~\ref{eq:geo_sizing} is valid for that hybrid system with auxiliary dry coolers, and that the maximum number of boreholes is indeed required to maintain the supply temperature below $16$°C%
-\footnote{%
-The temperature variations below the limit of $9$°C are due to the timers used in the control sequence for the dry coolers and could be eliminated is needed.}.
+We verify that the initial sizing based on Equation~\ref{eq:geo_sizing} is valid for that hybrid system with auxiliary dry coolers, and that the maximum number of boreholes is indeed required to maintain the supply temperature below $16$°C.
 The corresponding sizing ratio is $75$~m/kW (total length of boreholes divided by the system capacity) which lies far outside the range of $[10, 30]$~(m/kW) observed on conventional systems \citep{Kavanaugh2014}. This is explained by the low temperature approach of about $6$~K that is required here for the ground heat exchanger, as opposed to the range of $[10, 25]$~(C) generally used for conventional geothermal systems without any requirement for compressor-less cooling.
-This yields a first cost of the geothermal system that is likely prohibitive and rather calls for exploring a hybrid design with the minimum number of boreholes and auxiliary chillers.
+This yields a first cost of the geothermal system that is likely prohibitive and calls for exploring a hybrid design with a lower number of boreholes and auxiliary chillers.
+Figure~\ref{fig:geo_sizing_energy} also shows transient temperature variations below the limit of $9$°C. Those are due to the timers used in the control sequence for the dry coolers and could be eliminated, although this does not impact our analysis. This is illustrated Figure~\ref{fig:coolers_tsup} where the temperature is provided at the borefield outlet and at the cooling plant outlet (district supply) for the case with the maximum number of boreholes. The dry coolers are effectively cooling the loop in the shoulder seasons, but also partly in the cold season where the system is heating dominated (see Figure~\ref{fig:loads}) and would benefit from a higher supply temperature, which could be achieved by an integration of the dry coolers upstream the borefield.
 
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizing.pdf}
+    \caption{Sensitivity to the geothermal borefield sizing, case with central dry coolers - District water supply temperature.}
+    \label{fig:geo_sizing_tsup}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizingE.pdf}
+    \caption{Sensitivity to the geothermal borefield sizing, case with central dry coolers - Energy transferred from the district loop through the borefield ($ESto.y$) and through the dry coolers ($EPla.y$).}
+    \label{fig:geo_sizing_energy}
+\end{figure*}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoBestCaseT.pdf}
+    \caption{Illustration of the dry coolers operation on the case with 1450 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
+    \label{fig:coolers_tsup}
+\end{figure*}
 
 \paragraph{Geothermal Borefield and Central Chiller Plant}
 
-considering that an auxiliary cooling system is still needed to balance the load on an annual basis.
-In the base case, dry coolers (capacity? approach?) are used for that intent. They are mainly operated in the shoulder seasons as illustrated Figure~\ref{fig:coolers_tsup}.
+Using air cooled chillers as the auxiliary cooling system instead of the dry coolers gives the supply temperature trajectory shown in Figure~\ref{fig:chillers_tsup}, focusing on a single year of operation close to the equilibrium state of the system.
+In this configuration, both the central chillers and the distributed chillers are disabled in WSE cooling mode so that the cooling function only relies on the ground heat exchanger during the extreme week.
+In chiller cooling mode, the central plant is controlled to track the maximum supply temperature set point.
 
-Discuss central chillers
+We can observe that the central chillers do not help reduce the number of installed boreholes and  that the maximum size of the borefield is still required to maintain the supply temperature set point during the extreme week. The fact that the supply temperature is higher on an average than in the case with the dry coolers shows that the chiller plant is less capable of precooling the surrounding ground when simply controlled based on the supply temperature set point, and that an advanced control strategy would be needed to better leverage the cooling capacity of the plant.
 
+As an simple control alternative, the temperature set point of the plant is reduced to $11$°C in the configuration with the smallest borefield size, i.e., the highest temperature approach for the ground heat exchanger. This configuration is close to meet the temperature requirement during the extreme, however, it exhibits a significant temperature drop below the minimum set point.
+This behavior is not the effect of a control transient as in the case with the dry coolers, but rather the consequence of a lowest amount of heat stored in the ground over the cooling dominated period---part of it being released into the atmosphere by the central cooling plant. This reveals the need for additional seasonal heat storage capacity.
 
-The contribution of the dry coolers is illustrated Figure~\ref{fig:coolers_tsup}
-
-
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizing.pdf}
-\caption{Sensitivity to the geothermal borefield sizing - District water supply temperature.}
-\label{fig:geo_sizing_tsup}
-\end{figure*}
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizingE.pdf}
-\caption{Sensitivity to the geothermal borefield sizing - Energy transferred from the district loop through the borefield ($ESto.y$) and through the dry coolers ($EPla.y$).}
-\label{fig:geo_sizing_energy}
-\end{figure*}
 
 
 \begin{figure*}[!htbp]
-\centering
-\includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoBestCaseT.pdf}
-\caption{Illustration of the dry coolers operation on the case with 1450 boreholes - District water supply temperature ($TDisWatSup.T$) and borefield leaving temperature ($TDisWatBorLvg.T$).}
-\label{fig:coolers_tsup}
+    \centering
+    \includegraphics[width=.7\linewidth]{../python_scripts/figures/GeoSizing_chillers.pdf}
+    \caption{Sensitivity to the geothermal borefield sizing, case with central chillers - District water supply temperature.}
+    \label{fig:chillers_tsup}
 \end{figure*}
 
 
-\subsubsection{Impact on Energy Use} \label{sec:energy}
+
+
+\subsubsection{Power and Energy Analysis} \label{sec:power_energy}
+
+
 
 Waterside Economizer
 
@@ -443,7 +456,7 @@ Future studies should investigate the benefits of source-side to source-side con
 
 This work was supported by the Laboratory Directed Research and Development Program of Lawrence Berkeley National Laboratory under U.S. Department of Energy Contract No. DE-AC02-05CH11231.
 
-Most of the numerical models that this work relies on were developed in projects supported by the Advanced Manufacturing Office and the Building Technologies Office of the U.S. Department of Energy, under the same contract number.
+Most of the component models that this work relies on were developed in projects supported by the Advanced Manufacturing Office and the Building Technologies Office of the U.S. Department of Energy, under the same contract number.
 
 
 \pagebreak
@@ -459,7 +472,7 @@ The first effect was certainly expected using a pressure-driven model of the hyd
 The reason why the ETSs close to the pump often operate at a higher flow rate than design is related to the control based on the heat or cold rejection demand (see §\ref{sec:ets}) that first opens the primary control valve (up to its full opening), then resets down the CHW supply temperature. So the ETSs that are exposed to a higher pressure drop than the design value use the excess flow rate instead of resetting the supply temperature to increase the temperature difference (or rate of heat transfer) with the primary side of the heat exchanger.
 
 Regarding the numerical issues that were encountered we must acknowledge the challenges that remain when modeling closed loop hydronic systems (typically with feedback of a remote differential pressure sensor or of the valve positions to control the main distribution pump).
-There has been extensive work that was already carried out to formulate actuator models limiting the size of the DAE systems and exhibiting the proper smoothness required by Newton solvers \cite{Jorissen2015}.
+There has been extensive work that was already carried out to formulate actuator models limiting the size of the DAE systems and exhibiting the proper smoothness required by Newton solvers \citep{Jorissen2015}.
 Namely, each actuator model of the Modelica Buildings Library offers the option to solve either for the mass flow rate or for the pressure drop, which breaks the algebraic loop created when two actuators are in parallel or in series, respectively. In addition they provide the option for an additional state variable (mimicking the actuator motion delay) which is another means to avoid an algebraic loop.
 In our case, those two modeling features did not solve the convergence issues.
 

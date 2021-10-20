@@ -13,6 +13,7 @@ model ParallelSpawnFreeFloating
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true));
+
   /*
   Differential pressure set point takes valve + HX nominal pressure drop,
   assuming 50% authority for the control valve.
@@ -44,10 +45,10 @@ model ParallelSpawnFreeFloating
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant masFloBorFie(final k=
         pumSto.m_flow_nominal) "Borefield nominal flow rate"
-    annotation (Placement(transformation(extent={{-260,-50},{-240,-30}})));
+    annotation (Placement(transformation(extent={{-310,-190},{-290,-170}})));
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
-    annotation (Placement(transformation(extent={{-210,-50},{-190,-30}})));
+    annotation (Placement(transformation(extent={{-260,-150},{-240,-170}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(final k=0)
     annotation (Placement(transformation(extent={{160,0},{180,20}})));
 equation
@@ -61,12 +62,14 @@ equation
     annotation (Line(points={{20,140},{50,140}}, color={0,0,127}));
   connect(bypEnd.port_b, dis.port_aDisRet) annotation (Line(points={{70,140},{80,
           140},{80,134},{20,134}}, color={0,127,255}));
-  connect(mDisWat_flow.m_flow, minFlo.u2) annotation (Line(points={{0,-109},{0,-106},
-          {-220,-106},{-220,-46},{-212,-46}}, color={0,0,127}));
-  connect(masFloBorFie.y, minFlo.u1) annotation (Line(points={{-238,-40},{-220,-40},
-          {-220,-34},{-212,-34}}, color={0,0,127}));
-  connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-188,-40},{-200,
-          -40},{-200,-132}},color={0,0,127}));
+  connect(mDisWat_flow.m_flow, minFlo.u2) annotation (Line(points={{0,-109},{0,-104},
+          {-280,-104},{-280,-154},{-262,-154}},
+                                              color={0,0,127}));
+  connect(masFloBorFie.y, minFlo.u1) annotation (Line(points={{-288,-180},{-262,
+          -180},{-262,-166}},     color={0,0,127}));
+  connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-238,-160},{-200,
+          -160},{-200,-132}},
+                            color={0,0,127}));
   connect(zer.y, EPla.u) annotation (Line(points={{182,10},{192,10},{192,10},{
           198,10}}, color={0,0,127}));
   annotation (

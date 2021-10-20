@@ -29,8 +29,9 @@ partial model PartialParallelSpawn
         for i in 1:nBui}) "Design data"
     annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
-  replaceable ThermalStorages.BoreField_700_180 borFie(
-    redeclare final package Medium = Medium)
+  replaceable ThermalStorages.BoreField_700_180 borFie
+    constrainedby ThermalStorages.BoreField_700_180(
+      redeclare final package Medium = Medium)
     "Bore field" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
@@ -126,7 +127,8 @@ partial model PartialParallelSpawn
   Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatBorLvg(
     redeclare final package Medium = Medium,
     final m_flow_nominal=datDes.mPumDis_flow_nominal)
-    "District water borefield leaving temperature"                                                   annotation (Placement(
+    "District water borefield leaving temperature"
+    annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
@@ -147,7 +149,8 @@ partial model PartialParallelSpawn
     annotation (Placement(transformation(extent={{200,190},{220,210}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum EPum(nin=3) "Total pump electric energy"
     annotation (Placement(transformation(extent={{260,110},{280,130}})));
-  Buildings.Controls.OBC.CDL.Continuous.MultiSum PChi(final nin=nBui) "Chiller power"
+  Buildings.Controls.OBC.CDL.Continuous.MultiSum PChi(
+    nin=nBui) "Chiller power"
     annotation (Placement(transformation(extent={{120,150},{140,170}})));
   Modelica.Blocks.Continuous.Integrator EChi(initType=Modelica.Blocks.Types.Init.InitialState)
     "Chiller electric energy" annotation (Placement(transformation(extent={{200,150},{220,170}})));

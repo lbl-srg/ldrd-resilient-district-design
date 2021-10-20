@@ -1,6 +1,6 @@
 within LDRD.Examples;
 model ParallelSpawnCoolingTowers
-  "Parallel connection with central cooling towers"
+  "Parallel connection with central cooling towers and Spawn office building"
   extends BaseClasses.PartialParallelSpawn(
     final facMulTim={1, 10},
     final facMulSpa=10,
@@ -50,8 +50,8 @@ model ParallelSpawnCoolingTowers
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
     annotation (Placement(transformation(extent={{-280,-140},{-260,-160}})));
-  CentralPlants.Coolers cooTow(redeclare final package Medium = Medium, final
-      m_flow_nominal=datDes.mPla_flow_nominal) "Cooling towers" annotation (
+  CentralPlants.Coolers plaCoo(redeclare final package Medium = Medium, final
+      m_flow_nominal=datDes.mPla_flow_nominal) "Cooling plant"  annotation (
       Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
@@ -85,30 +85,30 @@ equation
   connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-258,-150},{
           -200,-150},{-200,-132}},
                             color={0,0,127}));
-  connect(TDisWatBorLvg.T, cooTow.TWatEnt) annotation (Line(points={{-91,-40},{
+  connect(TDisWatBorLvg.T,plaCoo. TWatEnt) annotation (Line(points={{-91,-40},{
           -173.333,-40},{-173.333,-22.6667}},
                                      color={0,0,127}));
-  connect(conPla.port_bCon, cooTow.port_aSerAmb) annotation (Line(points={{-90,-10},
+  connect(conPla.port_bCon,plaCoo. port_aSerAmb) annotation (Line(points={{-90,-10},
           {-110,-10},{-110,-30},{-162.667,-30},{-162.667,-20}}, color={0,127,255}));
-  connect(cooTow.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
+  connect(plaCoo.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
           -162.667,20},{-162.667,26},{-162.667,30},{-110,30},{-110,-4},{-90,-4}},
                                                                  color={0,127,255}));
-  connect(TDisWatSup.T, cooTow.TWatLvg) annotation (Line(points={{-91,20},{-100,
+  connect(TDisWatSup.T,plaCoo. TWatLvg) annotation (Line(points={{-91,20},{-100,
           20},{-100,-38},{-170,-38},{-170,-22.6667},{-169.333,-22.6667}}, color=
          {0,0,127}));
-  connect(cooTow.weaBus, buiSpa.weaBus) annotation (Line(
+  connect(plaCoo.weaBus, buiSpa.weaBus) annotation (Line(
       points={{-177.733,0.0666667},{-200,0.0666667},{-200,200},{50,200},{50,170}},
       color={255,204,51},
       thickness=0.5));
 
-  connect(mDisWat_flow.m_flow, cooTow.m_flow) annotation (Line(points={{0,-109},
+  connect(mDisWat_flow.m_flow,plaCoo. m_flow) annotation (Line(points={{0,-109},
           {0,-104},{-178,-104},{-178,-22.6667},{-177.333,-22.6667}},
                       color={0,0,127}));
   connect(conSto.dH_flow, ESto.u) annotation (Line(points={{-87,-78},{180,-78},
           {180,-60},{198,-60}}, color={215,215,215}));
-  connect(cooTow.PPum, EPumPla.u) annotation (Line(points={{-170.667,22.6667},{
+  connect(plaCoo.PPum, EPumPla.u) annotation (Line(points={{-170.667,22.6667},{
           -170.667,60},{198,60}}, color={215,215,215}));
-  connect(cooTow.PFan, EFanPla.u) annotation (Line(points={{-173.333,22.6667},{
+  connect(plaCoo.PFan, EFanPla.u) annotation (Line(points={{-173.333,22.6667},{
           -173.333,100},{198,100}}, color={215,215,215}));
   connect(EPumPla.y, EPum.u[4]) annotation (Line(points={{221,60},{240,60},{240,
           120},{258,120}}, color={0,0,127}));
