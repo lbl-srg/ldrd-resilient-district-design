@@ -10,7 +10,6 @@ The sensitivity of the overall system performance in the resilience mode is inve
 Furthermore, the positive externality of a design optimized for resilience is evaluated under standard operating conditions to illustrate to what extent the increased first cost at the building level is balanced by a lower average heat rejection from the compressors that yields sizing margins of the central systems, or how the design for low-power resilient conditioning also contributes to reducing the HVAC energy demand over the year at the district scale.
 
 
-
 \section{Introduction} \label{sec:introduction}
 
 The system under investigation is a district heating and cooling (DHC) system for cold networks%
@@ -24,57 +23,49 @@ The main network distributes water near ground temperature, typically between $9
 \cite{Buffa2019} shows a growing trend in the adoption of such novel DHC systems, with about $40$ systems in operation in Europe as of 2018.
 Additionally, \cite{Afpg2020} inventories $16$ systems in France as of 2020.
 
-The potential benefits of such design are indeed numerous.
+The potential benefits of that kind of design are numerous.
 The compressor lift is optimized on both sides. On the load side, the supply temperature is driven by the reset logic of each building HVAC system, as opposed to the limiting set point among all connected buildings in case of a central plant. On the source side, the heat rejected by cooling dominated buildings contributes to increasing the loop temperature level, which is beneficial to heating dominated buildings, and vice versa.
-Heat recovery is possible over the whole network, not only between buildings as described before, but because of the ultra-low temperature network, virtually with any source of low-quality heat, such as condenser water used from process cooling or even sewage water as low as 15°C.
+Heat recovery is possible over the whole network, not only between buildings as described before, but because of the ultra-low temperature network, virtually with any source of low-quality heat, such as condenser water from process cooling or even sewage water as low as 15°C.
 Compressor-less cooling is achievable at a temperature level compatible with radiant cooling systems.
-The resilience of the connected buildings is improved in case of heat waves, as well chiller failure.
+The resilience of the connected buildings is improved in case of heat waves, as well as chiller failure.
 The low temperature in the main network allows using uninsulated pipes made of polymeric materials, reducing first costs and potentially increasing the heat storage capacity through the thermal coupling with the ground.
 
 Among the main drawbacks, the following may be mentioned.
 The design and operation of the energy transfer stations is more critical, and strongly impacted by the network topology \citep{Wetter2019}. For instance, hydronic unbalances are likely to yield a chiller trip out of high condenser pressure.
 The maintenance costs may increase due to the distributed architecture, although servicing small screw chillers typically requires less specialized skills than large capacity chillers in central plants.
 
-Several articles \citep{Wetter2019}, \citep{Sommer2020} investigate the efficiency of those systems in configurations where the aggregated load profile is heating dominated and heat is harvested on a low temperature source.
-However, no articles could be found that explore the compressor-less cooling capabilities---which are often presented as a distinguishing feature of those systems---in cooling dominated load profiles---which are the most common cases in mixed-use developments or campus applications.
+Several articles \citep{Wetter2019}, \citep{Sommer2020} investigate the efficiency of such systems in configurations where the aggregated load profile is heating dominated and heat is harvested on a low temperature source, or in configurations where auxiliary chillers are available to provide cooling \citep{Gabrielli2020}.
+However, no article could be found that explore the compressor-less cooling potential---which is often presented as a distinguishing feature though---in cooling dominated load profiles---which are the most common cases in mixed-use developments or campus applications.
 We propose to address that matter and understand its implications on the main components of the system, in terms of equipment type, hydronic layout, controls and sizing.
 
-We also propose a focus on the design principles of the energy transfer station (ETS).
+We also propose to focus on the design principles of the energy transfer station (ETS).
 Indeed, with distributed architectures, the ETS becomes one of the critical components of the system.
 However, only a couple articles \citep{Buffa2020}, \citep{Wetter2019} address the corresponding design challenges, and none of them provides insight on a compressor-less cooling mode.
 
-Regarding the design of the geothermal system, our goal is to illustrate to what extent conventional sizing methods used for ground-source heat pump systems \citep{Kavanaugh2014} can inform the design of a large-scale, hybrid and distributed system, where those methods fall short, and where a model-based design becomes necessary for equipment selection and sizing.
+Regarding the design of the geothermal system, our goal is to illustrate to what extent conventional sizing methods used for ground-source heat pump systems \citep{Kavanaugh2014} can inform the design of a large-scale, hybrid and distributed system; where those methods fall short, and where a model-based design becomes necessary for equipment selection and sizing.
 
-Eventually, to help inform the design of a resilient urban energy infrastructure, we propose to investigate how the technology can be integrated with existing all-air systems, which are by far the most widely used in the US and the least favorable for high-temperature cooling (as opposed to radiant cooling systems).
+Eventually, to help devise resilient urban energy infrastructures, we propose to investigate how the technology can be integrated with existing all-air systems, which are by far the most widely used in the US and the least favorable for high-temperature cooling (as opposed to radiant cooling systems).
 We thus aim to question how novel DHC technologies can be deployed to existing buildings and if compressor-less cooling opportunities are accessible to typical air-based systems.
 
 The rest of this paper is organized as follows.
-- Modeling Framework
-- System Characteristics and Operating Principles
-- Simulation Experiment
-- Results and Discussion
+In Section~\ref{sec:modeling}, a brief description of the modeling framework is provided, while additional details regarding the modeling principles and challenges are available in \ref{sec:balancing}.
+In Section~\ref{sec:components}, the main components of the DHC system are described, focusing on the equipment characteristics, sizing and operating principles.
+Section~\ref{sec:application} eventually proposes an application case focused on a resilience mode at low power during a heat wave period. The simulation experiment is described in this section, and the main results are presented and discussed.
 
 
 \section{Modeling Framework} \label{sec:modeling}
 
-All the numerical models used in this analysis are developed with the Modelica language \citep{MattssonElmqvist1997:1}.
-The large majority of them are distributed within the Modelica Buildings Library (MBL) version 8.0.0, an open-source model library that is based on the Modelica IBPSA Library \citep{Wetter2015} developed in IBPSA Project 1 \citep{Wetter2019b}.
-The use of that modeling framework can be readily motivated when enumerating the variables of interest for our analysis, namely the chiller, pump and fan power, that all depend strongly on the control principles such as resetting the chilled water (CHW) supply temperature or the duct static pressure, modulating the pump speed, with feedback from on a remote differential pressure sensor, or a control valve position, etc.
+All the numerical models used in this analysis are developed with the Modelica language \citep{MattssonElmqvist1997:1}, with the exception of the building envelope and load model that relies on EnergyPlus \citep{Crawley2000}.
+The large majority of the models are distributed within the Modelica Buildings Library (MBL) version 8.0.0, an open-source library that is based on the Modelica IBPSA Library \citep{Wetter2015} developed in IBPSA Project 1 \citep{Wetter2019b}.
+The use of that modeling framework can be readily motivated when enumerating the variables of interest for our analysis, namely the chiller, pump and fan power, that all depend strongly on the control principles such as resetting the chilled water (CHW) supply temperature or the duct static pressure with the feedback of an actuator position, or modulating the pump speed with the feedback from on a remote differential pressure sensor.
 Two built-in features of the MBL appear critical for that kind of system analysis: the ability
-to model controls in a physically realistic and efficient way, and the pressure-driven fluid flow
-modeling.
+to model controls in a physically realistic and efficient way \citep{Wetter2021}, and the pressure-driven fluid flow modeling \citep{Wetter2011b}.
 
-In addition, for the purpose of the indoor comfort analysis, we need access to a building room model that can be easily parameterized and coupled to a detailed HVAC system model, and that enables computing both the air and the indoor surfaces temperature.
-
-
-The MBL comes with the Spawn of EnergyPlus components \citep{Wetter2020} that support seamless coupling of EnergyPlus envelope and access to prototypical buildings and standard load profiles
+In addition, for the purpose of the indoor comfort analysis, we need access to a building room model which enables computing both the air and the indoor surfaces temperature, which can be coupled to a detailed HVAC system model, and ideally which can be easily parameterized.
+The MBL comes with the Spawn of EnergyPlus components \citep{Wetter2020} that support seamless coupling between Modelica and EnergyPlus using the Functional Mockup Interface (FMI) standard \citep{Blochwitz2011}. This greatly facilitates the modeling task by providing access to a large stock of prototypical building models and standard load profiles already available for EnergyPlus.
 
 
-Flexible framework with replaceable components that allow switching easily the building load models and testing system and control variants.
-
-Reference URBANopt paper
-
-\section{Description of the Main Components of the DHC System} \label{sec:dhc}
+\section{Description of the Main Components of the DHC System} \label{sec:components}
 
 \subsection{Energy Transfer Station} \label{sec:ets}
 
@@ -373,9 +364,6 @@ The conclusion is entirely different when oversizing the whole air system, with 
 \end{figure*}
 
 
-
-
-
 \subsubsection{DHC Central Components} \label{sec:dhc}
 
 \paragraph{Geothermal Borefield and Dry Coolers}
@@ -411,14 +399,16 @@ Figure~\ref{fig:geo_sizing_energy} also shows transient temperature variations b
 
 \paragraph{Geothermal Borefield and Central Chiller Plant}
 
-Using air cooled chillers as the auxiliary cooling system instead of the dry coolers gives the supply temperature trajectory shown in Figure~\ref{fig:chillers_tsup}, focusing on a single year of operation close to the equilibrium state of the system.
+Using air cooled chillers as the auxiliary cooling system instead of the dry coolers gives the supply temperature trajectory shown in Figure~\ref{fig:chillers_tsup}, focusing on the fifth year of simulated operation.
 In this configuration, both the central chillers and the distributed chillers are disabled in WSE cooling mode so that the cooling function only relies on the ground heat exchanger during the extreme week.
-In chiller cooling mode, the central plant is controlled to track the maximum supply temperature set point.
+In chiller cooling mode, the central plant is first controlled to track the maximum supply temperature set point. The variants shown in dotted lines use different supply temperature set points.
 
-We can observe that the central chillers do not help reduce the number of installed boreholes and  that the maximum size of the borefield is still required to maintain the supply temperature set point during the extreme week. The fact that the supply temperature is higher on an average than in the case with the dry coolers shows that the chiller plant is less capable of precooling the surrounding ground when simply controlled based on the supply temperature set point, and that an advanced control strategy would be needed to better leverage the cooling capacity of the plant.
+When controlling for the maximum supply temperature set point, we can observe that the central chillers do not help reduce the number of installed boreholes and  that the maximum size of the borefield is still required to maintain the supply temperature set point during the extreme week. The fact that the supply temperature is higher on an average than in the case with the dry coolers shows that the chiller plant is less capable of precooling the surrounding ground, and that an advanced control strategy would be needed to better leverage the cooling capacity of the plant.
 
-As an simple control alternative, the temperature set point of the plant is reduced to $11$°C in the configuration with the smallest borefield size, i.e., the highest temperature approach for the ground heat exchanger. This configuration is close to meet the temperature requirement during the extreme, however, it exhibits a significant temperature drop below the minimum set point.
-This behavior is not the effect of a control transient as in the case with the dry coolers, but rather the consequence of a lowest amount of heat stored in the ground over the cooling dominated period---part of it being released into the atmosphere by the central cooling plant. This reveals the need for additional seasonal heat storage capacity.
+As an simple control alternative, the temperature set point of the plant is first reduced to $11$°C in the configuration with the smallest borefield size ($700$), i.e., the highest temperature approach for the ground heat exchanger. This configuration is close to meet the temperature requirement during the extreme week, however, it exhibits a significant temperature drop below the minimum set point.
+This behavior is not the effect of a control transient as in the case with the dry coolers, but rather the consequence of a lowest amount of heat stored in the ground over the period where heat rejection dominates---part of it being released into the atmosphere by the central cooling plant. This reveals the need for additional seasonal heat storage capacity.
+The last configuration tested uses $950$ boreholes and a temperature set point of the plant set to $12$°C and meets the temperature range requirement.
+The ground heat exchanger is here sized with about $50$~m/kW of total borehole length per cooling capacity.
 
 
 
@@ -432,22 +422,51 @@ This behavior is not the effect of a control transient as in the case with the d
 
 
 
-\subsubsection{Power and Energy Analysis} \label{sec:power_energy}
+\subsubsection{System Performance} \label{sec:performance}
+
+Table~\ref{tab:performance} provides the peak and mean power drawn for all the DHC and HVAC components, as well as the cooling heat flow rate distributed to the buildings and the overall coefficient of performance.
+Three configurations are compared.
 
 
+\begin{table}[!htbp]
+    \caption{Total power ($P$), cooling heat flow rate ($\dot{Q}$) and coefficient of performance ($COP$ for all DHC and HVAC components), during the resilience week operating hours, and over a whole year of operation.}\label{tab:performance}
+    \centering
+    \begin{tabular}{p{4.5cm}ccccc}
+        \toprule
+        \multirow{3}{*}{Configuration} & \multicolumn{4}{c}{Resilience week} & Whole year \\
+        \cmidrule(l{5pt}r{5pt}){2-5} \cmidrule(l{5pt}r{5pt}){6-6}
+        & $P_{Max}$ (kW) & $P_{Mean}$ (kW) & $\dot{Q}_{Max}$ & $COP_{Mean}$ (-) & $COP_{Mean}$ (-)\\
+        \midrule
+        $700$ boreholes, dry coolers, without WSE & 1422 & 1161 & 5785 & 4.2 & 3.4 \\
+        $1450$ boreholes, dry coolers, with WSE & 726 & 617 & 4263 & 5.8 & 3.7 \\
+        $950$ boreholes, central chillers, with WSE & 730 & 630 & 4084 & 5.5 & 3.5 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-Waterside Economizer
 
+\begin{figure}[!htbp]
+    \centering
 
+    \subfloat[$700$ boreholes, dry coolers, without WSE]{\includegraphics[width=.7\linewidth]{../python_scripts/figures/electricity_700.pdf}}
+    \label{fig:electricity.700}
 
+    \centering
+    \subfloat[$1450$ boreholes, dry coolers, with WSE]{\includegraphics[width=.7\linewidth]{../python_scripts/figures/electricity_1450.pdf}}
+    \label{fig:electricity.1450}
 
+    \centering
+    \subfloat[$950$ boreholes, central chillers, with WSE]{\includegraphics[width=.7\linewidth]{../python_scripts/figures/electricity_950.pdf}}
+    \label{fig:electricity.950}
 
+    \caption{Electricity consumption per month}
+    \label{fig:electricity}
+\end{figure}
 
 
 \section{Conclusion} \label{sec:concl}
 
-We considered an all-air system as it is the most widely used in the US and the least favorable for high-temperature cooling (as opposed to radiant cooling systems for instance).
-This help demonstrate how novel DHC technologies can be deployed to existing buildings and that compressor-less cooling opportunities are accessible to typical air-based systems, providing proper sizing adjustments.
+
 
 Future studies should investigate the benefits of source-side to source-side connection (indirect heat recovery at lower lift) as opposed to direct heat recovery at higher lift.
 

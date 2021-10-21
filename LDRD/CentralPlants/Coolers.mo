@@ -141,19 +141,19 @@ equation
           extent={{-96,-62},{62,-114}},
           lineColor={28,108,200},
           horizontalAlignment=TextAlignment.Left,
-          textString="fraPFan set to 150 instead of default 1833! 
+          textString="fraPFan set to 150 instead of default 1833!
 per ASHRAE How to Design & Control Waterside Economizers
 
 Match Carrier dry coolers 09VE 1163 UI 450E9 12A1V0 with 10 K approach
 
-Dry coolers have a practical minimum approach of 8 to 14°C (15 to 25°F). 
-When a lower process-fluid outlet temperature is required, 
+Dry coolers have a practical minimum approach of 8 to 14°C (15 to 25°F).
+When a lower process-fluid outlet temperature is required,
 an air-humidification chamber can be provided to reduce the
-inlet air temperature toward the wet-bulb temperature. 
+inlet air temperature toward the wet-bulb temperature.
 A 5.6°C (10°F) approach is feasible.
 ")}),
     experiment(
-      StopTime=31622400,
+      StopTime=31536000,
       __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"));

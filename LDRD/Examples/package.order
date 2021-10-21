@@ -15,5 +15,6 @@ ParallelCoolingTowersIntegratedApproach
 ParallelSpawnChillers
 ParallelSpawnCoolingTowers
 ParallelSpawnDryCoolers
+ParallelSpawnDryCoolersNoWSE
 ParallelSpawnFreeFloating
 BaseClasses

@@ -132,7 +132,7 @@ equation
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-300,-300},
             {300,300}})),
     experiment(
-      StopTime=31622400,
+      StopTime=31536000,
       __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"));

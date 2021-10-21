@@ -204,7 +204,7 @@ partial model PartialParallel "Partial model for parallel network"
     annotation (Placement(transformation(extent={{-340,-10},{-320,10}})));
   Buildings.Controls.OBC.CDL.Logical.Sources.TimeTable uEnaChi[nBui](
     each table=[0,1; 17020800,0; 17625600,1],
-    each period=31622400.0)
+    each period=31536000.0)
     "Enable chiller compressor"
     annotation (Placement(transformation(extent={{-340,170},{-320,190}})));
 initial equation
@@ -247,13 +247,13 @@ equation
           {-12,160},{-20,160},{-20,180},{-10,180}}, color={0,127,255}));
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
-  connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{240,
-          121.333},{258,121.333}},
+  connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
+          240,121.333},{258,121.333}},
                                color={0,0,127}));
   connect(EPumDis.y,EPum. u[2]) annotation (Line(points={{221,-100},{242,-100},
           {242,120},{258,120}},color={0,0,127}));
-  connect(EPumSto.y,EPum. u[3]) annotation (Line(points={{221,-140},{244,-140},{
-          244,118.667},{258,118.667}},
+  connect(EPumSto.y,EPum. u[3]) annotation (Line(points={{221,-140},{244,-140},
+          {244,118.667},{258,118.667}},
                                    color={0,0,127}));
   connect(PChi.y, EChi.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
   connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,161},{298,161}}, color={0,0,127}));

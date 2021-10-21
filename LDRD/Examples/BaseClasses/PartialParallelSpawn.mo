@@ -208,8 +208,9 @@ partial model PartialParallelSpawn
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-120,-80})));
-  Buildings.Controls.OBC.CDL.Logical.Sources.TimeTable uEnaChi[nBui](each table=
-       [0,1; 17020800,0; 17625600,1], each period=31622400.0)
+  Buildings.Controls.OBC.CDL.Logical.Sources.TimeTable uEnaChi[nBui](
+    each table=[0,1; 17020800,0; 17625600,1],
+    each period=31536000.0)
     "Enable chiller compressor"
     annotation (Placement(transformation(extent={{-340,170},{-320,190}})));
 initial equation
