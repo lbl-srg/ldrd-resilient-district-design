@@ -7,20 +7,21 @@ model BuildingSpawnWithETS
     bui(facMul=10))
     "Building with ETS"
     annotation (Placement(transformation(extent={{-30,-30},{30,30}})));
-  Buildings.Fluid.Sources.Boundary_pT bou3(
+  Buildings.Fluid.Sources.Boundary_pT bouSerWatSup(
     redeclare final package Medium = Medium,
     p=Medium.p_default + 2*max(bui.ets.dp1Hex_nominal, bui.ets.dp1WSE_nominal),
+
     T=289.15,
-    nPorts=1)
-    "Boundary pressure condition representing the expansion vessel"
+    nPorts=1) "Boundary pressure condition representing the expansion vessel"
     annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={-70,0})));
 
-  Buildings.Fluid.Sources.Boundary_pT bou1(redeclare final package Medium = Medium, nPorts=1)
-    "Boundary pressure condition representing the expansion vessel"
-    annotation (Placement(transformation(
+  Buildings.Fluid.Sources.Boundary_pT bouSerWatRet(redeclare final package
+      Medium = Medium, nPorts=1)
+    "Boundary pressure condition representing the expansion vessel" annotation
+    (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={70,0})));
@@ -28,8 +29,10 @@ model BuildingSpawnWithETS
         17020800,0; 17625600,1], period=31536000.0) "Enable chiller compressor"
     annotation (Placement(transformation(extent={{-80,30},{-60,50}})));
 equation
-  connect(bou3.ports[1], bui.port_aSerAmb) annotation (Line(points={{-60,-4.44089e-16},{-30,0}}, color={0,127,255}));
-  connect(bui.port_bSerAmb, bou1.ports[1]) annotation (Line(points={{30,0},{60,6.66134e-16}}, color={0,127,255}));
+  connect(bouSerWatSup.ports[1], bui.port_aSerAmb)
+    annotation (Line(points={{-60,-4.44089e-16},{-30,0}}, color={0,127,255}));
+  connect(bui.port_bSerAmb, bouSerWatRet.ports[1])
+    annotation (Line(points={{30,0},{60,6.66134e-16}}, color={0,127,255}));
   connect(uEnaChi.y[1], bui.uEnaChi) annotation (Line(points={{-58,40},{-40,40},
           {-40,18},{-36,18}}, color={255,0,255}));
   annotation (
