@@ -44,7 +44,7 @@ model ParallelCoolingTowersIntegrated
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
-  CentralPlants.Coolers cooTow(
+  CentralPlants.CoolingTowers cooTow(
     redeclare final package Medium = Medium,
     redeclare LDRD.CentralPlants.Controls.CoolingTowersIntegrated con,
     final m_flow_nominal=datDes.mPla_flow_nominal) "Cooling towers" annotation (

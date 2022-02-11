@@ -4,12 +4,13 @@ model BuildingTimeSeriesWithETS "Model of a building with loads provided as time
     redeclare Buildings.Experimental.DHC.Loads.Examples.BaseClasses.BuildingTimeSeries bui(
       final filNam=filNam,
       have_hotWat=false,
+      have_fan=true,
       T_aHeaWat_nominal=THeaWatSup_nominal,
       T_bHeaWat_nominal=THeaWatSup_nominal-5,
       T_aChiWat_nominal=TChiWatSup_nominal,
       T_bChiWat_nominal=TChiWatSup_nominal+5,
-      facMulHea=10*QHea_flow_nominal/(1.7E5),
-      facMulCoo=40*QCoo_flow_nominal/(-1.5E5)),
+      facMulHea=QHea_flow_nominal / bui.facMul / 20e3,
+      facMulCoo=QCoo_flow_nominal / bui.facMul / (-15e3)),
     ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
@@ -60,11 +61,18 @@ equation
       horizontalAlignment=TextAlignment.Right),
     Documentation(info="<html>
 <p>
-This model is composed of a heat pump based energy transfer station model 
-<a href=\"modelica://Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.HeatPumpHeatExchanger\">
-Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.HeatPumpHeatExchanger</a>
-connected to a simplified building model where the space heating, cooling 
-and hot water loads are provided as time series.
+A the building level, we split the loads between facMulHea and facMulCoo 
+identical FCUs.
+We compute facMulHea and facMulCoo based on typical capacity from
+manufacturer data for 1 kg/s nominal air flow rate:
+
+~15 kW total cooling
+~20 kW heating
+
+A the ETS level, we assume that a unique ETS serves facMul identical 
+buildings.
+
+So facMul is applied to bui, not to bui+ETS.
 </p>
 </html>", revisions="<html>
 <ul>

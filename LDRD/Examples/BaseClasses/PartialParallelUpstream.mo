@@ -1,5 +1,6 @@
 within LDRD.Examples.BaseClasses;
-partial model PartialParallel "Partial model for parallel network"
+partial model PartialParallelUpstream
+  "Partial model for parallel network "
   extends Modelica.Icons.Example;
   package Medium = Buildings.Media.Water "Medium model";
 
@@ -30,7 +31,7 @@ partial model PartialParallel "Partial model for parallel network"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={-230,-80})));
+        origin={-230,10})));
   Buildings.Fluid.Movers.SpeedControlled_y  pumDis(
     redeclare final package Medium = Medium,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
@@ -59,7 +60,7 @@ partial model PartialParallel "Partial model for parallel network"
     final allowFlowReversal=allowFlowReversalSer) "Bore field pump" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
-        origin={-200,-120})));
+        origin={-200,-30})));
   Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesStandard
     conPla(
     redeclare final package Medium = Medium,
@@ -75,7 +76,7 @@ partial model PartialParallel "Partial model for parallel network"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
-        origin={-80,-10})));
+        origin={-80,-90})));
   Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.UnidirectionalParallel
     dis(
     redeclare final package Medium = Medium,
@@ -104,14 +105,14 @@ partial model PartialParallel "Partial model for parallel network"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
-        origin={-80,-90})));
+        origin={-80,0})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatSup(
     redeclare final package Medium = Medium,
     final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water supply temperature"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
-        origin={-80,20})));
+        origin={-80,70})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatRet(
     redeclare final package Medium = Medium,
     final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water return temperature"
@@ -127,7 +128,7 @@ partial model PartialParallel "Partial model for parallel network"
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
-        origin={-80,-40})));
+        origin={-80,40})));
   replaceable Loads.BuildingTimeSeriesWithETS bui[nBui]
     constrainedby Loads.BaseClasses.PartialBuildingWithETS(
       bui(final facMul=facMulTim),
@@ -147,7 +148,8 @@ partial model PartialParallel "Partial model for parallel network"
   Buildings.Controls.OBC.CDL.Continuous.MultiSum EPum(nin=3) "Total pump electric energy"
     annotation (Placement(transformation(extent={{260,110},{280,130}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum PChi(
-    nin=nBui) "Chiller power"
+    nin=nBui)
+    "Chiller power"
     annotation (Placement(transformation(extent={{120,150},{140,170}})));
   Modelica.Blocks.Continuous.Integrator EChi(initType=Modelica.Blocks.Types.Init.InitialState)
     "Chiller electric energy" annotation (Placement(transformation(extent={{200,150},{220,170}})));
@@ -167,7 +169,7 @@ partial model PartialParallel "Partial model for parallel network"
         origin={0,-120})));
   Modelica.Blocks.Continuous.Integrator EPla(initType=Modelica.Blocks.Types.Init.InitialState)
     "Pant energy"
-    annotation (Placement(transformation(extent={{200,0},{220,20}})));
+    annotation (Placement(transformation(extent={{200,-190},{220,-170}})));
   Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesStandard
     conCoo(
     redeclare final package Medium = Medium,
@@ -183,19 +185,19 @@ partial model PartialParallel "Partial model for parallel network"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={-150,-80})));
+        origin={-150,10})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TCooEnt(redeclare final package
       Medium = Medium, final m_flow_nominal=datDes.mPumDis_flow_nominal)
     "Cooler entering temperature"   annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={-200,-80})));
+        origin={-200,10})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TCooLvg(redeclare final package
       Medium = Medium, final m_flow_nominal=datDes.mPumDis_flow_nominal)
     "Cooler leaving temperature" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={-120,-80})));
+        origin={-120,10})));
   Buildings.BoundaryConditions.WeatherData.ReaderTMY3 weaDat(
     final filNam=Modelica.Utilities.Files.loadResource(weaName),
     computeWetBulbTemperature=true)
@@ -206,6 +208,13 @@ partial model PartialParallel "Partial model for parallel network"
     each period=31536000.0)
     "Enable chiller compressor"
     annotation (Placement(transformation(extent={{-340,170},{-320,190}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort TDisWatBorEnt(redeclare final
+      package Medium = Medium, final m_flow_nominal=datDes.mPumDis_flow_nominal)
+    "District water borefield entering temperature" annotation (Placement(
+        transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={-80,-40})));
 initial equation
   for i in 1:nBui loop
     Modelica.Utilities.Streams.print(
@@ -217,19 +226,17 @@ initial equation
     String(dis.mEnd_flow_nominal));
 equation
     connect(borFie.port_a, pumSto.port_b)
-      annotation (Line(points={{-240,-80},{-260,-80},{-260,-120},{-210,-120}},
+      annotation (Line(points={{-240,10},{-260,10},{-260,-30},{-210,-30}},
                                                        color={0,127,255}));
     connect(borFie.port_b,TCooEnt. port_a)
-      annotation (Line(points={{-220,-80},{-210,-80}}, color={0,127,255}));
+      annotation (Line(points={{-220,10},{-210,10}},   color={0,127,255}));
   connect(bou.ports[1], pumDis.port_a)
     annotation (Line(points={{102,-20},{80,-20},{80,-50}}, color={0,127,255}));
 
-  connect(conSto.port_bCon, pumSto.port_a) annotation (Line(points={{-90,-90},{
-          -100,-90},{-100,-120},{-190,-120}},                       color={0,
+  connect(conSto.port_bCon, pumSto.port_a) annotation (Line(points={{-90,0},{-100,
+          0},{-100,-30},{-190,-30}},                                color={0,
           127,255}));
-  connect(conPla.port_bDis, TDisWatSup.port_a)
-    annotation (Line(points={{-80,0},{-80,10}}, color={0,127,255}));
-  connect(TDisWatSup.port_b, dis.port_aDisSup) annotation (Line(points={{-80,30},
+  connect(TDisWatSup.port_b, dis.port_aDisSup) annotation (Line(points={{-80,80},
           {-80,140},{-20,140}}, color={0,127,255}));
   connect(dis.port_bDisRet, TDisWatRet.port_a) annotation (Line(points={{-20,134},
           {-40,134},{-40,120},{80,120},{80,10}},
@@ -237,9 +244,7 @@ equation
   connect(TDisWatRet.port_b, pumDis.port_a) annotation (Line(points={{80,-10},{
           80,-50}},                color={0,127,255}));
   connect(conSto.port_bDis, TDisWatBorLvg.port_a)
-    annotation (Line(points={{-80,-80},{-80,-50}}, color={0,127,255}));
-  connect(TDisWatBorLvg.port_b, conPla.port_aDis)
-    annotation (Line(points={{-80,-30},{-80,-20}}, color={0,127,255}));
+    annotation (Line(points={{-80,10},{-80,30}},   color={0,127,255}));
   connect(bui.port_bSerAmb, dis.ports_aCon) annotation (Line(points={{10,180},{
           20,180},{20,160},{12,160},{12,150}}, color={0,127,255}));
   connect(dis.ports_bCon, bui.port_aSerAmb) annotation (Line(points={{-12,150},
@@ -255,33 +260,38 @@ equation
           {244,120.667},{258,120.667}},
                                    color={0,0,127}));
   connect(PChi.y, EChi.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
-  connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,
-          159.5},{298,159.5}},                                                                  color={0,0,127}));
-  connect(EPum.y,ETot. u[2]) annotation (Line(points={{282,120},{290,120},{290,
-          160.5},{298,160.5}},
-                           color={0,0,127}));
+  connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,159.5},
+          {298,159.5}},                                                                         color={0,0,127}));
+  connect(EPum.y,ETot. u[2]) annotation (Line(points={{282,120},{290,120},{290,160.5},
+          {298,160.5}},    color={0,0,127}));
   connect(pumDis.P, EPumDis.u)
     annotation (Line(points={{71,-71},{71,-100},{198,-100}},
                                                            color={0,0,127}));
-  connect(pumSto.P, EPumSto.u) annotation (Line(points={{-211,-129},{-220,-129},
-          {-220,-140},{198,-140}},color={0,0,127}));
+  connect(pumSto.P, EPumSto.u) annotation (Line(points={{-211,-39},{-220,-39},{-220,
+          -140},{198,-140}},      color={0,0,127}));
   connect(pumDis.port_b, mDisWat_flow.port_a) annotation (Line(points={{80,-70},
           {80,-120},{10,-120}}, color={0,127,255}));
-  connect(mDisWat_flow.port_b, conSto.port_aDis) annotation (Line(points={{-10,
-          -120},{-80,-120},{-80,-100}}, color={0,127,255}));
 
   connect(TCooEnt.port_b, conCoo.port_aDis)
-    annotation (Line(points={{-190,-80},{-160,-80}}, color={0,127,255}));
+    annotation (Line(points={{-190,10},{-160,10}},   color={0,127,255}));
   connect(conCoo.port_bDis, TCooLvg.port_a)
-    annotation (Line(points={{-140,-80},{-130,-80}}, color={0,127,255}));
-  connect(TCooLvg.port_b, conSto.port_aCon) annotation (Line(points={{-110,-80},
-          {-100,-80},{-100,-84},{-90,-84}}, color={0,127,255}));
+    annotation (Line(points={{-140,10},{-130,10}},   color={0,127,255}));
+  connect(TCooLvg.port_b, conSto.port_aCon) annotation (Line(points={{-110,10},{
+          -100,10},{-100,6},{-90,6}},       color={0,127,255}));
   connect(bui.PPum, PPumETS.u) annotation (Line(points={{12,183},{66,183},{66,200},
           {118,200}}, color={0,0,127}));
   connect(bui.PCoo, PChi.u[1:nBui]) annotation (Line(points={{12,187},{60,187},{60,160},
           {118,160}}, color={0,0,127}));
   connect(uEnaChi.y[1], bui.uEnaChi) annotation (Line(points={{-318,180},{-40,180},
           {-40,186},{-12,186}}, color={255,0,255}));
+  connect(TDisWatBorLvg.port_b, TDisWatSup.port_a)
+    annotation (Line(points={{-80,50},{-80,60}}, color={0,127,255}));
+  connect(mDisWat_flow.port_b, conPla.port_aDis) annotation (Line(points={{-10,-120},
+          {-80,-120},{-80,-100}}, color={0,127,255}));
+  connect(conPla.port_bDis, TDisWatBorEnt.port_a)
+    annotation (Line(points={{-80,-80},{-80,-50}}, color={0,127,255}));
+  connect(TDisWatBorEnt.port_b, conSto.port_aDis)
+    annotation (Line(points={{-80,-30},{-80,-10}}, color={0,127,255}));
   annotation (Diagram(
     coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}}),
         graphics={Text(
@@ -303,4 +313,4 @@ Models extending this model must add controls,
 and configure some component sizes.
 </p>
 </html>"));
-end PartialParallel;
+end PartialParallelUpstream;

@@ -267,17 +267,19 @@ equation
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
   connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
-          240,121.333},{258,121.333}},
+          240,119.333},{258,119.333}},
                                color={0,0,127}));
   connect(EPumDis.y,EPum. u[2]) annotation (Line(points={{221,-100},{242,-100},
           {242,120},{258,120}},color={0,0,127}));
   connect(EPumSto.y,EPum. u[3]) annotation (Line(points={{221,-140},{244,-140},
-          {244,118.667},{258,118.667}},
+          {244,120.667},{258,120.667}},
                                    color={0,0,127}));
   connect(PChi.y, EChi.u) annotation (Line(points={{142,160},{198,160}}, color={0,0,127}));
-  connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,161},{298,161}}, color={0,0,127}));
+  connect(EChi.y, ETot.u[1]) annotation (Line(points={{221,160},{280,160},{280,
+          159.5},{298,159.5}},                                                                  color={0,0,127}));
   connect(EPum.y,ETot. u[2]) annotation (Line(points={{282,120},{290,120},{290,
-          159},{298,159}}, color={0,0,127}));
+          160.5},{298,160.5}},
+                           color={0,0,127}));
   connect(pumDis.P, EPumDis.u)
     annotation (Line(points={{71,-71},{71,-100},{198,-100}},
                                                            color={0,0,127}));

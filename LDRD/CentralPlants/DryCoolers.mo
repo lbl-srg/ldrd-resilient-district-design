@@ -1,5 +1,5 @@
 ﻿within LDRD.CentralPlants;
-model Coolers "Cooling towers or dry coolers"
+model DryCoolers "Dry coolers"
   extends Buildings.Experimental.DHC.CentralPlants.BaseClasses.PartialPlant(
     final typ=Buildings.Experimental.DHC.Types.DistrictSystemType.CombinedGeneration5,
     final have_fan=true,
@@ -9,14 +9,14 @@ model Coolers "Cooling towers or dry coolers"
     final have_eleCoo=false,
     final have_weaBus=true,
     allowFlowReversal=false);
-  parameter Boolean isCooTow=true
+  final parameter Boolean isCooTow=false
     "Set to true for cooling towers, false for dry coolers"
     annotation(Dialog(group = "Configuration"));
   parameter Modelica.SIunits.MassFlowRate m_flow_nominal
     "Nominal mass flow rate"
     annotation(Dialog(group = "Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dp_nominal=30E3
-    "Nominal pressure drop"
+  parameter Modelica.SIunits.PressureDifference dp_nominal=10E4
+    "Nominal pressure drop (modified on 2/3/22: 3E4 before)"
     annotation(Dialog(group = "Nominal condition"));
   parameter Modelica.SIunits.TemperatureDifference TLvgMin = 9 + 273.15
     "Minimum leaving temperature";
@@ -29,6 +29,10 @@ model Coolers "Cooling towers or dry coolers"
      4
     "Design range temperature (water in - water out)"
     annotation (Dialog(group="Nominal condition"));
+  parameter Real fraPFan_nominal(unit="W/(kg/s)") = 130
+    "Fan power divided by water mass flow rate at design condition"
+    annotation(Dialog(group="Fan"));
+
   Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coo(
     redeclare final package Medium = Medium,
     final m_flow_nominal=m_flow_nominal,
@@ -37,7 +41,7 @@ model Coolers "Cooling towers or dry coolers"
     TAirInWB_nominal=285.15,
     final TApp_nominal=dTApp_nominal,
     final TRan_nominal=dTRan_nominal,
-    fraPFan_nominal=130,
+    final fraPFan_nominal=fraPFan_nominal,
     yMin=0.1) "Cooler"
     annotation (Placement(transformation(extent={{-10,30},{10,50}})));
   Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pum(
@@ -137,24 +141,33 @@ equation
   connect(swi.y, coo.TAir) annotation (Line(points={{-118,220},{-80,220},{-80,
           44},{-12,44}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-300,-300},
-            {300,300}})), Diagram(graphics={Text(
-          extent={{-96,-62},{62,-114}},
+            {300,300}})),
+    experiment(
+      StopTime=31536000,
+      __Dymola_NumberOfIntervals=8760,
+      Tolerance=1e-06,
+      __Dymola_Algorithm="Cvode"),
+    Diagram(graphics={                      Text(
+          extent={{-254,-122},{112,-284}},
           lineColor={28,108,200},
           horizontalAlignment=TextAlignment.Left,
-          textString="fraPFan set to 150 instead of default 1833!
+          textString="fraPFan set to ~150 instead of default 1833!
 per ASHRAE How to Design & Control Waterside Economizers
+(130 for Carrier dry coolers 09VE 1163 UI 450E9 12A1V0 with 10 K approach)
 
-Match Carrier dry coolers 09VE 1163 UI 450E9 12A1V0 with 10 K approach
+Liquid pressure drop for dry coolers = 5 m for HX + 5 m for piping and valves ~ 10 mH2O
 
 Dry coolers have a practical minimum approach of 8 to 14°C (15 to 25°F).
 When a lower process-fluid outlet temperature is required,
 an air-humidification chamber can be provided to reduce the
 inlet air temperature toward the wet-bulb temperature.
 A 5.6°C (10°F) approach is feasible.
-")}),
-    experiment(
-      StopTime=31536000,
-      __Dymola_NumberOfIntervals=8760,
-      Tolerance=1e-06,
-      __Dymola_Algorithm="Cvode"));
-end Coolers;
+"),                                         Text(
+          extent={{-258,30},{108,-132}},
+          lineColor={238,46,47},
+          horizontalAlignment=TextAlignment.Left,
+          textString="OBSOLETE: not used eventually.
+
+- The dry coolers approach of 4 K seems unreallistically low (economically) for building applications.
+- The use of Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc to represent dry coolers is not validated.")}));
+end DryCoolers;

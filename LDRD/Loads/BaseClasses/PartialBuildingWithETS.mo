@@ -132,6 +132,9 @@ This model is composed of a heat pump based energy transfer station model
 Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.HeatPumpHeatExchanger</a>
 connected to a repleacable building load model. 
 </p>
+<p>
+Chiller performance representative of Carrier 30XWH-Opt.150 802
+</p>
 </html>", revisions="<html>
 <ul>
 <li>

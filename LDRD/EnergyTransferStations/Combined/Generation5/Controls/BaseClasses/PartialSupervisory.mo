@@ -21,8 +21,7 @@ partial block PartialSupervisory
     iconTransformation(extent={{-140,-30},{-100,10}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TChiWatBot(
     final unit="K",
-    displayUnit="degC")
-    "Chilled water temperature at tank bottom"
+    displayUnit="degC") "Chilled water temperature at tank bottom"
     annotation (Placement(transformation(extent={{-160,-80},{-120,-40}}),
     iconTransformation(extent={{-140,-50},{-100,-10}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput THeaWatTop(
@@ -72,18 +71,6 @@ partial block PartialSupervisory
     "Tank in cooling demand"
     annotation (Placement(transformation(extent={{120,40},{160,80}}),
     iconTransformation(extent={{100,50},{140,90}})));
-  Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uHeaHol(
-    trueHoldDuration=900) "Hold heating enable signal"
-    annotation (Placement(transformation(extent={{-110,70},{-90,90}})));
-  Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uCooHol(
-    trueHoldDuration=900)
-    "Hold cooling enable signal"
-    annotation (Placement(transformation(extent={{-110,40},{-90,60}})));
-equation
-  connect(uHea,uHeaHol.u)
-    annotation (Line(points={{-140,80},{-112,80}},  color={255,0,255}));
-  connect(uCoo,uCooHol.u)
-    annotation (Line(points={{-140,50},{-112,50}},color={255,0,255}));
   annotation (
     Icon(
       coordinateSystem(

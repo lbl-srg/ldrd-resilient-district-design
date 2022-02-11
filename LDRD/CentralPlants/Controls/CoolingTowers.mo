@@ -1,4 +1,4 @@
-within LDRD.CentralPlants.Controls;
+﻿within LDRD.CentralPlants.Controls;
 block CoolingTowers "Cooling towers controller"
   extends Modelica.Blocks.Icons.Block;
 
@@ -67,7 +67,7 @@ block CoolingTowers "Cooling towers controller"
     "Compare to threshold for enabling"
     annotation (Placement(transformation(extent={{-60,-50},{-40,-30}})));
   inner Modelica.StateGraph.StateGraphRoot stateGraphRoot "Root of state graph"
-    annotation (Placement(transformation(extent={{-90,40},{-70,60}})));
+    annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nin=4)
     "Enable if cooling enabled and temperature criterion verified"
     annotation (Placement(transformation(extent={{-10,-50},{10,-30}})));
@@ -91,24 +91,20 @@ block CoolingTowers "Cooling towers controller"
     annotation (Placement(transformation(extent={{190,90},{210,110}})));
 
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(final k=0) "Zero"
-    annotation (Placement(transformation(extent={{100,70},{120,90}})));
+    annotation (Placement(transformation(extent={{60,70},{80,90}})));
   Buildings.Controls.OBC.CDL.Continuous.Line comFanSig "Compute fan signal"
     annotation (Placement(transformation(extent={{150,-50},{170,-30}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant one(final k=1) "One"
     annotation (Placement(transformation(extent={{100,-100},{120,-80}})));
-  Buildings.Controls.OBC.CDL.Continuous.GreaterThreshold
-                                             comTLvgPre(t=TLvgMin + dTEna)
+  Buildings.Controls.OBC.CDL.Continuous.Greater          comTLvgPre
     "Compare to threshold for enabling"
     annotation (Placement(transformation(extent={{-60,-90},{-40,-70}})));
-  Buildings.Controls.OBC.CDL.Continuous.LessThreshold comTLvg(t=TLvgMin)
+  Buildings.Controls.OBC.CDL.Continuous.Less          comTLvg
     "Compare to threshold for disabling"
     annotation (Placement(transformation(extent={{-110,-150},{-90,-130}})));
   Buildings.Controls.OBC.CDL.Logical.MultiOr  mulOr(nin=2)
     "Enable if cooling enabled and temperature criterion verified"
     annotation (Placement(transformation(extent={{-10,-130},{10,-110}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant minT(final k=TLvgMin +
-        dTEna) "Entering temperature for minimum speed"
-    annotation (Placement(transformation(extent={{100,-20},{120,0}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant maxT(final k=TEntMax)
     "Entering temperature for maximum speed"
     annotation (Placement(transformation(extent={{100,-70},{120,-50}})));
@@ -121,6 +117,16 @@ block CoolingTowers "Cooling towers controller"
   Buildings.Controls.OBC.CDL.Continuous.Add TLvgMax(k1=fraFreCon, k2=1 -
         fraFreCon) "Predicted maximum leaving temperature (in free convection)"
     annotation (Placement(transformation(extent={{-110,-90},{-90,-70}})));
+  Buildings.Controls.OBC.CDL.Continuous.Sources.CalendarTime calTim(zerTim=
+        Buildings.Controls.OBC.CDL.Types.ZeroTime.NY2017) "Calendar time"
+    annotation (Placement(transformation(extent={{-140,130},{-120,150}})));
+  Modelica.Blocks.Sources.RealExpression TLvgMin_actual(
+    y(final unit="K", displayUnit="degC")=if calTim.month >= 5 and calTim.month <= 9 then 273.15 else TLvgMin)
+    "Actual TLvgMin"
+    annotation (Placement(transformation(extent={{-100,130},{-80,150}})));
+  Buildings.Controls.OBC.CDL.Continuous.AddParameter addDelTem1(final p=dTEna,
+      final k=1) "Add threshold for enabling"
+    annotation (Placement(transformation(extent={{-60,130},{-40,150}})));
 equation
   connect(TWatEnt, delT1.u1) annotation (Line(points={{-200,-100},{-160,-100},{-160,
           -114},{-152,-114}},
@@ -149,11 +155,11 @@ equation
   connect(mulAnd.y,ena. condition) annotation (Line(points={{12,-40},{16,-40},{16,
           20},{10,20},{10,28}},                                                         color={255,0,255}));
   connect(delTemDis1.y,mulAnd. u[1])
-    annotation (Line(points={{-38,-40},{-12,-40},{-12,-34.75}},                  color={255,0,255}));
+    annotation (Line(points={{-38,-40},{-12,-40},{-12,-42.625}},                 color={255,0,255}));
   connect(iniSta.active,tim1. u) annotation (Line(points={{-30,29},{-30,20},{-10,
           20},{-10,12}},                                                      color={255,0,255}));
   connect(tim1.passed,mulAnd. u[2])
-    annotation (Line(points={{-18,-12},{-18,-36},{-12,-36},{-12,-38.25}},
+    annotation (Line(points={{-18,-12},{-18,-36},{-12,-36},{-12,-40.875}},
                                                                        color={255,0,255}));
   connect(actSta.active,tim. u) annotation (Line(points={{50,29},{50,-50},{40,
           -50},{40,-58}},                                                   color={255,0,255}));
@@ -170,27 +176,23 @@ equation
   connect(m_flow, swiOff2.u1) annotation (Line(points={{-200,100},{160,100},{
           160,108},{188,108}},
                            color={0,0,127}));
-  connect(zer.y, swiOff2.u3) annotation (Line(points={{122,80},{188,80},{188,92}},
-                     color={0,0,127}));
-  connect(TWatLvg, comTLvg.u)
-    annotation (Line(points={{-200,-140},{-112,-140}},color={0,0,127}));
+  connect(zer.y, swiOff2.u3) annotation (Line(points={{82,80},{182,80},{182,92},
+          {188,92}}, color={0,0,127}));
   connect(mulOr.y, and2.u2)
     annotation (Line(points={{12,-120},{36,-120},{36,-100},{58,-100}},
                                                    color={255,0,255}));
-  connect(delTemDis.y, mulOr.u[1]) annotation (Line(points={{-48,-120},{-24,-120},
-          {-24,-116.5},{-12,-116.5}},
+  connect(delTemDis.y, mulOr.u[1]) annotation (Line(points={{-48,-120},{-20,-120},
+          {-20,-121.75},{-12,-121.75}},
                                  color={255,0,255}));
   connect(comTLvg.y, mulOr.u[2]) annotation (Line(points={{-88,-140},{-30,-140},
-          {-30,-123.5},{-12,-123.5}},                        color={255,0,255}));
-  connect(minT.y, comFanSig.x1) annotation (Line(points={{122,-10},{130,-10},{130,
-          -32},{148,-32}}, color={0,0,127}));
+          {-30,-118.25},{-12,-118.25}},                      color={255,0,255}));
   connect(maxT.y, comFanSig.x2) annotation (Line(points={{122,-60},{130,-60},{130,
           -44},{148,-44}}, color={0,0,127}));
   connect(TWatEnt, comFanSig.u) annotation (Line(points={{-200,-100},{20,-100},{
           20,-40},{148,-40}},
                            color={0,0,127}));
-  connect(zer.y, comFanSig.f1) annotation (Line(points={{122,80},{140,80},{140,
-          -36},{148,-36}}, color={0,0,127}));
+  connect(zer.y, comFanSig.f1) annotation (Line(points={{82,80},{140,80},{140,-36},
+          {148,-36}},      color={0,0,127}));
   connect(one.y, comFanSig.f2) annotation (Line(points={{122,-90},{140,-90},{
           140,-48},{148,-48}}, color={0,0,127}));
   connect(actSta.active, swiOff1.u2) annotation (Line(points={{50,29},{50,20},{
@@ -199,20 +201,32 @@ equation
     annotation (Line(points={{212,-40},{240,-40},{240,-40}}, color={0,0,127}));
   connect(comFanSig.y, swiOff1.u1) annotation (Line(points={{172,-40},{176,-40},
           {176,-48},{188,-48}}, color={0,0,127}));
-  connect(zer.y, swiOff1.u3) annotation (Line(points={{122,80},{140,80},{140,
-          -20},{188,-20},{188,-32}}, color={0,0,127}));
+  connect(zer.y, swiOff1.u3) annotation (Line(points={{82,80},{140,80},{140,-20},
+          {182,-20},{182,-32},{188,-32}},
+                                     color={0,0,127}));
   connect(TAir, comTAirFre.u) annotation (Line(points={{-200,-40},{-170,-40},{
           -170,20},{-142,20}}, color={0,0,127}));
   connect(comTAirFre.y, mulAnd.u[3]) annotation (Line(points={{-118,20},{-32,20},
-          {-32,-41.75},{-12,-41.75}},     color={255,0,255}));
+          {-32,-39.125},{-12,-39.125}},   color={255,0,255}));
   connect(TWatEnt, TLvgMax.u2) annotation (Line(points={{-200,-100},{-160,-100},
           {-160,-86},{-112,-86}}, color={0,0,127}));
   connect(calTemLvg.T2WatLvg, TLvgMax.u1) annotation (Line(points={{-128,-40},{
           -120,-40},{-120,-74},{-112,-74}}, color={0,0,127}));
-  connect(TLvgMax.y, comTLvgPre.u)
-    annotation (Line(points={{-88,-80},{-62,-80}}, color={0,0,127}));
   connect(comTLvgPre.y, mulAnd.u[4]) annotation (Line(points={{-38,-80},{-28,
-          -80},{-28,-45.25},{-12,-45.25}}, color={255,0,255}));
+          -80},{-28,-37.375},{-12,-37.375}},
+                                           color={255,0,255}));
+  connect(TLvgMin_actual.y, addDelTem1.u)
+    annotation (Line(points={{-79,140},{-62,140}}, color={0,0,127}));
+  connect(addDelTem1.y, comFanSig.x1) annotation (Line(points={{-38,140},{120,140},
+          {120,-32},{148,-32}}, color={0,0,127}));
+  connect(TWatLvg, comTLvg.u1)
+    annotation (Line(points={{-200,-140},{-112,-140}}, color={0,0,127}));
+  connect(TLvgMin_actual.y, comTLvg.u2) annotation (Line(points={{-79,140},{-70,
+          140},{-70,120},{-174,120},{-174,-148},{-112,-148}}, color={0,0,127}));
+  connect(TLvgMax.y, comTLvgPre.u1)
+    annotation (Line(points={{-88,-80},{-62,-80}}, color={0,0,127}));
+  connect(addDelTem1.y, comTLvgPre.u2) annotation (Line(points={{-38,140},{-20,140},
+          {-20,80},{-72,80},{-72,-88},{-62,-88}}, color={0,0,127}));
   annotation (Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-180,-160},{220,
             160}})),
@@ -230,19 +244,27 @@ Control logic
 </p>
 <ul>
 <li>
+First, compute the actual minimum
+leaving temperature <code>TLvgMin_actual</code> which is
+equal to the parameter <code>TLvgMin</code> during the 
+heating season and equal to 0°C otherwise. (For the sake 
+of simplicity the heating season is defined based on the 
+month of the calendar year: 1 to 4 and 10 to 12.)
+</li>
+<li>
 Enable with similar logic as WSE:
 based on predicted leaving water temperature that must
 be lower (with margin) than entering and higher than minimum
-leaving temperature.
+leaving temperature <code>TLvgMin_actual</code>.
 </li>
 <li>
 When enabled, modulate fan speed between minimum when
-entering water temperature equals <code>TLvgMin + dTEna</code>,
+entering water temperature equals <code>TLvgMin_actual + dTEna</code>,
 and maximum when entering water temperature equals <code>TEntMax</code>.
 </li>
 <li>
 Disable if leaving temperature higher (with margin) than entering
-or lower than <code>TLvgMin</code>.
+or lower than <code>TLvgMin_actual</code>.
 </li>
 </ul>
 </html>"),

@@ -10,7 +10,6 @@ model BuildingSpawnWithETS
   Buildings.Fluid.Sources.Boundary_pT bouSerWatSup(
     redeclare final package Medium = Medium,
     p=Medium.p_default + 2*max(bui.ets.dp1Hex_nominal, bui.ets.dp1WSE_nominal),
-
     T=289.15,
     nPorts=1) "Boundary pressure condition representing the expansion vessel"
     annotation (Placement(transformation(
@@ -20,8 +19,8 @@ model BuildingSpawnWithETS
 
   Buildings.Fluid.Sources.Boundary_pT bouSerWatRet(redeclare final package
       Medium = Medium, nPorts=1)
-    "Boundary pressure condition representing the expansion vessel" annotation
-    (Placement(transformation(
+    "Boundary pressure condition representing the expansion vessel" annotation (
+     Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={70,0})));

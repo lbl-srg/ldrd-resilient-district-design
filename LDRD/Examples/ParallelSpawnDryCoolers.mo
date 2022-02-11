@@ -2,7 +2,7 @@ within LDRD.Examples;
 model ParallelSpawnDryCoolers
   "Parallel connection with central dry coolers and Spawn office building"
   extends ParallelSpawnCoolingTowers(
-    plaCoo(isCooTow=false));
+    redeclare CentralPlants.DryCoolers plaCoo);
   annotation (
     experiment(
       StopTime=63244800,

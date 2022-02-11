@@ -1,7 +1,7 @@
 within LDRD.Examples;
-model ParallelSpawnDryCoolersNoWSE
-  "Parallel connection with central dry coolers and Spawn office building, no WSE"
-  extends ParallelSpawnDryCoolers(
+model ParallelSpawnCoolingTowersNoWSE
+  "Parallel connection with central cooling towers and Spawn office building, no WSE"
+  extends ParallelSpawnCoolingTowers(
     bui(ets(each have_WSE=false)),
     buiSpa(ets(have_WSE=false)),
     uEnaChi(each table=[0,1; 31536000,1]));
@@ -12,4 +12,4 @@ model ParallelSpawnDryCoolersNoWSE
       Tolerance=1e-06,
       __Dymola_NumberOfIntervals=17520,
       __Dymola_Algorithm="Cvode"));
-end ParallelSpawnDryCoolersNoWSE;
+end ParallelSpawnCoolingTowersNoWSE;

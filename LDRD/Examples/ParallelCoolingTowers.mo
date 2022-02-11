@@ -44,10 +44,12 @@ model ParallelCoolingTowers
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
-  CentralPlants.Coolers plaCoo(
-    redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPla_flow_nominal)
-    "Cooling plant" annotation (Placement(transformation(
+  replaceable CentralPlants.CoolingTowers plaCoo
+    constrainedby Buildings.Experimental.DHC.CentralPlants.BaseClasses.PartialPlant(
+      redeclare final package Medium = Medium,
+      final m_flow_nominal=datDes.mPla_flow_nominal)
+    "Cooling plant"
+    annotation (Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={-160,-20})));
@@ -120,8 +122,8 @@ equation
       StopTime=63244800,
       Tolerance=1e-06,
       __Dymola_NumberOfIntervals=17520,
-      __Dymola_Algorithm="Cvode",
-      __Dymola_experimentSetupOutput(equidistant=true, events=false)),
+      __Dymola_Algorithm="Cvode"),
+  __Dymola_experimentSetupOutput(equidistant=true, events=false),
     Documentation(revisions="<html>
 <ul>
 <li>

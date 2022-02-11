@@ -78,7 +78,7 @@ For more than ~500 boreholes, the following modification is needed in
 
 
 char simplestring[
-        200000
+        400000
 ];
 
 </p>

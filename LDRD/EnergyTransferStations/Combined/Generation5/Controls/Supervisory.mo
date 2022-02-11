@@ -81,6 +81,38 @@ model Supervisory
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={-40,-10})));
+  Buildings.Controls.OBC.CDL.Continuous.Greater          greThr
+    "Check that CHW at tank top is higher than set point"
+    annotation (Placement(transformation(extent={{40,70},{60,90}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput TChiWatTop(final unit="K",
+      displayUnit="degC") "Chilled water temperature at tank top" annotation (
+      Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=-90,
+        origin={20,138}), iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=-90,
+        origin={60,120})));
+  Buildings.Controls.OBC.CDL.Logical.And                 and2
+    "Control signal is non zero (with 1% tolerance)"
+    annotation (Placement(transformation(extent={{-108,40},{-88,60}})));
+  Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uCooHol(trueHoldDuration=900)
+    "Hold cooling enable signal"
+    annotation (Placement(transformation(extent={{-70,40},{-50,60}})));
+  Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uHeaHol(trueHoldDuration=900)
+                          "Hold heating enable signal"
+    annotation (Placement(transformation(extent={{-108,70},{-88,90}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput yWSE "WSE enable"
+    annotation (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=90,
+        origin={90,140}), iconTransformation(extent={{-20,-20},{20,20}},
+        rotation=90,
+        origin={90,120})));
+  Buildings.Controls.OBC.CDL.Logical.TrueFalseHold uCooHol1(trueHoldDuration=
+        900)
+    "Hold cooling enable signal"
+    annotation (Placement(transformation(extent={{60,30},{80,50}})));
 equation
   connect(conHot.yAmb,max1.u1)
     annotation (Line(points={{22,34},{40,34},{40,6},{48,6}},color={0,0,127}));
@@ -110,19 +142,19 @@ equation
   connect(TChiWatSupPreSet,conCol.TSet)
     annotation (Line(points={{-140,-40},{-44,-40},{-44,-36.2},{-2,-36.2}},color={0,0,127}));
   connect(uHeaHol.y,resTSup.uHea)
-    annotation (Line(points={{-88,80},{-80,80},{-80,26},{-72,26}},  color={255,0,255}));
+    annotation (Line(points={{-86,80},{-80,80},{-80,26},{-72,26}},  color={255,0,255}));
   connect(uHeaHol.y,yHea)
-    annotation (Line(points={{-88,80},{26,80},{26,100},{140,100}},
+    annotation (Line(points={{-86,80},{0,80},{0,100},{140,100}},
                                                   color={255,0,255}));
   connect(uCooHol.y,yCoo)
-    annotation (Line(points={{-88,50},{26,50},{26,60},{140,60}},
+    annotation (Line(points={{-48,50},{20,50},{20,60},{140,60}},
                                                 color={255,0,255}));
   connect(yValIsoCon_actual,conHot.yValIsoCon_actual)
     annotation (Line(points={{-140,-80},{-22,-80},{-22,26},{-2,26}},color={0,0,127}));
   connect(yValIsoEva_actual,conHot.yValIsoEva_actual)
     annotation (Line(points={{-140,-100},{-18,-100},{-18,22},{-2,22}},color={0,0,127}));
   connect(uCooHol.y, uCooEnaChi.u1)
-    annotation (Line(points={{-88,50},{-40,50},{-40,2}}, color={255,0,255}));
+    annotation (Line(points={{-48,50},{-40,50},{-40,2}}, color={255,0,255}));
   connect(uCooEnaChi.y, conCol.uHeaCoo) annotation (Line(points={{-40,-22},{-40,
           -24},{-2,-24}}, color={255,0,255}));
   connect(uEnaChi, uHeaEnaChi.u2) annotation (Line(points={{-140,110},{-28,110},
@@ -130,9 +162,25 @@ equation
   connect(uEnaChi, uCooEnaChi.u2) annotation (Line(points={{-140,110},{-48,110},
           {-48,2}}, color={255,0,255}));
   connect(uHeaHol.y, uHeaEnaChi.u1)
-    annotation (Line(points={{-88,80},{-20,80},{-20,76}}, color={255,0,255}));
+    annotation (Line(points={{-86,80},{-20,80},{-20,76}}, color={255,0,255}));
   connect(uHeaEnaChi.y, conHot.uHeaCoo)
     annotation (Line(points={{-20,52},{-20,38},{-2,38}}, color={255,0,255}));
+  connect(TChiWatTop, greThr.u1)
+    annotation (Line(points={{20,138},{20,80},{38,80}}, color={0,0,127}));
+  connect(conCol.TChiWatSupSet, greThr.u2) annotation (Line(points={{22,-36},{
+          100,-36},{100,66},{26,66},{26,72},{38,72}}, color={0,0,127}));
+  connect(uCoo, and2.u1)
+    annotation (Line(points={{-140,50},{-110,50}}, color={255,0,255}));
+  connect(greThr.y, and2.u2) annotation (Line(points={{62,80},{68,80},{68,96},{
+          -114,96},{-114,42},{-110,42}}, color={255,0,255}));
+  connect(and2.y, uCooHol.u)
+    annotation (Line(points={{-86,50},{-72,50}}, color={255,0,255}));
+  connect(uHea, uHeaHol.u)
+    annotation (Line(points={{-140,80},{-110,80}}, color={255,0,255}));
+  connect(uCooHol1.y, yWSE)
+    annotation (Line(points={{82,40},{90,40},{90,140}}, color={255,0,255}));
+  connect(uCoo, uCooHol1.u) annotation (Line(points={{-140,50},{-118,50},{-118,
+          40},{58,40}}, color={255,0,255}));
   annotation (
     Icon(
       coordinateSystem(

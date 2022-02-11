@@ -276,9 +276,11 @@ equation
   connect(conSup.yAmb[1],borFie.u)
     annotation (Line(points={{-238,25},{-200,25},{-200,-212},{-82,-212}},color={0,0,127}));
   connect(valIsoCon.y_actual,borFie.yValIso_actual[1])
-    annotation (Line(points={{-55,-113},{-40,-113},{-40,-198},{-90,-198},{-90,-217},{-82,-217}},color={0,0,127}));
+    annotation (Line(points={{-55,-113},{-40,-113},{-40,-198},{-90,-198},{-90,
+          -216.5},{-82,-216.5}},                                                                color={0,0,127}));
   connect(valIsoEva.y_actual,borFie.yValIso_actual[2])
-    annotation (Line(points={{55,-113},{40,-113},{40,-200},{-88,-200},{-88,-215},{-82,-215}},color={0,0,127}));
+    annotation (Line(points={{55,-113},{40,-113},{40,-200},{-88,-200},{-88,
+          -215.5},{-82,-215.5}},                                                             color={0,0,127}));
   connect(borFie.PPum,totPPum.u[3])
     annotation (Line(points={{-58,-216},{250,-216},{250,-62},{258,-62},{258,-60}},color={0,0,127}));
   connect(zerPPum.y,totPPum.u[3])
@@ -331,8 +333,6 @@ equation
     annotation (Line(points={{-220,-270},{-220,-280},{210,-280},{210,132},{220,132}}, color={0,127,255}));
   connect(WSE.port_b1, mixWSE.port_3) annotation (Line(points={{240,132},{254,132},{254,-250}}, color={0,127,255}));
   connect(hex.port_b1, mixWSE.port_1) annotation (Line(points={{10,-260},{244,-260}}, color={0,127,255}));
-  connect(conSup.yCoo, WSE.uCoo) annotation (Line(points={{-238,29},{140,29},{140,
-          126},{218,126}},                                                                         color={255,0,255}));
   connect(valIsoEva.y_actual, WSE.yValIsoEva_actual)
     annotation (Line(points={{55,-113},{40,-113},{40,123},{218,123}}, color={0,0,127}));
   connect(port_aSerAmb, splWSE.port_1) annotation (Line(points={{-300,-200},{
@@ -341,6 +341,10 @@ equation
           {-286,40},{-18,40},{-18,3},{-12,3}}, color={255,0,255}));
   connect(uEnaChi, conSup.uEnaChi) annotation (Line(points={{-320,140},{-286,
           140},{-286,40},{-258,40},{-258,34}}, color={255,0,255}));
+  connect(tanChiWat.TTop, conSup.TChiWatTop) annotation (Line(points={{201,115},
+          {201,114},{202,114},{202,140},{-244,140},{-244,34}}, color={0,0,127}));
+  connect(conSup.yWSE, WSE.uCoo) annotation (Line(points={{-241,34},{-240,34},{
+          -240,126},{218,126}}, color={255,0,255}));
   annotation (
     Diagram(
       coordinateSystem(
