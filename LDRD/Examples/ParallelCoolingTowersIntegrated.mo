@@ -5,21 +5,10 @@ model ParallelCoolingTowersIntegrated
     final facMulTim={1, 10, 10},
     redeclare
       Loads.BuildingTimeSeriesWithETS bui[nBui](final filNam=filNam),
-    datDes(
-      dp_length_nominal=250,
-      dpPumDisSet=dpPumDisSet),
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true),
     EPum(nin=4));
-  /*
-  Differential pressure set point takes valve + HX nominal pressure drop,
-  assuming 50% authority for the control valve.
-  */
-  parameter Modelica.SIunits.PressureDifference dpPumDisSet=
-    2 * (max(bui[nBui].ets.dp1Hex_nominal, bui[nBui].ets.dp1WSE_nominal) +
-    datDes.dp_length_nominal * datDes.lCon[nBui])
-    "Differential pressure set point at remote location";
 
   parameter String filNam[nBui]={
     "modelica://LDRD/Resources/Loads/RefBldgHospitalNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",

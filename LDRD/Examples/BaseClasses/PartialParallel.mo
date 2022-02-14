@@ -18,8 +18,18 @@ partial model PartialParallel "Partial model for parallel network"
   parameter Integer nBui = datDes.nBui
     "Number of buildings connected to DHC system"
     annotation (Evaluate=true);
+  /*
+  Differential pressure set point: valve + HX nominal pressure drop,
+  assuming 50% authority for the control valve.
+  */
+  parameter Modelica.SIunits.PressureDifference dpPumDisSet=
+    2 * (max(bui[nBui].ets.dp1Hex_nominal, bui[nBui].ets.dp1WSE_nominal) +
+    datDes.dp_length_nominal * datDes.lCon[nBui])
+    "Differential pressure set point at remote location";
 
-  inner parameter Data.DesignData datDes(final mCon_flow_nominal=bui.mSerWat_flow_nominal)
+  inner parameter Data.DesignData datDes(
+    final mSerWat_flow_nominal=bui.mSerWat_flow_nominal,
+    final dpPumDisSet=dpPumDisSet)
     "Design data"
     annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
@@ -82,7 +92,7 @@ partial model PartialParallel "Partial model for parallel network"
     final nCon=nBui,
     final dp_length_nominal=datDes.dp_length_nominal,
     final mDis_flow_nominal=datDes.mPumDis_flow_nominal,
-    final mCon_flow_nominal=datDes.mCon_flow_nominal,
+    final mCon_flow_nominal=datDes.mSerWat_flow_nominal,
     final mDisCon_flow_nominal=datDes.mDisCon_flow_nominal,
     final mEnd_flow_nominal=datDes.mEnd_flow_nominal,
     final lDis=datDes.lDis,

@@ -24,9 +24,20 @@ partial model PartialParallelSpawn
   parameter Integer idxBuiTim[nBui-1] = datDes.idxBuiTim
     "Indices of building models based on time series"
     annotation (Evaluate=true);
-  inner parameter Data.DesignDataSpawn datDes(final mCon_flow_nominal={if i ==
+  /*
+  Differential pressure set point: valve + HX nominal pressure drop,
+  assuming 50% authority for the control valve.
+  */
+  parameter Modelica.SIunits.PressureDifference dpPumDisSet=
+    2 * (max(buiSpa.ets.dp1Hex_nominal, buiSpa.ets.dp1WSE_nominal) +
+    datDes.dp_length_nominal * datDes.lCon[nBui])
+    "Differential pressure set point at remote location";
+  inner parameter Data.DesignDataSpawn datDes(
+    final mSerWat_flow_nominal={if i ==
         idxBuiSpa then buiSpa.mSerWat_flow_nominal else bui[i].mSerWat_flow_nominal
-        for i in 1:nBui}) "Design data"
+        for i in 1:nBui},
+    final dpPumDisSet=dpPumDisSet)
+    "Design data"
     annotation (Placement(transformation(extent={{-340,220},{-320,240}})));
   // COMPONENTS
   replaceable ThermalStorages.BoreField_700_180 borFie
@@ -87,7 +98,7 @@ partial model PartialParallelSpawn
     final nCon=nBui,
     final dp_length_nominal=datDes.dp_length_nominal,
     final mDis_flow_nominal=datDes.mPumDis_flow_nominal,
-    final mCon_flow_nominal=datDes.mCon_flow_nominal,
+    final mCon_flow_nominal=datDes.mSerWat_flow_nominal,
     final mDisCon_flow_nominal=datDes.mDisCon_flow_nominal,
     final mEnd_flow_nominal=datDes.mEnd_flow_nominal,
     final lDis=datDes.lDis,

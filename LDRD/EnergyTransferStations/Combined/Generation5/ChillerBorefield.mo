@@ -71,11 +71,11 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
     annotation (Dialog(group="Chiller"),choicesAllMatching=true,
     Placement(transformation(extent={{100,222},{120,242}})));
   parameter Modelica.SIunits.PressureDifference dp1WSE_nominal(displayUnit="Pa")=
-     40E3
+    30E3
     "Nominal pressure drop across heat exchanger on district side"
     annotation (Dialog(group="Waterside economizer", enable=have_WSE));
   parameter Modelica.SIunits.PressureDifference dp2WSE_nominal(displayUnit="Pa")=
-     40E3
+    30E3
     "Nominal pressure drop across heat exchanger on building side"
     annotation (Dialog(group="Waterside economizer", enable=have_WSE));
   parameter Modelica.SIunits.HeatFlowRate QWSE_flow_nominal = 0

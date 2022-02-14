@@ -5,22 +5,11 @@ model ParallelChillers
     final facMulTim={1, 10, 10},
     redeclare
       Loads.BuildingTimeSeriesWithETS bui[nBui](final filNam=filNam),
-    datDes(
-      dp_length_nominal=250,
-      dpPumDisSet=dpPumDisSet),
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true),
     PChi(nin=nBui+1),
     EPum(nin=4));
-  /*
-  Differential pressure set point takes valve + HX nominal pressure drop,
-  assuming 50% authority for the control valve.
-  */
-  parameter Modelica.SIunits.PressureDifference dpPumDisSet=
-    2 * (max(bui[nBui].ets.dp1Hex_nominal, bui[nBui].ets.dp1WSE_nominal) +
-    datDes.dp_length_nominal * datDes.lCon[nBui])
-    "Differential pressure set point at remote location";
 
   parameter String filNam[nBui]={
     "modelica://LDRD/Resources/Loads/RefBldgHospitalNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",
@@ -124,8 +113,8 @@ equation
       StopTime=63244800,
       Tolerance=1e-06,
       __Dymola_NumberOfIntervals=17520,
-      __Dymola_Algorithm="Cvode",
-      __Dymola_experimentSetupOutput(equidistant=true, events=false)),
+      __Dymola_Algorithm="Cvode"),
+    __Dymola_experimentSetupOutput(equidistant=true, events=false),
     Documentation(revisions="<html>
 <ul>
 <li>

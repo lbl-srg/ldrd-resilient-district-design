@@ -7,21 +7,11 @@ model ParallelSpawnCoolingTowers
     redeclare
       Loads.BuildingTimeSeriesWithETS bui[nBui-1](final filNam=filNam),
     datDes(
-      idxBuiSpa=3,
-      dp_length_nominal=250,
-      dpPumDisSet=dpPumDisSet),
+      idxBuiSpa=3),
     dis(show_entFlo=true),
     conSto(show_entFlo=true),
     conPla(show_entFlo=true),
     EPum(nin=4));
-  /*
-  Differential pressure set point takes valve + HX nominal pressure drop,
-  assuming 50% authority for the control valve.
-  */
-  parameter Modelica.SIunits.PressureDifference dpPumDisSet=
-    2 * (max(buiSpa.ets.dp1Hex_nominal, buiSpa.ets.dp1WSE_nominal) +
-    datDes.dp_length_nominal * datDes.lCon[nBui])
-    "Differential pressure set point at remote location";
 
   parameter String filNam[nBui-1]={
     "modelica://LDRD/Resources/Loads/RefBldgHospitalNew2004_v1.4_7.2_5A_USA_IL_CHICAGO-OHARE.mos",

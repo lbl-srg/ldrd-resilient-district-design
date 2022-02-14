@@ -1,4 +1,4 @@
-within LDRD.Loads.BaseClasses;
+﻿within LDRD.Loads.BaseClasses;
 model PartialBuildingWithETS "Partial model with ETS model and partial building model"
   extends
     Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuildingWithPartialETS(
@@ -24,10 +24,6 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
       T_b1WSE_nominal=286.15,
       T_a2WSE_nominal=288.15,
       T_b2WSE_nominal=283.15));
-  final parameter Modelica.SIunits.MassFlowRate mCon_flow_nominal(min=0)=
-    abs(QChiWat_flow_nominal)*(1+1/datChi.COP_nominal)/5/4186
-    "Condenser water mass flow rate"
-    annotation (Dialog(group="ETS model parameters"));
   /*
   To size the service water mass flow rate, we add 20% to the max of 
   WSE and main HX primary flow rates, considering that the peak loads on those 
@@ -35,7 +31,7 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
   This might be wrong and needs to be checked by simulation.
   */
   final parameter Modelica.SIunits.MassFlowRate mSerWat_flow_nominal(min=0)=
-    1.2 * max(ets.hex.m1_flow_nominal, ets.m1WSE_flow_nominal)
+    max(ets.hex.m1_flow_nominal, ets.m1WSE_flow_nominal)
     "Service water mass flow rate"
     annotation (Dialog(group="ETS model parameters"));
   parameter Buildings.Fluid.Chillers.Data.ElectricEIR.Generic datChi(
@@ -45,8 +41,8 @@ model PartialBuildingWithETS "Partial model with ETS model and partial building 
     PLRMinUnl=0.3,
     PLRMin=0.3,
     etaMotor=1,
-    mEva_flow_nominal=abs(QChiWat_flow_nominal)/4/4186,
-    mCon_flow_nominal=mCon_flow_nominal*4/8,
+    mEva_flow_nominal=abs(QChiWat_flow_nominal)/4186/4,
+    mCon_flow_nominal=abs(QChiWat_flow_nominal)*(1+1/datChi.COP_nominal)/4186/8,
     TEvaLvg_nominal=276.15,
     capFunT={1.72,0.02,0,-0.02,0,0},
     EIRFunT={0.28,-0.02,0,0.02,0,0},
@@ -126,15 +122,21 @@ equation
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
-<p>
-This model is composed of a heat pump based energy transfer station model 
-<a href=\"modelica://Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.HeatPumpHeatExchanger\">
-Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.HeatPumpHeatExchanger</a>
-connected to a repleacable building load model. 
-</p>
-<p>
+<ul>
+<li>
+DeltaT_nominal on HHW side = 8 K for primary and secondary
+</li>
+<li>
+DeltaT_nominal on CHW side = 4 K for primary and 5K for secondary
+</li>
+<li>
+4 K for CHW primary is constrained by minimum service water temperature of 9°C
+and minimum evaporator leaving temperature of 3°C and HX approach of 2K
+</li>
+<li>
 Chiller performance representative of Carrier 30XWH-Opt.150 802
-</p>
+</li>
+</ul>
 </html>", revisions="<html>
 <ul>
 <li>

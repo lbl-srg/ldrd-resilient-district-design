@@ -60,20 +60,28 @@ equation
       extent={{-3,6},{-3,6}},
       horizontalAlignment=TextAlignment.Right),
     Documentation(info="<html>
-<p>
+<ul>
+<li>
 A the building level, we split the loads between facMulHea and facMulCoo 
 identical FCUs.
+</li>
+<li>
 We compute facMulHea and facMulCoo based on typical capacity from
 manufacturer data for 1 kg/s nominal air flow rate:
 
 ~15 kW total cooling
 ~20 kW heating
-
-A the ETS level, we assume that a unique ETS serves facMul identical 
+</li>
+<li>
+At the ETS level, we assume that a unique ETS serves facMul identical 
 buildings.
-
-So facMul is applied to bui, not to bui+ETS.
-</p>
+</li>
+<li>
+So in the simulation model (LDRD.Examples.BaseClasses.PartialParallel)
+facMul is applied to the building only (bui.bui), not to the
+building+ETS (bui).
+</li>
+</ul>
 </html>", revisions="<html>
 <ul>
 <li>

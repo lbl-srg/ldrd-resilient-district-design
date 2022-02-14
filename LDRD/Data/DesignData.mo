@@ -5,24 +5,24 @@ record DesignData "Record with design data"
     "Number of served buildings"
     annotation(Evaluate=true);
 
-  parameter Real facDiv = 1.0
+  parameter Real facDiv = 0.9
     "Load diversity factor (typically heating is limiting and higher than 0.9)";
 
   parameter Modelica.SIunits.MassFlowRate mPumDis_flow_nominal = facDiv *
-    sum(mCon_flow_nominal)
+    sum(mSerWat_flow_nominal)
     "Nominal mass flow rate of main distribution pump";
-  parameter Modelica.SIunits.MassFlowRate mCon_flow_nominal[nBui]
+  parameter Modelica.SIunits.MassFlowRate mSerWat_flow_nominal[nBui]
     "Nominal mass flow rate in each connection line";
   parameter Modelica.SIunits.MassFlowRate mPla_flow_nominal = mPumDis_flow_nominal
     "Plant HX nominal mass flow rate (primary = secondary)";
   final parameter Modelica.SIunits.MassFlowRate mDisCon_flow_nominal[nBui]=
-    {max(mCon_flow_nominal[nBui], facDiv * sum(mCon_flow_nominal[i:nBui])) for i in 1:nBui}
+    {max(mSerWat_flow_nominal[nBui], facDiv * sum(mSerWat_flow_nominal[i:nBui])) for i in 1:nBui}
     "Nominal mass flow rate in the distribution line before each connection";
   parameter Modelica.SIunits.MassFlowRate mEnd_flow_nominal=
     0.05 * mPumDis_flow_nominal
     "Nominal mass flow rate in the end of the distribution line";
 
-  parameter Real dp_length_nominal(final unit="Pa/m") = 250
+  parameter Real dp_length_nominal(final unit="Pa/m") = 100
     "Pressure drop per pipe length at nominal flow rate";
   parameter Modelica.SIunits.Length lDis[nBui] = fill(200, nBui)
     "Length of distribution pipe (only counting warm or cold line, but not sum)";
@@ -32,7 +32,7 @@ record DesignData "Record with design data"
     "Length of the end of the distribution line (supply only, not counting return line)";
 
   parameter Modelica.SIunits.PressureDifference dpPumDis_nominal=
-    1.3 * (2 * sum(lDis) * dp_length_nominal + dpPumDisSet)
+    2 * sum(lDis) * dp_length_nominal + dpPumDisSet
     "Nominal pump head";
   parameter Modelica.SIunits.PressureDifference dpPumDisSet
     "Differential pressure set point at remote location";
