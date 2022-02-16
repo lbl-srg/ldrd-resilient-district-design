@@ -113,6 +113,15 @@ model Supervisory
         900)
     "Hold cooling enable signal"
     annotation (Placement(transformation(extent={{60,30},{80,50}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput TSerWatEnt(final unit="K",
+      displayUnit="degC") "Heat exchanger primary water entering temperature"
+    annotation (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=90,
+        origin={-100,-140}), iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=90,
+        origin={-80,-120})));
 equation
   connect(conHot.yAmb,max1.u1)
     annotation (Line(points={{22,34},{40,34},{40,6},{48,6}},color={0,0,127}));
@@ -181,6 +190,8 @@ equation
     annotation (Line(points={{82,40},{90,40},{90,140}}, color={255,0,255}));
   connect(uCoo, uCooHol1.u) annotation (Line(points={{-140,50},{-118,50},{-118,
           40},{58,40}}, color={255,0,255}));
+  connect(TSerWatEnt, conCol.TSerWatEnt) annotation (Line(points={{-100,-140},{
+          -100,-28},{-2,-28}}, color={0,0,127}));
   annotation (
     Icon(
       coordinateSystem(

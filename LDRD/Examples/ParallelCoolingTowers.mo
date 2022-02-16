@@ -97,20 +97,20 @@ equation
   connect(plaCoo.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
           -162.667,0},{-162.667,20},{-120,20},{-120,-4},{-90,-4}}, color={0,127,
           255}));
-  connect(TDisWatBorLvg.T, plaCoo.TWatEnt) annotation (Line(points={{-91,-40},{
-          -102,-40},{-102,-52},{-173.333,-52},{-173.333,-42.6667}}, color={0,0,
+  connect(TDisWatSup.T, plaCoo.TDisWatLvg) annotation (Line(points={{-91,20},{
+          -100,20},{-100,-48},{-169.333,-48},{-169.333,-42.6667}}, color={0,0,
           127}));
-  connect(TDisWatSup.T, plaCoo.TWatLvg) annotation (Line(points={{-91,20},{-100,
-          20},{-100,-48},{-169.333,-48},{-169.333,-42.6667}}, color={0,0,127}));
   connect(conPla.dH_flow, EPla.u)
     annotation (Line(points={{-87,2},{-87,10},{198,10}}, color={0,0,127}));
+  connect(TDisWatBorLvg.T, plaCoo.TDisWatEnt) annotation (Line(points={{-91,-40},
+          {-110,-40},{-110,-56},{-173.6,-56},{-173.6,-42.6667}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),
   experiment(
-      StopTime=63244800,
-      Tolerance=1e-06,
+      StopTime=5000,
       __Dymola_NumberOfIntervals=17520,
+      Tolerance=1e-06,
       __Dymola_Algorithm="Cvode"),
   __Dymola_experimentSetupOutput(equidistant=true, events=false),
     Documentation(revisions="<html>

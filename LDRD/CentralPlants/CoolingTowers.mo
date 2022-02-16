@@ -42,14 +42,15 @@ model CoolingTowers "Cooling towers"
   Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coo(
     redeclare final package Medium = Medium,
     final m_flow_nominal=m_flow_nominal,
+    show_T=true,
     final dp_nominal=dp_nominal + dpHeaExc_nominal,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     TAirInWB_nominal=285.15,
     final TApp_nominal=dTApp_nominal,
     final TRan_nominal=dTRan_nominal,
     final fraPFan_nominal=fraPFan_nominal,
     yMin=0.1) "Cooler"
-    annotation (Placement(transformation(extent={{-10,30},{10,50}})));
+    annotation (Placement(transformation(extent={{-30,30},{-10,50}})));
   Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pum(
     redeclare final package Medium = Medium,
     final m_flow_nominal=m_flow_nominal,
@@ -74,15 +75,10 @@ model CoolingTowers "Cooling towers"
     final TLvgMin=TLvgMin,
     final TEntMax=TEntMax) "Controller"
     annotation (Placement(transformation(extent={{-70,80},{-50,100}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput TWatLvg(final unit="K",
-      displayUnit="degC")
-      "Water leaving temperature" annotation (Placement(
-        transformation(extent={{-340,80},{-300,120}}),    iconTransformation(
-          extent={{-380,100},{-300,180}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput TWatEnt(final unit="K",
-      displayUnit="degC") "Water entering temperature" annotation (Placement(
-        transformation(extent={{-340,120},{-300,160}}),  iconTransformation(
-          extent={{-380,160},{-300,240}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput TDisWatLvg(final unit="K",
+      displayUnit="degC") "District water leaving temperature" annotation (
+      Placement(transformation(extent={{-340,80},{-300,120}}),
+        iconTransformation(extent={{-380,100},{-300,180}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput m_flowBorFieMin(final unit=
         "kg/s") if have_pum
     "Minimum mass flow rate through borefield if integrated" annotation (
@@ -102,12 +98,13 @@ model CoolingTowers "Cooling towers"
     redeclare final package Medium2 = Medium,
     final m1_flow_nominal=m_flow_nominal,
     final m2_flow_nominal=m_flow_nominal,
+    show_T=true,
     final dp1_nominal=dpHeaExc_nominal,
     final dp2_nominal=0,
     final use_Q_flow_nominal=true,
-    final T_a1_nominal=TEntMax + dTAppHeaExc_nominal,
-    final T_a2_nominal=TEntMax + dTAppHeaExc_nominal - dTRan_nominal,
-    final Q_flow_nominal=dTRan_nominal * m_flow_nominal * 1000,
+    final T_a1_nominal=TEntMax,
+    final T_a2_nominal=TEntMax - dTAppHeaExc_nominal - dTRan_nominal,
+    final Q_flow_nominal=dTRan_nominal*m_flow_nominal*4186,
     configuration=Buildings.Fluid.Types.HeatExchangerConfiguration.CounterFlow)
     "Intermediary HX for cooling towers"
     annotation (Placement(transformation(extent={{-10,16},{10,-4}})));
@@ -130,20 +127,27 @@ model CoolingTowers "Cooling towers"
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={40,70})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort TWatLvgTow(redeclare final package
+      Medium = Medium, final m_flow_nominal=m_flow_nominal)
+    "Water leaving temperature"
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={10,40})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput TDisWatEnt(final unit="K",
+      displayUnit="degC") "District water entering temperature" annotation (
+      Placement(transformation(extent={{-340,120},{-300,160}}),
+        iconTransformation(extent={{-380,164},{-300,244}})));
 equation
-  connect(coo.port_b, pum.port_a)
-    annotation (Line(points={{10,40},{50,40}},  color={0,127,255}));
   connect(con.yPumMasFlo, pum.m_flow_in)
     annotation (Line(points={{-48,95},{60,95},{60,52}},   color={0,0,127}));
-  connect(con.yFan, coo.y) annotation (Line(points={{-48,85},{-40,85},{-40,48},{
-          -12,48}}, color={0,0,127}));
+  connect(con.yFan, coo.y) annotation (Line(points={{-48,85},{-40,85},{-40,48},
+          {-32,48}},color={0,0,127}));
   connect(m_flow, con.m_flow) annotation (Line(points={{-320,180},{-100,180},{-100,
           96},{-72,96}}, color={0,0,127}));
-  connect(TWatLvg, con.TWatLvg) annotation (Line(points={{-320,100},{-120,100},{
-          -120,87},{-72,87}}, color={0,0,127}));
-  connect(TWatEnt, con.TWatEnt) annotation (Line(points={{-320,140},{-112,140},{
-          -112,90},{-72,90}}, color={0,0,127}));
-  connect(coo.PFan, PFan) annotation (Line(points={{11,48},{20,48},{20,200},{320,
+  connect(TDisWatLvg, con.TDisWatLvg) annotation (Line(points={{-320,100},{-120,
+          100},{-120,84},{-72,84}}, color={0,0,127}));
+  connect(coo.PFan, PFan) annotation (Line(points={{-9,48},{0,48},{0,200},{320,
           200}}, color={0,0,127}));
   connect(maxMasFlow.y, m_flowBorFieMin)
     annotation (Line(points={{242,80},{320,80}}, color={0,0,127}));
@@ -172,7 +176,7 @@ equation
   connect(swi.y, con.TAir) annotation (Line(points={{-118,220},{-80,220},{-80,
           93},{-72,93}}, color={0,0,127}));
   connect(swi.y, coo.TAir) annotation (Line(points={{-118,220},{-80,220},{-80,
-          44},{-12,44}}, color={0,0,127}));
+          44},{-32,44}}, color={0,0,127}));
   connect(port_aSerAmb, hex.port_a1) annotation (Line(points={{-300,40},{-280,
           40},{-280,0},{-10,0}}, color={0,127,255}));
   connect(hex.port_b1, pumPri.port_a) annotation (Line(points={{10,0},{60,0},{
@@ -181,8 +185,6 @@ equation
           -6.66134e-16},{280,-6.66134e-16},{280,40},{300,40}}, color={0,127,255}));
   connect(pum.port_b, hex.port_a2) annotation (Line(points={{70,40},{80,40},{80,
           12},{10,12}}, color={0,127,255}));
-  connect(hex.port_b2, coo.port_a) annotation (Line(points={{-10,12},{-60,12},{
-          -60,40},{-10,40}}, color={0,127,255}));
   connect(con.yPumMasFlo, pumPri.m_flow_in)
     annotation (Line(points={{-48,95},{120,95},{120,12}}, color={0,0,127}));
   connect(sumPPum.y, PPum)
@@ -193,6 +195,16 @@ equation
           {260,154}}, color={0,0,127}));
   connect(bou.ports[1], pum.port_a)
     annotation (Line(points={{40,60},{40,40},{50,40}}, color={0,127,255}));
+  connect(coo.port_b,TWatLvgTow. port_a)
+    annotation (Line(points={{-10,40},{0,40}}, color={0,127,255}));
+  connect(TWatLvgTow.port_b, pum.port_a)
+    annotation (Line(points={{20,40},{50,40}}, color={0,127,255}));
+  connect(TWatLvgTow.T,con.TWatLvgTow)  annotation (Line(points={{10,51},{10,60},
+          {-78,60},{-78,90},{-72,90}}, color={0,0,127}));
+  connect(coo.port_a, hex.port_b2) annotation (Line(points={{-30,40},{-100,40},{
+          -100,12},{-10,12}}, color={0,127,255}));
+  connect(TDisWatEnt, con.TDisWatEnt) annotation (Line(points={{-320,140},{-112,
+          140},{-112,87},{-72,87}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-300,-300},
             {300,300}})), Diagram(graphics={Text(
           extent={{-228,-28},{138,-190}},

@@ -40,7 +40,7 @@ model ParallelSpawnCoolingTowersUpstream
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
     annotation (Placement(transformation(extent={{-280,-140},{-260,-160}})));
-  replaceable CentralPlants.CoolingTowers plaCoo
+  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=6 + 273.15)
     constrainedby
     Buildings.Experimental.DHC.CentralPlants.BaseClasses.PartialPlant(
       redeclare final package Medium = Medium,
@@ -105,12 +105,11 @@ equation
   connect(conPla.dH_flow, EPla.u)
     annotation (Line(points={{-87,-78},{-87,-74},{-60,-74},{-60,-200},{198,-200}},
                                                          color={0,0,127}));
-  connect(TDisWatRet.T, plaCoo.TWatEnt) annotation (Line(points={{69,
-          8.88178e-16},{-40,8.88178e-16},{-40,-118},{-173.333,-118},{-173.333,
-          -102.667}}, color={0,0,127}));
-  connect(TDisWatBorEnt.T, plaCoo.TWatLvg) annotation (Line(points={{-91,-50},{
-          -120,-50},{-120,-114},{-169.333,-114},{-169.333,-102.667}}, color={0,
+  connect(TDisWatBorEnt.T, plaCoo.TDisWatLvg) annotation (Line(points={{-91,-50},
+          {-120,-50},{-120,-114},{-169.333,-114},{-169.333,-102.667}}, color={0,
           0,127}));
+  connect(TDisWatRet.T, plaCoo.TDisWatEnt) annotation (Line(points={{69,0},{-40,
+          0},{-40,-118},{-173.6,-118},{-173.6,-102.667}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),

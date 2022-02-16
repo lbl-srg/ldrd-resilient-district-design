@@ -8,17 +8,14 @@ model PredictLeavingTemperature
   parameter Modelica.SIunits.MassFlowRate m2_flow_nominal
     "Heat exchanger secondary mass flow rate"
     annotation (Dialog(group="Nominal condition"));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput T1WatEnt(
-    final unit="K",
-    displayUnit="degC")
-    "Heat exchanger primary water entering temperature"
-    annotation (Placement(transformation(extent={{-140,-60},{-100,-20}}),
-      iconTransformation(extent={{-140,-70},{-100,-30}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealOutput T2WatLvg(
-    final unit="K",
-    displayUnit="degC") "Heat exchanger secondary water leaving temperature"
-    annotation (Placement(transformation(extent={{100,-20},{140,20}}),
-        iconTransformation(extent={{100,-20},{140,20}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput T1Ent(final unit="K",
+      displayUnit="degC") "Primary fluid entering temperature " annotation (
+      Placement(transformation(extent={{-140,-60},{-100,-20}}),
+        iconTransformation(extent={{-140,-70},{-100,-30}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput T2Lvg(final unit="K",
+      displayUnit="degC") "Secondary fluid leaving temperature" annotation (
+      Placement(transformation(extent={{100,-20},{140,20}}), iconTransformation(
+          extent={{100,-20},{140,20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput m2_flow(
     final unit="kg/s")
     "Heat exchanger secondary mass flow rate" annotation (Placement(
@@ -28,7 +25,7 @@ protected
   Real ratLoa "Part load ratio";
 equation
   ratLoa = min(1, abs(m2_flow / m2_flow_nominal));
-  T2WatLvg = T1WatEnt + dTApp_nominal * ratLoa;
+  T2Lvg = T1Ent + dTApp_nominal*ratLoa;
 annotation (
   defaultComponentName="calTemLvg",
   Documentation(

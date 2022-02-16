@@ -33,7 +33,7 @@ model ParallelCoolingTowersUpstream
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
-  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=7 + 273.15)
+  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=6 + 273.15)
     constrainedby
     Buildings.Experimental.DHC.CentralPlants.BaseClasses.PartialPlant(
       redeclare final package Medium = Medium,
@@ -104,10 +104,10 @@ equation
   connect(conPla.dH_flow, EPla.u)
     annotation (Line(points={{-87,-78},{-87,-76},{-60,-76},{-60,-180},{198,-180}},
                                                          color={0,0,127}));
-  connect(TDisWatRet.T, plaCoo.TWatEnt) annotation (Line(points={{69,0},{60,0},
-          {60,-112},{-171.333,-112},{-171.333,-102.667}}, color={0,0,127}));
-  connect(TDisWatBorEnt.T, plaCoo.TWatLvg) annotation (Line(points={{-91,-40},{
-          -100,-40},{-100,-104},{-167.333,-104},{-167.333,-102.667}}, color={0,
+  connect(plaCoo.TDisWatEnt, TDisWatRet.T) annotation (Line(points={{-171.6,
+          -102.667},{-171.6,-132},{60,-132},{60,0},{69,0}}, color={0,0,127}));
+  connect(TDisWatBorEnt.T, plaCoo.TDisWatLvg) annotation (Line(points={{-91,-40},
+          {-100,-40},{-100,-104},{-167.333,-104},{-167.333,-102.667}}, color={0,
           0,127}));
   annotation (
   Diagram(

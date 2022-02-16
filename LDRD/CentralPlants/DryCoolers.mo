@@ -104,10 +104,10 @@ equation
           -12,48}}, color={0,0,127}));
   connect(m_flow, con.m_flow) annotation (Line(points={{-320,180},{-100,180},{-100,
           96},{-72,96}}, color={0,0,127}));
-  connect(TWatLvg, con.TWatLvg) annotation (Line(points={{-320,100},{-120,100},{
-          -120,87},{-72,87}}, color={0,0,127}));
-  connect(TWatEnt, con.TWatEnt) annotation (Line(points={{-320,140},{-112,140},{
-          -112,90},{-72,90}}, color={0,0,127}));
+  connect(TWatLvg, con.TDisWatLvg) annotation (Line(points={{-320,100},{-120,
+          100},{-120,84},{-72,84}}, color={0,0,127}));
+  connect(TWatEnt, con.TWatEntTow) annotation (Line(points={{-320,140},{-112,
+          140},{-112,90},{-72,90}}, color={0,0,127}));
   connect(pum.P, PPum) annotation (Line(points={{171,49},{260,49},{260,160},{320,
           160}}, color={0,0,127}));
   connect(coo.PFan, PFan) annotation (Line(points={{11,48},{20,48},{20,200},{320,

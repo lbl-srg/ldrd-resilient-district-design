@@ -49,7 +49,7 @@ model SideCold
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant f2[nSouAmb](
     each final k=1)
     "f2"
-    annotation (Placement(transformation(extent={{-10,110},{10,130}})));
+    annotation (Placement(transformation(extent={{0,90},{20,110}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant x2[nSouAmb](
     final k={(i) for i in 1:nSouAmb})
     "x2"
@@ -65,13 +65,13 @@ model SideCold
     annotation (Placement(transformation(extent={{-130,-30},{-110,-10}})));
   Buildings.Controls.OBC.CDL.Continuous.Line mapFunTChiSupSet
     "Mapping function for CHWST reset"
-    annotation (Placement(transformation(extent={{100,70},{120,90}})));
+    annotation (Placement(transformation(extent={{120,70},{140,90}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant minTChiWatSup(
     y(final unit="K",
       displayUnit="degC"),
     final k=TChiWatSupSetMin)
     "Minimum value of chilled water supply temperature"
-    annotation (Placement(transformation(extent={{62,50},{82,70}})));
+    annotation (Placement(transformation(extent={{60,50},{80,70}})));
   Buildings.Controls.OBC.CDL.Continuous.AddParameter addPar(
     p=nSouAmb, k=-nSouAmb)
     "One minus control loop output"
@@ -85,8 +85,7 @@ model SideCold
     annotation (Placement(transformation(extent={{-80,50},{-60,70}})));
   Buildings.Controls.OBC.CDL.Continuous.AddParameter subNumSou(
     p=-nSouAmb,
-    k=1)
-    "Control signal minus nSouAmb"
+    k=1) "Control signal minus nSouAmb"
     annotation (Placement(transformation(extent={{-80,90},{-60,110}})));
   Buildings.Controls.OBC.CDL.Continuous.Min min1
     "Ambient source control signal"
@@ -94,7 +93,7 @@ model SideCold
   Buildings.Controls.OBC.CDL.Continuous.SlewRateLimiter ramLimHea(
     raisingSlewRate=0.1)
     "Limit the rate of change"
-    annotation (Placement(transformation(extent={{140,70},{160,90}})));
+    annotation (Placement(transformation(extent={{150,70},{170,90}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uHeaCoo
     "Enable signal for heating or cooling"
     annotation (Placement(transformation(extent={{-220,100},{-180,140}}),
@@ -128,9 +127,22 @@ model SideCold
     t=0.01)
     "Control signal is non zero (with 1% tolerance)"
     annotation (Placement(transformation(extent={{0,-110},{20,-90}})));
-  Modelica.Blocks.Discrete.ZeroOrderHold zeroOrderHold(
-    samplePeriod=60)
+  Modelica.Blocks.Discrete.ZeroOrderHold uColHol(samplePeriod=60)
+    "Hold uCol>0 output status"
     annotation (Placement(transformation(extent={{80,-110},{100,-90}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput TSerWatEnt(final unit="K",
+      displayUnit="degC") "Heat exchanger primary water entering temperature"
+    annotation (Placement(transformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={-200,80}), iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=0,
+        origin={-120,40})));
+  Modelica.Blocks.Sources.RealExpression TChiWatSupSet_max(y=max(
+        TChiWatSupSetMin + 1, if uColHol.y > 0 then min(TSerWatEnt - 3, TSet)
+         else TSet)) "Compute CHWST maximum set point"
+    annotation (Placement(transformation(extent={{60,110},{80,130}})));
 equation
   connect(x1.y,mapFun.x1)
     annotation (Line(points={{22,20},{36,20},{36,8},{98,8}},color={0,0,127}));
@@ -139,7 +151,7 @@ equation
   connect(f1.y,mapFun.f1)
     annotation (Line(points={{22,-20},{36,-20},{36,4},{98,4}},color={0,0,127}));
   connect(f2.y,mapFun.f2)
-    annotation (Line(points={{12,120},{40,120},{40,-8},{98,-8}},color={0,0,127}));
+    annotation (Line(points={{22,100},{40,100},{40,-8},{98,-8}},color={0,0,127}));
   connect(x2.y,mapFun.x2)
     annotation (Line(points={{22,-60},{44,-60},{44,-4},{98,-4}},color={0,0,127}));
   connect(TSet,conTChiWatSup.u_s)
@@ -147,17 +159,18 @@ equation
   connect(TBot,conTChiWatSup.u_m)
     annotation (Line(points={{-200,-80},{-120,-80},{-120,-32}},color={0,0,127}));
   connect(f2[1].y,mapFunTChiSupSet.x2)
-    annotation (Line(points={{12,120},{40,120},{40,76},{98,76}},color={0,0,127}));
+    annotation (Line(points={{22,100},{40,100},{40,76},{118,76}},
+                                                                color={0,0,127}));
   connect(minTChiWatSup.y,mapFunTChiSupSet.f2)
-    annotation (Line(points={{84,60},{90,60},{90,72},{98,72}},color={0,0,127}));
-  connect(TSet,mapFunTChiSupSet.f1)
-    annotation (Line(points={{-200,40},{20,40},{20,84},{98,84}},color={0,0,127}));
+    annotation (Line(points={{82,60},{100,60},{100,72},{118,72}},
+                                                              color={0,0,127}));
   connect(conTChiWatSup.y,addPar.u)
     annotation (Line(points={{-108,-20},{-102,-20}},color={0,0,127}));
   connect(uCol,subNumSou.u)
     annotation (Line(points={{-200,0},{-160,0},{-160,100},{-82,100}},color={0,0,127}));
   connect(max1.y,mapFunTChiSupSet.u)
-    annotation (Line(points={{-8,80},{98,80}},color={0,0,127}));
+    annotation (Line(points={{-8,80},{118,80}},
+                                              color={0,0,127}));
   connect(uCol,min1.u1)
     annotation (Line(points={{-200,0},{-80,0},{-80,6},{-62,6}},color={0,0,127}));
   connect(addPar.y,min1.u2)
@@ -167,26 +180,29 @@ equation
   connect(mapFun.y,yAmb)
     annotation (Line(points={{122,0},{140,0},{140,40},{200,40}},color={0,0,127}));
   connect(ramLimHea.y,TChiWatSupSet)
-    annotation (Line(points={{162,80},{200,80}},color={0,0,127}));
+    annotation (Line(points={{172,80},{200,80}},color={0,0,127}));
   connect(uHeaCoo,conTChiWatSup.uEna)
     annotation (Line(points={{-200,120},{-140,120},{-140,-40},{-124,-40},{-124,
           -32}},                                                                     color={255,0,255}));
   connect(zer.y,mapFunTChiSupSet.x1)
-    annotation (Line(points={{-58,60},{0,60},{0,88},{98,88}},color={0,0,127}));
+    annotation (Line(points={{-58,60},{0,60},{0,88},{118,88}},
+                                                             color={0,0,127}));
   connect(uCol,greThr.u)
     annotation (Line(points={{-200,0},{-160,0},{-160,-100},{-2,-100}},color={0,0,127}));
   connect(greThr.y,booToRea.u)
     annotation (Line(points={{22,-100},{38,-100}},color={255,0,255}));
-  connect(booToRea.y,zeroOrderHold.u)
-    annotation (Line(points={{62,-100},{78,-100}},color={0,0,127}));
-  connect(zeroOrderHold.y,yValIso)
-    annotation (Line(points={{101,-100},{160,-100},{160,0},{200,0}},color={0,0,127}));
+  connect(booToRea.y, uColHol.u)
+    annotation (Line(points={{62,-100},{78,-100}}, color={0,0,127}));
+  connect(uColHol.y, yValIso) annotation (Line(points={{101,-100},{160,-100},{
+          160,0},{200,0}}, color={0,0,127}));
   connect(mapFunTChiSupSet.y,ramLimHea.u)
-    annotation (Line(points={{122,80},{138,80}},color={0,0,127}));
+    annotation (Line(points={{142,80},{148,80}},color={0,0,127}));
   connect(zer.y,max1.u2)
     annotation (Line(points={{-58,60},{-40,60},{-40,74},{-32,74}},color={0,0,127}));
   connect(subNumSou.y,max1.u1)
     annotation (Line(points={{-58,100},{-40,100},{-40,86},{-32,86}},color={0,0,127}));
+  connect(TChiWatSupSet_max.y, mapFunTChiSupSet.f1) annotation (Line(points={{
+          81,120},{100,120},{100,84},{118,84}}, color={0,0,127}));
   annotation (
     defaultComponentName="conCol",
     Documentation(
@@ -199,6 +215,19 @@ First implementation.
 </ul>
 </html>",
       info="<html>
+<p>
+Addendum: when the cold rejection signal <code>uCol</code> is non zero 
+the maximum CHW supply temperature set point is the minimum between the input
+signal <code>TSet</code> (from building BAS) and the service water
+entering temperature minus 3 K.
+This avoids operating the ambient loop at maximum flow rate when 
+<code>TSet</code> is higher than the service water
+entering temperature (typical in the heating season with low 
+cooling demand and low service water temperature).
+However, if <code>uCol</code> is zero, the cooling demand
+is high enough to compensate the cold rejection at the evaporator
+and the CHW supply temperature should not be reset down then.
+</p>
 <p>
 This block serves as the controller for the cold side of the ETS in
 <a href=\"modelica://Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.Supervisory\">

@@ -78,17 +78,14 @@ equation
   connect(minFlo.y, pumSto.m_flow_in) annotation (Line(points={{-258,-150},{
           -200,-150},{-200,-132}},
                             color={0,0,127}));
-  connect(TDisWatBorLvg.T,plaCoo. TWatEnt) annotation (Line(points={{-91,-40},{
-          -173.333,-40},{-173.333,-22.6667}},
-                                     color={0,0,127}));
   connect(conPla.port_bCon,plaCoo. port_aSerAmb) annotation (Line(points={{-90,-10},
           {-110,-10},{-110,-30},{-162.667,-30},{-162.667,-20}}, color={0,127,255}));
   connect(plaCoo.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{
           -162.667,20},{-162.667,26},{-162.667,30},{-110,30},{-110,-4},{-90,-4}},
                                                                  color={0,127,255}));
-  connect(TDisWatSup.T,plaCoo. TWatLvg) annotation (Line(points={{-91,20},{-100,
-          20},{-100,-38},{-170,-38},{-170,-22.6667},{-169.333,-22.6667}}, color=
-         {0,0,127}));
+  connect(TDisWatSup.T, plaCoo.TDisWatLvg) annotation (Line(points={{-91,20},{
+          -100,20},{-100,-38},{-169.333,-38},{-169.333,-22.6667}}, color={0,0,
+          127}));
   connect(plaCoo.weaBus, buiSpa.weaBus) annotation (Line(
       points={{-177.733,0.0666667},{-200,0.0666667},{-200,200},{50,200},{50,170}},
       color={255,204,51},
@@ -107,6 +104,8 @@ equation
           120},{258,120}}, color={0,0,127}));
   connect(conPla.dH_flow, EPla.u)
     annotation (Line(points={{-87,2},{-87,10},{198,10}}, color={0,0,127}));
+  connect(plaCoo.TDisWatEnt, TDisWatBorLvg.T) annotation (Line(points={{-173.6,
+          -22.6667},{-173.6,-40},{-91,-40}}, color={0,0,127}));
   annotation (
   Diagram(
   coordinateSystem(preserveAspectRatio=false, extent={{-360,-260},{360,260}})),

@@ -251,6 +251,15 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
         extent={{-40,-40},{40,40}},
         rotation=0,
         origin={-340,-160})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTSerWatEnt(
+    redeclare final package Medium = MediumSer,
+    final m_flow_nominal=hex.m2_flow_nominal,
+    final allowFlowReversal=allowFlowReversalSer)
+    "Heat exchanger primary water entering temperature" annotation (Placement(
+        transformation(
+        extent={{10,10},{-10,-10}},
+        rotation=180,
+        origin={-260,-260})));
 equation
   if not have_WSE then
     connect(tanChiWat.port_aTop, dHFloChiWat.port_b2)
@@ -335,8 +344,6 @@ equation
   connect(hex.port_b1, mixWSE.port_1) annotation (Line(points={{10,-260},{244,-260}}, color={0,127,255}));
   connect(valIsoEva.y_actual, WSE.yValIsoEva_actual)
     annotation (Line(points={{55,-113},{40,-113},{40,123},{218,123}}, color={0,0,127}));
-  connect(port_aSerAmb, splWSE.port_1) annotation (Line(points={{-300,-200},{
-          -280,-200},{-280,-260},{-230,-260}}, color={0,127,255}));
   connect(uEnaChi, chi.uEnaChi) annotation (Line(points={{-320,140},{-286,140},
           {-286,40},{-18,40},{-18,3},{-12,3}}, color={255,0,255}));
   connect(uEnaChi, conSup.uEnaChi) annotation (Line(points={{-320,140},{-286,
@@ -345,6 +352,12 @@ equation
           {201,114},{202,114},{202,140},{-244,140},{-244,34}}, color={0,0,127}));
   connect(conSup.yWSE, WSE.uCoo) annotation (Line(points={{-241,34},{-240,34},{
           -240,126},{218,126}}, color={255,0,255}));
+  connect(port_aSerAmb, senTSerWatEnt.port_a) annotation (Line(points={{-300,-200},
+          {-280,-200},{-280,-260},{-270,-260}}, color={0,127,255}));
+  connect(senTSerWatEnt.port_b, splWSE.port_1)
+    annotation (Line(points={{-250,-260},{-230,-260}}, color={0,127,255}));
+  connect(senTSerWatEnt.T, conSup.TSerWatEnt) annotation (Line(points={{-260,
+          -249},{-260,10},{-258,10}}, color={0,0,127}));
   annotation (
     Diagram(
       coordinateSystem(

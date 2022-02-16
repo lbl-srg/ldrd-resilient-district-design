@@ -143,10 +143,10 @@ equation
   connect(TWatLvg, delT1.u2) annotation (Line(points={{-200,-120},{-160,-120},{-160,
           -106},{-152,-106}}, color={0,0,127}));
   connect(delT1.y,delTemDis. u) annotation (Line(points={{-128,-100},{-72,-100}},color={0,0,127}));
-  connect(TAir, calTemLvg.T1WatEnt) annotation (Line(points={{-200,-40},{-160,-40},
+  connect(TAir, calTemLvg.T1Ent) annotation (Line(points={{-200,-40},{-160,-40},
           {-160,-45},{-152,-45}}, color={0,0,127}));
-  connect(calTemLvg.T2WatLvg,addDelTem. u) annotation (Line(points={{-128,-40},{
-          -112,-40}},                                                                      color={0,0,127}));
+  connect(calTemLvg.T2Lvg, addDelTem.u)
+    annotation (Line(points={{-128,-40},{-112,-40}}, color={0,0,127}));
   connect(addDelTem.y,delTemDis1. u1) annotation (Line(points={{-88,-40},{-62,-40}},
                                                                                   color={0,0,127}));
   connect(TWatEnt, delTemDis1.u2) annotation (Line(points={{-200,-80},{-80,-80},
@@ -231,7 +231,7 @@ equation
           -108},{48,-108}}, color={255,0,255}));
   connect(conPID.y, comPumSig.u) annotation (Line(points={{22,-140},{90,-140},{
           90,100},{138,100}}, color={0,0,127}));
-  connect(calTemLvg.T2WatLvg, TLvgMax.u1) annotation (Line(points={{-128,-40},{-120,
+  connect(calTemLvg.T2Lvg, TLvgMax.u1) annotation (Line(points={{-128,-40},{-120,
           -40},{-120,-60},{-112,-60}}, color={0,0,127}));
   connect(TWatEnt, TLvgMax.u2) annotation (Line(points={{-200,-80},{-160,-80},{-160,
           -72},{-112,-72}}, color={0,0,127}));
