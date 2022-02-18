@@ -110,8 +110,9 @@ block CoolingTowers "Cooling towers controller"
     annotation (Placement(transformation(extent={{20,70},{40,90}})));
   Modelica.Blocks.Sources.RealExpression TDisWatSupSet_actual(y(
       final unit="K",
-      displayUnit="degC") = if calTim.month >= 5 and calTim.month <= 9 then
-      273.15 else TLvgMin) "Actual TDisWatSup set point"
+      displayUnit="degC") = if calTim.month >= 5 and calTim.month <= 9 then 4
+       + 273.15 else TLvgMin)
+                           "Actual TDisWatSup set point"
     annotation (Placement(transformation(extent={{-160,-90},{-140,-70}})));
   Buildings.Controls.OBC.CDL.Continuous.Line setTWatLvgTow
     "Compute TWatLvgTow set point"
@@ -253,31 +254,16 @@ in short circuit for additional night cooling without circulating
 water through the whole DHC network.
 </p>
 <p>
-Control logic
+Control logic: see paper
 </p>
 <ul>
 <li>
 First, compute the actual minimum
 leaving temperature <code>TLvgMin_actual</code> which is
 equal to the parameter <code>TLvgMin</code> during the 
-heating season and equal to 0°C otherwise. (For the sake 
+heating season and equal to 4°C otherwise. (For the sake 
 of simplicity the heating season is defined based on the 
 month of the calendar year: 1 to 4 and 10 to 12.)
-</li>
-<li>
-Enable with similar logic as WSE:
-based on predicted leaving water temperature that must
-be lower (with margin) than entering and higher than minimum
-leaving temperature <code>TLvgMin_actual</code>.
-</li>
-<li>
-When enabled, modulate fan speed between minimum when
-entering water temperature equals <code>TLvgMin_actual + dTEna</code>,
-and maximum when entering water temperature equals <code>TEntMax</code>.
-</li>
-<li>
-Disable if leaving temperature higher (with margin) than entering
-or lower than <code>TLvgMin_actual</code>.
 </li>
 </ul>
 </html>"));

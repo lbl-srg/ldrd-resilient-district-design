@@ -15,10 +15,10 @@ model CoolingTowers "Cooling towers"
   parameter Modelica.SIunits.MassFlowRate m_flow_nominal
     "Nominal mass flow rate"
     annotation(Dialog(group = "Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dp_nominal=9E4
+  parameter Modelica.SIunits.PressureDifference dp_nominal=90000
     "Tower nominal pressure drop (modified on 2/3/22: 3E4 before)"
     annotation(Dialog(group = "Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dpHeaExc_nominal=4E4
+  parameter Modelica.SIunits.PressureDifference dpHeaExc_nominal=40000
     "HX nominal pressure drop (primary = secondary)"
     annotation(Dialog(group = "Nominal condition"));
   parameter Modelica.SIunits.TemperatureDifference TLvgMin = 9 + 273.15
@@ -35,7 +35,7 @@ model CoolingTowers "Cooling towers"
      4
     "Design range temperature (water in - water out)"
     annotation (Dialog(group="Nominal condition"));
-  parameter Real fraPFan_nominal(unit="W/(kg/s)") = 150
+  parameter Real fraPFan_nominal(unit="W/(kg/s)")=150
     "Fan power divided by water mass flow rate at design condition"
     annotation(Dialog(group="Fan"));
 
@@ -191,8 +191,9 @@ equation
     annotation (Line(points={{284,160},{320,160}}, color={0,0,127}));
   connect(pum.P, sumPPum.u1) annotation (Line(points={{71,49},{80,49},{80,166},{
           260,166}}, color={0,0,127}));
-  connect(pumPri.P, sumPPum.u2) annotation (Line(points={{131,9},{130,9},{130,154},
-          {260,154}}, color={0,0,127}));
+  connect(pumPri.P, sumPPum.u2) annotation (Line(points={{131,9},{140,9},{140,
+          154},{260,154}},
+                      color={0,0,127}));
   connect(bou.ports[1], pum.port_a)
     annotation (Line(points={{40,60},{40,40},{50,40}}, color={0,127,255}));
   connect(coo.port_b,TWatLvgTow. port_a)
@@ -221,5 +222,11 @@ And for intermediary HX ~ 4 m on each side")}),
       StopTime=31536000,
       __Dymola_NumberOfIntervals=8760,
       Tolerance=1e-06,
-      __Dymola_Algorithm="Cvode"));
+      __Dymola_Algorithm="Cvode"),
+    Documentation(info="<html>
+<p>
+Steady-state modeling of the cooling towers yields simulation error
+due to freezing conditions, hence the dynamics that are considered.
+</p>
+</html>"));
 end CoolingTowers;

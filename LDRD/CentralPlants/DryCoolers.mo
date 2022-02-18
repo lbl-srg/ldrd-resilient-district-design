@@ -166,7 +166,7 @@ A 5.6°C (10°F) approach is feasible.
           extent={{-258,30},{108,-132}},
           lineColor={238,46,47},
           horizontalAlignment=TextAlignment.Left,
-          textString="OBSOLETE: not used eventually.
+          textString="OBSOLETE: not used in the paper.
 
 - The dry coolers approach of 4 K seems unreallistically low (economically) for building applications.
 - The use of Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc to represent dry coolers is not validated.")}));

@@ -33,7 +33,7 @@ model ParallelCoolingTowersUpstream
     final dp_nominal=datDes.dpPumDisSet)
     "End of the line bypass (optional)"
     annotation (Placement(transformation(extent={{50,130},{70,150}})));
-  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=6 + 273.15)
+  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=7 + 273.15)
     constrainedby
     Buildings.Experimental.DHC.CentralPlants.BaseClasses.PartialPlant(
       redeclare final package Medium = Medium,

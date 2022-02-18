@@ -40,7 +40,7 @@ model ParallelSpawnCoolingTowersUpstream
   Buildings.Controls.OBC.CDL.Continuous.Min minFlo
     "Minimum between main flow and borefield nominal flow"
     annotation (Placement(transformation(extent={{-280,-140},{-260,-160}})));
-  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=6 + 273.15)
+  replaceable CentralPlants.CoolingTowers plaCoo(TLvgMin=7 + 273.15)
     constrainedby
     Buildings.Experimental.DHC.CentralPlants.BaseClasses.PartialPlant(
       redeclare final package Medium = Medium,
