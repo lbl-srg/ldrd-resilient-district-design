@@ -134,7 +134,8 @@ DeltaT_nominal on CHW side = 4 K for primary and 5K for secondary
 and minimum evaporator leaving temperature of 3°C and HX approach of 2K
 </li>
 <li>
-Chiller performance representative of Carrier 30XW--/30XW-P Opt.150 1252
+Chiller performance representative of Carrier 30XW-P OPTION 150 1162 
+(be careful: COP_nominal is chiller COOLING COP, not heating COP!)
 </li>
 </ul>
 </html>", revisions="<html>
