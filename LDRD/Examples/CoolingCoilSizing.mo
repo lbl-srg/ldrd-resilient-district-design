@@ -192,10 +192,10 @@ equation
     annotation (Line(points={{60,20},{36,20},{36,18},{10,18}},
                                                  color={0,127,255}));
   connect(cooCoi.port_b1, bouWat1.ports[1])
-    annotation (Line(points={{-10,18},{-36,18},{-36,15},{-60,15}},
+    annotation (Line(points={{-10,18},{-36,18},{-36,19.5},{-60,19.5}},
                                                    color={0,127,255}));
-  connect(bouAir1.ports[1], cooCoi.port_b2) annotation (Line(points={{60,55},{
-          20,55},{20,30},{10,30}},
+  connect(bouAir1.ports[1], cooCoi.port_b2) annotation (Line(points={{60,59.5},
+          {20,59.5},{20,30},{10,30}},
                                 color={0,127,255}));
   connect(bouAir.ports[1], relHumIn.port_a)
     annotation (Line(points={{-60,58},{-50,58}}, color={0,127,255}));
@@ -205,11 +205,13 @@ equation
   connect(bouAir2.ports[1], cooCoi1.port_a2)
     annotation (Line(points={{-60,-16},{-10,-16}}, color={0,127,255}));
   connect(cooCoi1.port_b2, bouAir1.ports[2]) annotation (Line(points={{10,-16},
-          {22,-16},{22,57},{60,57}},color={0,127,255}));
+          {22,-16},{22,58.5},{60,58.5}},
+                                    color={0,127,255}));
   connect(bouWat2.ports[1], cooCoi1.port_a1) annotation (Line(points={{60,-36},
           {20,-36},{20,-28},{10,-28}},color={0,127,255}));
   connect(cooCoi1.port_b1, bouWat1.ports[2]) annotation (Line(points={{-10,-28},
-          {-40,-28},{-40,17},{-60,17}},   color={0,127,255}));
+          {-40,-28},{-40,18.5},{-60,18.5}},
+                                          color={0,127,255}));
   connect(bouAir3.ports[1],cooCoi2. port_a2)
     annotation (Line(points={{-60,-58},{-10,-58}}, color={0,127,255}));
   connect(bouWat3.ports[1],cooCoi2. port_a1) annotation (Line(points={{60,-78},
@@ -219,13 +221,17 @@ equation
   connect(bouWat4.ports[1],cooCoi3. port_a1) annotation (Line(points={{60,-110},
           {10,-110}},                 color={0,127,255}));
   connect(cooCoi2.port_b1, bouWat1.ports[3]) annotation (Line(points={{-10,-70},
-          {-22,-70},{-22,-28},{-40,-28},{-40,19},{-60,19}}, color={0,127,255}));
+          {-22,-70},{-22,-28},{-40,-28},{-40,17.5},{-60,17.5}},
+                                                            color={0,127,255}));
   connect(cooCoi3.port_b1, bouWat1.ports[4]) annotation (Line(points={{-10,-110},
-          {-22,-110},{-22,-28},{-40,-28},{-40,21},{-60,21}}, color={0,127,255}));
+          {-22,-110},{-22,-28},{-40,-28},{-40,16.5},{-60,16.5}},
+                                                             color={0,127,255}));
   connect(cooCoi2.port_b2, bouAir1.ports[3]) annotation (Line(points={{10,-58},
-          {38,-58},{38,59},{60,59}}, color={0,127,255}));
+          {38,-58},{38,57.5},{60,57.5}},
+                                     color={0,127,255}));
   connect(cooCoi3.port_b2, bouAir1.ports[4]) annotation (Line(points={{10,-98},
-          {24,-98},{24,-58},{38,-58},{38,61},{60,61}}, color={0,127,255}));
+          {24,-98},{24,-58},{38,-58},{38,56.5},{60,56.5}},
+                                                       color={0,127,255}));
   annotation (
     Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-100,-160},{100,

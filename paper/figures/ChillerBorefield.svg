@@ -5,7 +5,7 @@
    height="365.53943"
    width="713.42371"
    sodipodi:docname="ChillerBorefield.svg"
-   inkscape:version="1.1.1 (3bf5ae0, 2021-09-20)"
+   inkscape:version="1.1.2 (0a00cf5, 2022-02-04)"
    inkscape:export-filename="/home/agautier/gitrepo/modelica-buildings/Buildings/Resources/Images/Experimental/DHC/EnergyTransferStations/Combined/Generation5/ChillerBorefield.png"
    inkscape:export-xdpi="150"
    inkscape:export-ydpi="150"
@@ -26,12 +26,12 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      showgrid="true"
-     inkscape:snap-grids="false"
-     inkscape:zoom="1.5746178"
-     inkscape:cx="400.73218"
-     inkscape:cy="288.00641"
-     inkscape:window-width="1640"
-     inkscape:window-height="986"
+     inkscape:snap-grids="true"
+     inkscape:zoom="1.1134229"
+     inkscape:cx="230.37068"
+     inkscape:cy="244.74078"
+     inkscape:window-width="1880"
+     inkscape:window-height="1016"
      inkscape:window-x="40"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -1833,12 +1833,14 @@
          id="tspan6368">tank</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:6.66667px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-       x="670.84241"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.66667px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+       x="662.84241"
        y="2423.3035"
        id="text6376"><tspan
          sodipodi:role="line"
-         id="tspan124138">District heat exchanger (DHX)</tspan></text>
+         id="tspan124138"
+         x="662.84241"
+         y="2423.3035">District heat exchanger (DHX)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:6.66667px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial, Normal'"
@@ -1858,7 +1860,7 @@
        style="fill:none;fill-rule:evenodd;stroke:#b3b3b3;stroke-width:0.5;stroke-miterlimit:3.9;stop-color:#000000" />
     <path
        id="path1590"
-       d="m 610.25,2461.6189 30,-40"
+       d="m 610.25,2451.869 30,-30.2501"
        style="fill:none;fill-rule:evenodd;stroke:#b3b3b3;stroke-width:0.5;stroke-miterlimit:3.9;stop-color:#000000" />
     <path
        id="path1592"
@@ -2231,10 +2233,6 @@
        style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#b3b3b3;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.9;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker2107);stop-color:#000000;stop-opacity:1"
        d="m 380.25,2241.6189 v -10 h 140"
        id="path1767" />
-    <path
-       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#b3b3b3;stroke-width:0.499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.9;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
-       d="m 640.25,2331.3295 v -10 h 135 v 15"
-       id="path5756" />
     <g
        id="g7048"
        transform="rotate(90,775.14459,2217.0137)">
@@ -2721,6 +2719,14 @@
          y="2418.7939"
          x="356.4722"
          id="tspan1695-6">1</tspan></text>
+    <path
+       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#b3b3b3;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.9;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       d="m 585,2471.869 h 175 v -130 h 10"
+       id="path2000" />
+    <path
+       style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#b3b3b3;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.9000001;stroke-dasharray:2,2;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
+       d="M 610,2451.869 H 585"
+       id="path3355" />
   </g>
   <g
      transform="translate(-205.25,-2106.3295)"
