@@ -13,3 +13,4 @@ eplus_out
 *.dill
 run.mos
 debug*mos
+.ipynb_checkpoints
